@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Base de Conhecimento | Agente IA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --primary-red-light: #FF5A5A;
+            --primary-red-dark: #9A0000;
+            --primary-gradient: linear-gradient(135deg, #FF5A5A, #9A0000);
+            --dark-bg: #121212;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--dark-bg);
+            color: white;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: rgba(255,255,255,0.05);
+            padding: 20px 40px;
+            border-bottom: 1px solid rgba(255,90,90,0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header img { height: 60px; }
+
+        .btn-voltar {
+            background: rgba(255,255,255,0.1);
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .btn-voltar:hover {
+            background: rgba(255,255,255,0.15);
+            border-color: rgba(255,90,90,0.5);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 40px;
+        }
+
+        .page-title {
+            font-size: 32px;
+            margin-bottom: 10px;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-subtitle {
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 30px;
+        }
+
+        .section {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255,90,90,0.2);
+        }
+
+        .section-title {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: var(--primary-red-light);
+        }
+
+        .upload-area {
+            border: 2px dashed rgba(255,90,90,0.3);
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .upload-area:hover {
+            border-color: var(--primary-red-light);
+            background: rgba(255,90,90,0.05);
+        }
+
+        .upload-area.dragging {
+            border-color: var(--primary-red-light);
+            background: rgba(255,90,90,0.1);
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .btn-upload {
+            background: var(--primary-gradient);
+            padding: 12px 30px;
+            border-radius: 8px;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            margin-top: 15px;
+        }
+
+        .btn-upload:hover {
+            opacity: 0.9;
+        }
+
+        .allowed-formats {
+            color: rgba(255,255,255,0.5);
+            font-size: 13px;
+            margin-top: 10px;
+        }
+
+        .documents-list {
+            margin-top: 20px;
+        }
+
+        .document-item {
+            background: rgba(255,255,255,0.03);
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 3px solid var(--primary-red-light);
+        }
+
+        .document-info {
+            flex: 1;
+        }
+
+        .document-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .document-meta {
+            font-size: 12px;
+            color: rgba(255,255,255,0.5);
+        }
+
+        .document-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-action {
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-delete {
+            background: #f44336;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            opacity: 0.8;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: rgba(255,255,255,0.5);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: rgba(255,255,255,0.7);
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .alert-success {
+            background: rgba(76,175,80,0.2);
+            border: 1px solid rgba(76,175,80,0.5);
+            color: #81C784;
+        }
+
+        .alert-error {
+            background: rgba(244,67,54,0.2);
+            border: 1px solid rgba(244,67,54,0.5);
+            color: #E57373;
+        }
+
+        .test-section {
+            margin-top: 20px;
+        }
+
+        .test-input {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            margin-bottom: 10px;
+        }
+
+        .test-input:focus {
+            outline: none;
+            border-color: var(--primary-red-light);
+        }
+
+        .test-result {
+            background: rgba(0,0,0,0.3);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 15px;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="/logo.png" alt="Kairix">
+        <a href="/painel" class="btn-voltar">← Voltar ao Painel</a>
+    </div>
+
+    <div class="container">
+        <h1 class="page-title">🤖 Base de Conhecimento - Agente IA</h1>
+        <p class="page-subtitle">Faça upload de documentos para o seu assistente inteligente aprender e responder perguntas</p>
+
+        <div id="alert-container"></div>
+
+        <!-- Seção de Upload -->
+        <div class="section">
+            <h3 class="section-title">📤 Upload de Documentos</h3>
+
+            <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
+                <div class="upload-icon">📄</div>
+                <h4>Clique ou arraste arquivos aqui</h4>
+                <p class="allowed-formats">Formatos suportados: PDF, DOCX, TXT (máx. 10MB)</p>
+                <button class="btn-upload" onclick="event.stopPropagation()">Selecionar Arquivo</button>
+            </div>
+
+            <input
+                type="file"
+                id="fileInput"
+                class="file-input"
+                accept=".pdf,.docx,.txt"
+                onchange="handleFileSelect(event)"
+            >
+        </div>
+
+        <!-- Seção de Documentos -->
+        <div class="section">
+            <h3 class="section-title">📚 Documentos Cadastrados</h3>
+
+            <div id="documentsList" class="documents-list">
+                <div class="loading">Carregando documentos...</div>
+            </div>
+        </div>
+
+        <!-- Seção de Teste -->
+        <div class="section">
+            <h3 class="section-title">🧪 Testar Base de Conhecimento</h3>
+
+            <div class="test-section">
+                <input
+                    type="text"
+                    id="testQuestion"
+                    class="test-input"
+                    placeholder="Digite uma pergunta para testar o agente IA..."
+                >
+                <button class="btn-upload" onclick="testRAG()">Testar Pergunta</button>
+
+                <div id="testResult" class="test-result" style="display:none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Pegar pedido_id do localStorage
+        const orderId = localStorage.getItem('order_id');
+
+        if (!orderId) {
+            alert('Pedido não encontrado. Faça login novamente.');
+            window.location.href = '/login';
+        }
+
+        // Drag and Drop
+        const uploadArea = document.getElementById('uploadArea');
+
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragging');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragging');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragging');
+
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                uploadFile(files[0]);
+            }
+        });
+
+        // Upload de arquivo
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                uploadFile(file);
+            }
+        }
+
+        async function uploadFile(file) {
+            // Validar tamanho (10MB)
+            if (file.size > 10 * 1024 * 1024) {
+                showAlert('Arquivo muito grande. Tamanho máximo: 10MB', 'error');
+                return;
+            }
+
+            // Validar formato
+            const allowedExtensions = ['pdf', 'docx', 'txt'];
+            const fileExtension = file.name.split('.').pop().toLowerCase();
+
+            if (!allowedExtensions.includes(fileExtension)) {
+                showAlert('Formato não suportado. Use PDF, DOCX ou TXT', 'error');
+                return;
+            }
+
+            // Criar FormData
+            const formData = new FormData();
+            formData.append('file', file);
+
+            // Mostrar loading
+            showAlert('Enviando e processando documento... Isso pode levar alguns minutos.', 'info');
+
+            try {
+                const response = await fetch(`/api/knowledge/upload/${orderId}`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.detail || 'Erro ao fazer upload');
+                }
+
+                const data = await response.json();
+
+                showAlert(`✅ ${data.message} - ${data.chunks_count} chunks vetorizados`, 'success');
+
+                // Recarregar lista
+                loadDocuments();
+
+                // Limpar input
+                document.getElementById('fileInput').value = '';
+
+            } catch (error) {
+                showAlert(`❌ Erro: ${error.message}`, 'error');
+            }
+        }
+
+        // Listar documentos
+        async function loadDocuments() {
+            const container = document.getElementById('documentsList');
+
+            try {
+                const response = await fetch(`/api/knowledge/list/${orderId}`);
+                const data = await response.json();
+
+                if (data.documents.length === 0) {
+                    container.innerHTML = '<div class="empty-state">Nenhum documento cadastrado ainda. Faça upload para começar!</div>';
+                    return;
+                }
+
+                container.innerHTML = data.documents.map(doc => `
+                    <div class="document-item">
+                        <div class="document-info">
+                            <div class="document-name">📄 ${doc.filename}</div>
+                            <div class="document-meta">
+                                Tamanho: ${formatFileSize(doc.size)} |
+                                Upload: ${formatDate(doc.uploaded_at)}
+                            </div>
+                        </div>
+                        <div class="document-actions">
+                            <button class="btn-action btn-delete" onclick="deleteDocument('${doc.filename}')">
+                                🗑️ Excluir
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+
+            } catch (error) {
+                container.innerHTML = '<div class="empty-state">Erro ao carregar documentos</div>';
+            }
+        }
+
+        // Deletar documento
+        async function deleteDocument(filename) {
+            if (!confirm(`Deseja realmente excluir o documento "${filename}"?`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/knowledge/delete/${orderId}/${encodeURIComponent(filename)}`, {
+                    method: 'DELETE'
+                });
+
+                if (!response.ok) {
+                    throw new Error('Erro ao deletar documento');
+                }
+
+                showAlert('Documento deletado com sucesso', 'success');
+                loadDocuments();
+
+            } catch (error) {
+                showAlert(`Erro: ${error.message}`, 'error');
+            }
+        }
+
+        // Testar RAG
+        async function testRAG() {
+            const question = document.getElementById('testQuestion').value.trim();
+            const resultDiv = document.getElementById('testResult');
+
+            if (!question) {
+                showAlert('Digite uma pergunta para testar', 'error');
+                return;
+            }
+
+            resultDiv.style.display = 'block';
+            resultDiv.textContent = 'Processando pergunta...';
+
+            try {
+                const response = await fetch(`/api/knowledge/test/${orderId}?question=${encodeURIComponent(question)}`, {
+                    method: 'POST'
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    resultDiv.innerHTML = `<strong>Pergunta:</strong> ${data.question}\n\n<strong>Resposta:</strong>\n${data.answer}`;
+                } else {
+                    resultDiv.textContent = 'Erro ao processar pergunta';
+                }
+
+            } catch (error) {
+                resultDiv.textContent = `Erro: ${error.message}`;
+            }
+        }
+
+        // Utilitários
+        function showAlert(message, type) {
+            const container = document.getElementById('alert-container');
+            const className = type === 'success' ? 'alert-success' : 'alert-error';
+
+            container.innerHTML = `<div class="alert ${className}">${message}</div>`;
+
+            setTimeout(() => {
+                container.innerHTML = '';
+            }, 5000);
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+            return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+        }
+
+        function formatDate(timestamp) {
+            const date = new Date(timestamp * 1000);
+            return date.toLocaleString('pt-BR');
+        }
+
+        // Carregar documentos ao iniciar
+        loadDocuments();
+    </script>
+</body>
+</html>

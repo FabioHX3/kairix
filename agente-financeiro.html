@@ -1,0 +1,1271 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-C6V6SBDJVZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-C6V6SBDJVZ');
+
+        function toggleSubmenu(event) {
+            event.preventDefault();
+            const parentLi = event.target.closest('li.has-submenu');
+            parentLi.classList.toggle('open');
+        }
+    </script>
+
+    <!-- Meta Pixel Code -->
+    <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '2467105923626482');
+    fbq('track', 'PageView');
+
+        function toggleSubmenu(event) {
+            event.preventDefault();
+            const parentLi = event.target.closest('li.has-submenu');
+            parentLi.classList.toggle('open');
+        }
+    </script>
+    <noscript>
+      <img height="1" width="1" style="display:none"
+      src="https://www.facebook.com/tr?id=2467105923626482&ev=PageView&noscript=1"/>
+    </noscript>
+    <!-- End Meta Pixel Code -->
+    <title>Agente Financeiro IA - Gestão Automática pelo WhatsApp | Kairix</title>
+    <meta name="description" content="Registre despesas e receitas pelo WhatsApp com IA. Envie texto, áudio ou fotos de notas fiscais e tenha controle financeiro automático.">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+        :root {
+            --primary-red-light: #FF5A5A;
+            --primary-red-dark: #9A0000;
+            --primary-gradient: linear-gradient(135deg, var(--primary-red-light), var(--primary-red-dark));
+            --dark-bg: #121212;
+            --text-light: #ffffff;
+            --success-green: #00D95F;
+            --finance-blue: #0EA5E9;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px 0;
+            z-index: 1000;
+            transition: background-color 0.3s ease;
+        }
+
+        header.scrolled {
+            background-color: rgba(18, 18, 18, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo img {
+            height: 80px;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 30px;
+        }
+
+        nav ul li a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.05rem;
+            transition: color 0.3s ease;
+        }
+
+        nav ul li a:hover {
+            color: var(--primary-red-light);
+        }
+
+        .cta-button {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(255, 90, 90, 0.3);
+        }
+
+        /* Hero Section with Video */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 100px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .hero-bg video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            transform: translate(-50%, -50%);
+            object-fit: cover;
+            opacity: 0.25;
+        }
+
+        .hero-gradient {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(6, 182, 212, 0.15), rgba(18, 18, 18, 0.9));
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(14, 165, 233, 0.15);
+            color: var(--finance-blue);
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 25px;
+            border: 1px solid rgba(14, 165, 233, 0.3);
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 25px;
+            line-height: 1.2;
+        }
+
+        .hero .highlight {
+            background: linear-gradient(135deg, var(--finance-blue), var(--success-green));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero .subtitle {
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.85);
+            margin-bottom: 35px;
+            line-height: 1.8;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 50px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--finance-blue);
+        }
+
+        .stat-label {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.95rem;
+        }
+
+        /* Value Proposition */
+        .value-prop {
+            padding: 100px 0;
+            background: rgba(20, 20, 20, 0.5);
+        }
+
+        .section-heading {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-heading h2 {
+            font-size: 2.8rem;
+            margin-bottom: 20px;
+        }
+
+        .section-heading p {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.7);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .benefit-card {
+            background: rgba(30, 30, 30, 0.6);
+            padding: 40px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .benefit-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(14, 165, 233, 0.4);
+            box-shadow: 0 20px 40px rgba(14, 165, 233, 0.15);
+        }
+
+        .benefit-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(14, 165, 233, 0.1);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+
+        .benefit-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+
+        .benefit-card p {
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.7;
+        }
+
+        /* Use Cases */
+        .use-cases {
+            padding: 100px 0;
+            background-color: var(--dark-bg);
+        }
+
+        .use-case-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 50px;
+        }
+
+        .use-case-card {
+            background: linear-gradient(145deg, rgba(30, 30, 30, 0.8), rgba(40, 40, 40, 0.6));
+            padding: 35px;
+            border-radius: 15px;
+            border-left: 4px solid var(--finance-blue);
+        }
+
+        .use-case-card h3 {
+            color: var(--finance-blue);
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .use-case-card p {
+            color: rgba(255, 255, 255, 0.85);
+            line-height: 1.7;
+        }
+
+        /* Features Comparison */
+        .features-comparison {
+            padding: 100px 0;
+            background: rgba(20, 20, 20, 0.7);
+        }
+
+        .comparison-table {
+            background: rgba(30, 30, 30, 0.6);
+            border-radius: 20px;
+            overflow: hidden;
+            margin-top: 50px;
+        }
+
+        .comparison-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            padding: 25px 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            align-items: center;
+        }
+
+        .comparison-row:first-child {
+            background: rgba(14, 165, 233, 0.1);
+            font-weight: 600;
+        }
+
+        .check-icon {
+            color: var(--success-green);
+            font-size: 1.5rem;
+            text-align: center;
+        }
+
+        .cross-icon {
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 1.5rem;
+            text-align: center;
+        }
+
+        /* FAQ */
+        .faq {
+            padding: 100px 0;
+            background-color: var(--dark-bg);
+        }
+
+        .faq-container {
+            max-width: 800px;
+            margin: 50px auto 0;
+        }
+
+        .faq-item {
+            background: rgba(30, 30, 30, 0.6);
+            border-radius: 15px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .faq-question {
+            padding: 25px 30px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .faq-question:hover {
+            background: rgba(14, 165, 233, 0.05);
+        }
+
+        .faq-answer {
+            padding: 0 30px;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.8;
+        }
+
+        .faq-item.active .faq-answer {
+            padding: 0 30px 25px;
+            max-height: 500px;
+        }
+
+        /* Pricing */
+        .pricing {
+            padding: 100px 0;
+            background: linear-gradient(180deg, rgba(20, 20, 20, 0.9), var(--dark-bg));
+        }
+
+        .pricing-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .pricing-card {
+            background: rgba(30, 30, 30, 0.8);
+            border-radius: 20px;
+            padding: 40px 30px;
+            border: 2px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(14, 165, 233, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .pricing-card.featured {
+            border-color: rgba(14, 165, 233, 0.5);
+            transform: scale(1.05);
+            background: rgba(40, 40, 40, 0.9);
+        }
+
+        .pricing-card.featured:hover {
+            transform: scale(1.05) translateY(-10px);
+        }
+
+        .badge {
+            position: absolute;
+            top: -15px;
+            right: 30px;
+            background: linear-gradient(135deg, var(--finance-blue), var(--success-green));
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .plan-name {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            color: white;
+        }
+
+        .plan-period {
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 25px;
+        }
+
+        .price {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--finance-blue);
+            margin-bottom: 10px;
+        }
+
+        .price small {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .price-description {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+            margin-bottom: 30px;
+        }
+
+        .features-list {
+            list-style: none;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+
+        .features-list li {
+            padding: 12px 0;
+            color: rgba(255, 255, 255, 0.9);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .features-list li:before {
+            content: "✓ ";
+            color: var(--success-green);
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .buy-button {
+            display: block;
+            width: 100%;
+            background: linear-gradient(135deg, var(--finance-blue), var(--success-green));
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .buy-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(14, 165, 233, 0.4);
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 100px 0;
+            background: linear-gradient(135deg, var(--finance-blue), var(--success-green));
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-content h2 {
+            font-size: 2.8rem;
+            margin-bottom: 20px;
+        }
+
+        .cta-content p {
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+            opacity: 0.95;
+        }
+
+        .cta-btn {
+            background: white;
+            color: var(--dark-bg);
+            padding: 18px 45px;
+            border-radius: 30px;
+            font-weight: 700;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Footer */
+        footer {
+            background-color: rgba(10, 10, 10, 0.95);
+            padding: 40px 0 20px;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: var(--primary-red-light);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+
+            .hero-stats {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .comparison-row {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .pricing-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .pricing-card.featured {
+                transform: scale(1);
+            }
+        }
+
+
+        /* Botão Hambúrguer Mobile */
+        .mobile-menu-btn {
+            display: none;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10001;
+            background: var(--primary-gradient);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            cursor: pointer;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            box-shadow: 0 4px 15px rgba(255, 90, 90, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu-btn span {
+            width: 25px;
+            height: 3px;
+            background: white;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu-btn.active span:nth-child(1) {
+            transform: rotate(45deg) translate(7px, 7px);
+        }
+
+        .mobile-menu-btn.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .mobile-menu-btn.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -7px);
+        }
+
+        /* Overlay Mobile */
+        .mobile-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 9998;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .mobile-overlay.active {
+            display: block;
+            opacity: 1;
+        }
+
+        /* Sidebar Mobile */
+        .mobile-sidebar {
+            position: fixed;
+            right: -100%;
+            top: 0;
+            width: 280px;
+            height: 100vh;
+            background: rgba(18, 18, 18, 0.98);
+            backdrop-filter: blur(10px);
+            z-index: 9999;
+            transition: right 0.3s ease;
+            overflow-y: auto;
+            box-shadow: -5px 0 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .mobile-sidebar.open {
+            right: 0;
+        }
+
+        .mobile-sidebar nav {
+            padding: 80px 30px 30px 30px;
+        }
+
+        .mobile-sidebar nav ul {
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .mobile-sidebar nav ul li {
+            margin: 0;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .mobile-sidebar nav ul li:last-child {
+            border-bottom: none;
+        }
+
+        .mobile-sidebar nav ul li a {
+            display: block;
+            font-size: 1.1rem;
+        }
+
+        .mobile-sidebar .cta-button {
+            width: 100%;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        @media screen and (max-width: 768px) {
+            .mobile-menu-btn {
+                display: flex !important;
+            }
+
+            header nav,
+            header .cta-button {
+                display: none !important;
+            }
+
+            .header-container {
+                justify-content: center;
+            }
+        }
+
+        /* Submenu Mobile */
+        .mobile-sidebar nav ul li.has-submenu > a {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .mobile-sidebar nav ul li.has-submenu > a::after {
+            content: '▼';
+            font-size: 0.8rem;
+            transition: transform 0.3s ease;
+        }
+
+        .mobile-sidebar nav ul li.has-submenu.open > a::after {
+            transform: rotate(180deg);
+        }
+
+        .mobile-sidebar nav ul li .submenu {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            padding-left: 20px;
+        }
+
+        .mobile-sidebar nav ul li.has-submenu.open .submenu {
+            max-height: 300px;
+            margin-top: 10px;
+        }
+
+        .mobile-sidebar nav ul li .submenu a {
+            display: block;
+            padding: 10px 0;
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.8);
+            border-left: 2px solid rgba(255, 90, 90, 0.3);
+            padding-left: 15px;
+            margin-bottom: 8px;
+            text-decoration: none;
+        }
+
+        .mobile-sidebar nav ul li .submenu a:hover {
+            color: #FF5A5A;
+            border-left-color: #FF5A5A;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <a href="/"><img src="logo.png" alt="Kairix Logo"></a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="/#hero">Home</a></li>
+                    <li><a href="/#products">Soluções</a></li>
+                    <li><a href="/#benefits">Benefícios</a></li>
+                    <li><a href="/#testimonials">Depoimentos</a></li>
+                    <li><a href="/login">Meu Painel</a></li>
+                </ul>
+            </nav>
+            <a href="/#contact" class="cta-button">Fale Conosco</a>
+        </div>
+    </header>
+
+    <!-- Botão Menu Mobile -->
+    <button class="mobile-menu-btn" id="mobileMenuBtn" onclick="toggleMobileMenu()">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
+    <!-- Overlay Mobile -->
+    <div class="mobile-overlay" id="mobileOverlay" onclick="closeMobileMenu()"></div>
+
+    <!-- Sidebar Mobile -->
+    <div class="mobile-sidebar" id="mobileSidebar">
+        <nav>
+            <ul>
+                <li><a href="/#hero" onclick="closeMobileMenu()">Home</a></li>
+                <li class="has-submenu">
+                    <a onclick="toggleSubmenu(event)">Soluções</a>
+                    <div class="submenu">
+                        <a href="http://localhost:8012/bot-normal.html" onclick="closeMobileMenu()">Bot Normal</a>
+                        <a href="http://localhost:8012/bot-ia.html" onclick="closeMobileMenu()">Bot IA</a>
+                        <a href="http://localhost:8012/agente-financeiro.html" onclick="closeMobileMenu()">Agente Financeiro</a>
+                    </div>
+                </li>
+                <li><a href="/#benefits" onclick="closeMobileMenu()">Benefícios</a></li>
+                <li><a href="/#testimonials" onclick="closeMobileMenu()">Depoimentos</a></li>
+                <li><a href="/login" onclick="closeMobileMenu()">Meu Painel</a></li>
+            </ul>
+            <a href="/#contact" class="cta-button">Fale Conosco</a>
+        </nav>
+    </div>
+
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-bg">
+            <video autoplay loop muted playsinline>
+                <source src="fundo.mp4" type="video/mp4">
+            </video>
+            <div class="hero-gradient"></div>
+        </div>
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-badge">💰 Controle Financeiro Inteligente</div>
+                <h1>Gestão <span class="highlight">Financeira Automática</span> pelo WhatsApp</h1>
+                <p class="subtitle">
+                    Esqueça planilhas complicadas. Registre despesas e receitas por texto, áudio ou foto de nota fiscal direto no WhatsApp.
+                    A IA organiza, categoriza e gera relatórios automaticamente.
+                </p>
+                <a href="#pricing" class="cta-button" style="font-size: 1.1rem; padding: 18px 40px;">Começar a Usar Agora</a>
+
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <div class="stat-number">10 seg</div>
+                        <div class="stat-label">Para Registrar</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">95%</div>
+                        <div class="stat-label">Precisão IA</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">3 formas</div>
+                        <div class="stat-label">Texto, Áudio, Foto</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Value Proposition -->
+    <section class="value-prop">
+        <div class="container">
+            <div class="section-heading">
+                <h2>Controle Financeiro Nunca Foi Tão Fácil</h2>
+                <p>Registre suas movimentações de qualquer lugar, a qualquer hora, da forma mais conveniente.</p>
+            </div>
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <div class="benefit-icon">💬</div>
+                    <h3>Registro por Texto</h3>
+                    <p>Digite naturalmente no WhatsApp: "Gastei R$ 45 no almoço". A IA entende, categoriza automaticamente e salva. Simples assim.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">🎙️</div>
+                    <h3>Registro por Áudio</h3>
+                    <p>Envie um áudio enquanto dirige ou trabalha: "Recebi R$ 1.500 do cliente João". A IA transcreve, identifica valores e registra tudo corretamente.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">📸</div>
+                    <h3>Reconhecimento de Notas Fiscais</h3>
+                    <p>Tire uma foto da nota fiscal ou recibo. A IA extrai automaticamente valor, data, estabelecimento e categoria. Sem digitação manual.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">🤖</div>
+                    <h3>Categorização Automática</h3>
+                    <p>A IA aprende seus padrões e categoriza automaticamente: alimentação, transporte, saúde, etc. Você pode personalizar categorias conforme sua necessidade.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">📊</div>
+                    <h3>Relatórios Inteligentes</h3>
+                    <p>Receba relatórios detalhados por período, categoria ou tipo. Visualize gráficos, identifique padrões de gastos e tome decisões informadas.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">💾</div>
+                    <h3>Backup e Exportação</h3>
+                    <p>Seus dados sempre seguros na nuvem. Exporte para Excel ou PDF a qualquer momento. Integração com contadores facilitada.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Use Cases -->
+    <section class="use-cases">
+        <div class="container">
+            <div class="section-heading">
+                <h2>Perfeito Para Você</h2>
+                <p>Controle financeiro personalizado para cada necessidade</p>
+            </div>
+            <div class="use-case-grid">
+                <div class="use-case-card">
+                    <h3>💼 Freelancers e Autônomos</h3>
+                    <p>Registre todas as receitas de clientes e despesas operacionais. Tenha controle total do fluxo de caixa e saiba exatamente quanto está ganhando.</p>
+                </div>
+                <div class="use-case-card">
+                    <h3>🏪 Pequenos Negócios</h3>
+                    <p>Controle entradas e saídas da empresa sem planilhas complexas. Organize por categorias, fornecedores e projetos. Relatórios para contador inclusos.</p>
+                </div>
+                <div class="use-case-card">
+                    <h3>👨‍👩‍👧‍👦 Controle Familiar</h3>
+                    <p>Toda família pode registrar gastos no mesmo WhatsApp. Acompanhe despesas domésticas, educação, saúde. Planeje melhor o orçamento familiar.</p>
+                </div>
+                <div class="use-case-card">
+                    <h3>🚗 Motoristas de App</h3>
+                    <p>Registre ganhos por corrida via áudio enquanto dirige. Controle gastos com combustível, manutenção. Calcule lucro líquido real do dia.</p>
+                </div>
+                <div class="use-case-card">
+                    <h3>🏠 Investidores Imobiliários</h3>
+                    <p>Controle receitas de aluguéis e despesas de manutenção por imóvel. Acompanhe rentabilidade individual de cada propriedade.</p>
+                </div>
+                <div class="use-case-card">
+                    <h3>🎯 Profissionais Liberais</h3>
+                    <p>Médicos, advogados, consultores: registrem honorários recebidos e despesas do consultório. Simplifique prestação de contas ao contador.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Comparison -->
+    <section class="features-comparison">
+        <div class="container">
+            <div class="section-heading">
+                <h2>Controle Manual vs Agente Financeiro IA</h2>
+                <p>Veja como a automação simplifica sua gestão financeira</p>
+            </div>
+            <div class="comparison-table">
+                <div class="comparison-row">
+                    <div><strong>Aspecto</strong></div>
+                    <div><strong>Planilha Manual</strong></div>
+                    <div><strong>Agente IA Kairix</strong></div>
+                    <div><strong>Vantagem</strong></div>
+                </div>
+                <div class="comparison-row">
+                    <div>Tempo para Registrar</div>
+                    <div>2-5 minutos</div>
+                    <div>10 segundos</div>
+                    <div class="check-icon">✓</div>
+                </div>
+                <div class="comparison-row">
+                    <div>Reconhecimento de Nota Fiscal</div>
+                    <div>Digitação manual</div>
+                    <div>Automático (foto)</div>
+                    <div class="check-icon">✓</div>
+                </div>
+                <div class="comparison-row">
+                    <div>Categorização</div>
+                    <div>Manual</div>
+                    <div>Automática com IA</div>
+                    <div class="check-icon">✓</div>
+                </div>
+                <div class="comparison-row">
+                    <div>Acesso Mobile</div>
+                    <div>Limitado</div>
+                    <div>WhatsApp (sempre)</div>
+                    <div class="check-icon">✓</div>
+                </div>
+                <div class="comparison-row">
+                    <div>Relatórios</div>
+                    <div>Criar manualmente</div>
+                    <div>Automático sob demanda</div>
+                    <div class="check-icon">✓</div>
+                </div>
+                <div class="comparison-row">
+                    <div>Backup</div>
+                    <div>Manual/risco de perda</div>
+                    <div>Automático na nuvem</div>
+                    <div class="check-icon">✓</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="faq">
+        <div class="container">
+            <div class="section-heading">
+                <h2>Perguntas Frequentes</h2>
+                <p>Tudo sobre o Agente Financeiro IA</p>
+            </div>
+            <div class="faq-container">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        Como funciona o registro por foto de nota fiscal?
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        É muito simples: você tira uma foto da nota fiscal ou recibo e envia pelo WhatsApp. Nossa IA de reconhecimento de imagem (OCR) extrai automaticamente o valor, data, estabelecimento e sugere a categoria apropriada. Você só confirma ou ajusta se necessário.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        A IA realmente entende áudios falados naturalmente?
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        Sim! Você pode falar naturalmente: "Gastei 120 reais no mercado hoje" ou "Recebi pagamento de 500 do cliente X". A IA transcreve, identifica valores em real, datas relativas (hoje, ontem, segunda-feira), nomes e categoriza automaticamente. Funciona com sotaques e diferentes formas de falar.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        Como funcionam as categorias? Posso personalizar?
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        O sistema vem com categorias padrão (alimentação, transporte, saúde, etc.), mas você pode criar categorias personalizadas ilimitadas. A IA aprende seus padrões: se você sempre classifica "Uber" como "Transporte", ela passará a sugerir automaticamente.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        Posso usar para controle de empresa?
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        Perfeitamente! Você pode separar por projetos, centros de custo ou clientes. Gere relatórios separados para cada categoria. Muitos freelancers e pequenas empresas usam para prestação de contas ao contador. Exportação para Excel facilita a integração.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        E se eu errar o registro? Posso editar depois?
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        Claro! Você pode editar qualquer lançamento a qualquer momento pelo painel web ou pelo próprio WhatsApp. Basta pedir "Editar último lançamento" ou especificar qual lançamento deseja modificar. Também pode excluir registros incorretos.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        Meus dados financeiros são seguros?
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        Absolutamente. Usamos criptografia de ponta a ponta. Seus dados são armazenados em servidores seguros com backup automático. Apenas você tem acesso às suas informações financeiras. Nunca compartilhamos ou vendemos dados. Totalmente em conformidade com LGPD.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="pricing" id="pricing">
+        <div class="container">
+            <div class="section-heading">
+                <h2>Escolha Seu Plano</h2>
+                <p>Controle financeiro profissional ao alcance de todos</p>
+            </div>
+            <div class="pricing-cards">
+                <!-- Plano Mensal -->
+                <div class="pricing-card">
+                    <h3 class="plan-name">Básico</h3>
+                    <p class="plan-period">Plano Mensal</p>
+                    <div class="price">R$ 147<small>/mês</small></div>
+                    <p class="price-description">Para quem está começando</p>
+                    <ul class="features-list">
+                        <li>Registro por texto, áudio e foto</li>
+                        <li>Até 200 lançamentos/mês</li>
+                        <li>Categorização automática</li>
+                        <li>Relatórios mensais</li>
+                        <li>Reconhecimento de notas fiscais</li>
+                        <li>Exportação para Excel</li>
+                        <li>Backup automático em nuvem</li>
+                        <li>Suporte por email (24h)</li>
+                    </ul>
+                    <a href="http://localhost:8012/cadastro?plan=7" target="_blank" class="buy-button">Assinar Agora</a>
+                </div>
+
+                <!-- Plano Semestral -->
+                <div class="pricing-card featured">
+                    <div class="badge">⭐ Mais Popular</div>
+                    <h3 class="plan-name">Profissional</h3>
+                    <p class="plan-period">Plano Semestral</p>
+                    <div class="price">R$ 125<small>/mês</small></div>
+                    <p class="price-description">R$ 749 cobrado semestralmente (15% OFF)</p>
+                    <ul class="features-list">
+                        <li>Tudo do plano Básico, mais:</li>
+                        <li>Até 1000 lançamentos/mês</li>
+                        <li>Categorias personalizadas ilimitadas</li>
+                        <li>Relatórios avançados com gráficos</li>
+                        <li>Alertas de gastos por categoria</li>
+                        <li>Múltiplos usuários (família/equipe)</li>
+                        <li>Integração com bancos*</li>
+                        <li>Dashboard executivo</li>
+                        <li>Suporte prioritário (6h)</li>
+                    </ul>
+                    <a href="http://localhost:8012/cadastro?plan=8" target="_blank" class="buy-button">Assinar Agora</a>
+                </div>
+
+                <!-- Plano Anual -->
+                <div class="pricing-card">
+                    <div class="badge">🏆 Melhor Valor</div>
+                    <h3 class="plan-name">Enterprise</h3>
+                    <p class="plan-period">Plano Anual</p>
+                    <div class="price">R$ 110<small>/mês</small></div>
+                    <p class="price-description">R$ 1.323 cobrado anualmente (25% OFF)</p>
+                    <ul class="features-list">
+                        <li>Tudo do plano Profissional, mais:</li>
+                        <li>Lançamentos ilimitados</li>
+                        <li>Usuários ilimitados</li>
+                        <li>API para integrações customizadas</li>
+                        <li>Relatórios personalizados</li>
+                        <li>Previsão de fluxo de caixa com IA</li>
+                        <li>Análise de padrões e insights</li>
+                        <li>Consultoria financeira trimestral</li>
+                        <li>Gerente de conta dedicado</li>
+                        <li>Suporte VIP 24/7</li>
+                    </ul>
+                    <a href="http://localhost:8012/cadastro?plan=9" target="_blank" class="buy-button">Assinar Agora</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container cta-content">
+            <h2>Simplifique Sua Vida Financeira Hoje</h2>
+            <p>Junte-se a milhares que já controlam suas finanças pelo WhatsApp</p>
+            <a href="#pricing" class="cta-btn">Começar a Usar Agora</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <a href="/" class="back-link">← Voltar para página inicial</a>
+            <p>&copy; 2025 Kairix. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Slow down background video
+        const bgVideo = document.querySelector('.hero-bg video');
+        if (bgVideo) {
+            bgVideo.playbackRate = 0.5;
+        }
+
+        // Header scroll effect
+        const header = document.querySelector('header');
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // FAQ Accordion
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                const item = question.parentElement;
+                const wasActive = item.classList.contains('active');
+
+                // Close all items
+                document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('active'));
+
+                // Open clicked item if it wasn't active
+                if (!wasActive) {
+                    item.classList.add('active');
+                }
+            });
+        });
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        function toggleSubmenu(event) {
+            event.preventDefault();
+            const parentLi = event.target.closest('li.has-submenu');
+            parentLi.classList.toggle('open');
+        }
+    </script>
+
+    <!-- JavaScript do Menu Mobile -->
+    <script>
+        // Funções do Menu Mobile
+        function toggleMobileMenu() {
+            const sidebar = document.getElementById('mobileSidebar');
+            const overlay = document.getElementById('mobileOverlay');
+            const btn = document.getElementById('mobileMenuBtn');
+
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('active');
+            btn.classList.toggle('active');
+
+            // Prevenir scroll do body quando menu está aberto
+            if (sidebar.classList.contains('open')) {
+                document.body.style.overflow = 'hidden';
+            } else {
+                document.body.style.overflow = '';
+            }
+        }
+
+        function closeMobileMenu() {
+            const sidebar = document.getElementById('mobileSidebar');
+            const overlay = document.getElementById('mobileOverlay');
+            const btn = document.getElementById('mobileMenuBtn');
+
+            sidebar.classList.remove('open');
+            overlay.classList.remove('active');
+            btn.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function toggleSubmenu(event) {
+            event.preventDefault();
+            const parentLi = event.target.closest('li.has-submenu');
+            parentLi.classList.toggle('open');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurar Bot | Kairix</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --primary-red-light: #FF5A5A;
+            --primary-red-dark: #9A0000;
+            --primary-gradient: linear-gradient(135deg, #FF5A5A, #9A0000);
+            --dark-bg: #121212;
+            --whatsapp-green: #25D366;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--dark-bg);
+            color: white;
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px 40px;
+            border-bottom: 1px solid rgba(255, 90, 90, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo-text {
+            font-size: 28px;
+            font-weight: 800;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .main-container {
+            display: grid;
+            grid-template-columns: 1fr 500px;
+            gap: 30px;
+            padding: 40px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        
+        .config-panel {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 30px;
+            border: 1px solid rgba(255, 90, 90, 0.1);
+        }
+        
+        .section {
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--primary-red-light);
+        }
+        
+        .section-desc {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 15px;
+        }
+        
+        textarea, input {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 90, 90, 0.2);
+            border-radius: 10px;
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+        }
+        
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        button {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255, 90, 90, 0.3);
+        }
+        
+        /* PREVIEW DO WHATSAPP */
+        .preview-container {
+            position: sticky;
+            top: 20px;
+        }
+        
+        .preview-title {
+            text-align: center;
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--whatsapp-green);
+        }
+        
+        .phone-mockup {
+            background: #000;
+            border-radius: 40px;
+            padding: 15px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8);
+            border: 3px solid #333;
+        }
+        
+        .phone-screen {
+            background: #ECE5DD;
+            border-radius: 25px;
+            overflow: hidden;
+            height: 700px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .whatsapp-header {
+            background: var(--whatsapp-green);
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+        }
+        
+        .contact-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--whatsapp-green);
+        }
+        
+        .contact-name {
+            font-weight: 600;
+            font-size: 16px;
+        }
+        
+        .chat-area {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAADNJREFUeNpi/P//PwMhwATEDEQqZgQR QwMhwATGDEQqZgQRQwMhwATGDEQqZgQRQAABAH1KA/+hLDr7AAAAAElFTkSuQmCC') repeat;
+        }
+        
+        .message {
+            max-width: 70%;
+            padding: 10px 14px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            position: relative;
+            font-size: 14px;
+            line-height: 1.4;
+            word-wrap: break-word;
+        }
+        
+        .message-from-user {
+            background: #DCF8C6;
+            margin-left: auto;
+            border-bottom-right-radius: 2px;
+            color: #000;
+        }
+        
+        .message-from-bot {
+            background: white;
+            margin-right: auto;
+            border-bottom-left-radius: 2px;
+            color: #000;
+        }
+        
+        .message-time {
+            font-size: 11px;
+            color: #999;
+            margin-top: 4px;
+            text-align: right;
+        }
+        
+        .menu-option {
+            background: white;
+            border: 1px solid var(--whatsapp-green);
+            padding: 10px;
+            border-radius: 8px;
+            margin: 5px 0;
+            cursor: pointer;
+            color: #000;
+            font-weight: 500;
+        }
+        
+        .locked-feature {
+            opacity: 0.5;
+            position: relative;
+        }
+        
+        .locked-badge {
+            background: rgba(255, 0, 0, 0.8);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+        
+        .upload-area {
+            border: 2px dashed rgba(255, 90, 90, 0.4);
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .upload-area:hover {
+            border-color: var(--primary-red-light);
+            background: rgba(255, 90, 90, 0.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo-text">KAIRIX</div>
+        <div style="color: rgba(255,255,255,0.7);">Configuração do Bot</div>
+    </div>
+    
+    <div class="main-container">
+        <!-- PAINEL DE CONFIGURAÇÃO -->
+        <div class="config-panel">
+            <h2 style="margin-bottom: 30px;">Configure seu Bot</h2>
+            
+            <div class="section">
+                <div class="section-title">👋 Mensagem de Boas-Vindas</div>
+                <div class="section-desc">Esta mensagem será enviada quando alguém iniciar conversa</div>
+                <textarea id="welcome-msg" oninput="updatePreview()">Olá! Bem-vindo ao atendimento da Kairix. Como posso ajudar você hoje?</textarea>
+            </div>
+            
+            <div class="section">
+                <div class="section-title">📋 Menu Interativo</div>
+                <div class="section-desc">Opções que serão mostradas ao cliente</div>
+                <div id="menu-options">
+                    <input type="text" placeholder="Opção 1: Falar com atendente" value="1 - Falar com atendente" oninput="updatePreview()">
+                    <input type="text" placeholder="Opção 2" value="2 - Ver preços" style="margin-top: 10px;" oninput="updatePreview()">
+                    <input type="text" placeholder="Opção 3" value="3 - Informações" style="margin-top: 10px;" oninput="updatePreview()">
+                </div>
+                <button>+ Adicionar Opção</button>
+            </div>
+            
+            <div class="section" id="ia-section" style="display: none;">
+                <div class="section-title">🧠 Base de Conhecimento IA</div>
+                <div class="section-desc">Upload de documentos para treinar a IA (apenas plano IA)</div>
+                <div class="upload-area">
+                    <div style="font-size: 40px; margin-bottom: 10px;">📄</div>
+                    <div style="font-weight: 600; margin-bottom: 5px;">Arraste arquivos aqui</div>
+                    <div style="font-size: 12px; color: rgba(255,255,255,0.5);">PDF, DOCX, TXT, CSV - até 10MB</div>
+                </div>
+            </div>
+            
+            <div class="section locked-feature">
+                <div class="section-title">
+                    🤖 Recursos Avançados de IA 
+                    <span class="locked-badge">🔒 BLOQUEADO</span>
+                </div>
+                <div class="section-desc">Disponível apenas no plano Bot com IA</div>
+                <button style="opacity: 0.5; cursor: not-allowed;">Fazer Upgrade para IA</button>
+            </div>
+            
+            <button style="width: 100%; padding: 16px; margin-top: 30px; font-size: 16px;">💾 Salvar Configurações</button>
+        </div>
+        
+        <!-- PREVIEW DO WHATSAPP -->
+        <div class="preview-container">
+            <div class="preview-title">📱 PREVIEW EM TEMPO REAL</div>
+            <div class="phone-mockup">
+                <div class="phone-screen">
+                    <div class="whatsapp-header">
+                        <div class="contact-avatar">K</div>
+                        <div class="contact-name">Kairix Bot</div>
+                    </div>
+                    <div class="chat-area" id="chat-preview">
+                        <div class="message message-from-user">
+                            Olá
+                            <div class="message-time">15:30</div>
+                        </div>
+                        <div class="message message-from-bot" id="bot-welcome">
+                            Olá! Bem-vindo ao atendimento da Kairix. Como posso ajudar você hoje?
+                            <div class="message-time">15:30</div>
+                        </div>
+                        <div class="message message-from-bot">
+                            Escolha uma opção:
+                            <div id="menu-preview" style="margin-top: 10px;">
+                                <div class="menu-option">1 - Falar com atendente</div>
+                                <div class="menu-option">2 - Ver preços</div>
+                                <div class="menu-option">3 - Informações</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 15px; font-size: 13px; color: rgba(255,255,255,0.6);">
+                ⚡ Atualização em tempo real
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Atualizar preview em tempo real
+        function updatePreview() {
+            const welcome = document.getElementById('welcome-msg').value;
+            document.getElementById('bot-welcome').innerHTML = `
+                ${welcome}
+                <div class="message-time">15:30</div>
+            `;
+        }
+        
+        // Verificar se é plano IA
+        const urlParams = new URLSearchParams(window.location.search);
+        const planType = urlParams.get('plan') || 'normal';
+        
+        if (planType === 'ia') {
+            document.getElementById('ia-section').style.display = 'block';
+            document.querySelector('.locked-feature').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

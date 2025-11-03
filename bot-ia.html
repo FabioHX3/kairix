@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-C6V6SBDJVZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-C6V6SBDJVZ');
+
+        function toggleSubmenu(event) {
+            event.preventDefault();
+            const parentLi = event.target.closest('li.has-submenu');
+            parentLi.classList.toggle('open');
+        }
+    </script>
+
+    <!-- Meta Pixel Code -->
+    <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '2467105923626482');
+    fbq('track', 'PageView');
+
+        function toggleSubmenu(event) {
+            event.preventDefault();
+            const parentLi = event.target.closest('li.has-submenu');
+            parentLi.classList.toggle('open');
+        }
+    </script>
+    <noscript>
+      <img height="1" width="1" style="display:none"
+      src="https://www.facebook.com/tr?id=2467105923626482&ev=PageView&noscript=1"/>
+    </noscript>
+    <!-- End Meta Pixel Code -->
+    <title>Agente com IA e RAG - Assistente Inteligente | Kairix</title>
+    <meta name="description" content="Agente WhatsApp com Inteligência Artificial e tecnologia RAG. Aprende com seus documentos e responde com contexto personalizado.">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+        :root {
+            --primary-red-light: #FF5A5A;
+            --primary-red-dark: #9A0000;
+            --primary-gradient: linear-gradient(135deg, var(--primary-red-light), var(--primary-red-dark));
+            --dark-bg: #121212;
+            --text-light: #ffffff;
+            --success-green: #00D95F;
+            --ai-purple: #9D4EDD;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px 0;
+            z-index: 1000;
+            transition: background-color 0.3s ease;
+        }
+
+        header.scrolled {
+            background-color: rgba(18, 18, 18, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo img {
+            height: 80px;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 30px;
+        }
+
+        nav ul li a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.05rem;
+            transition: color 0.3s ease;
+        }
+
+        nav ul li a:hover {
+            color: var(--primary-red-light);
+        }
+
+        .cta-button {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(255, 90, 90, 0.3);
+        }
+
+        /* Hero Section with Video */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 100px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .hero-bg video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            transform: translate(-50%, -50%);
+            object-fit: cover;
+            opacity: 0.25;
+        }
+
+        .hero-gradient {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(157, 78, 221, 0.2), rgba(18, 18, 18, 0.9));
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(157, 78, 221, 0.15);
+            color: var(--ai-purple);
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 25px;
+            border: 1px solid rgba(157, 78, 221, 0.3);
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 25px;
+            line-height: 1.2;
+        }
+
+        .hero .highlight {
+            background: linear-gradient(135deg, var(--ai-purple), var(--primary-red-light));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero .subtitle {
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.85);
+            margin-bottom: 35px;
+            line-height: 1.8;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 50px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--ai-purple);
+        }
+
+        .stat-label {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.95rem;
+        }
+
+        /* Value Proposition */
+        .value-prop {
+            padding: 100px 0;
+            background: rgba(20, 20, 20, 0.5);
+        }
+
+        .section-heading {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-heading h2 {
+            font-size: 2.8rem;
+            margin-bottom: 20px;
+        }
+
+        .section-heading p {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.7);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .benefit-card {
+            background: rgba(30, 30, 30, 0.6);
+            padding: 40px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .benefit-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(157, 78, 221, 0.4);
+            box-shadow: 0 20px 40px rgba(157, 78, 221, 0.15);
+        }
+
+        .benefit-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(157, 78, 221, 0.1);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+
+        .benefit-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+
+        .benefit-card p {
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.7;
+        }
+
+        /* Use Cases */
+        .use-cases {
+            padding: 100px 0;
+            background-color: var(--dark-bg);
+        }
+
+        .use-case-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 50px;
+        }
+
+        .use-case-card {
+            background: linear-gradient(145deg, rgba(30, 30, 30, 0.8), rgba(40, 40, 40, 0.6));
+            padding: 35px;
+            border-radius: 15px;
+            border-left: 4px solid var(--ai-purple);
+        }
+
+        .use-case-card h3 {
+            color: var(--ai-purple);
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .use-case-card p {
+            color: rgba(255, 255, 255, 0.85);
+            line-height: 1.7;
+        }
+
+        /* Features Comparison */
+        .features-comparison {
+            padding: 100px 0;
+            background: rgba(20, 20, 20, 0.7);
+        }
+
+        .comparison-table {
+            background: rgba(30, 30, 30, 0.6);
+            border-radius: 20px;
+            overflow: hidden;
+            margin-top: 50px;
+        }
+
+        .comparison-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            padding: 25px 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            align-items: center;
+        }
+
+        .comparison-row:first-child {
+            background: rgba(157, 78, 221, 0.1);
+            font-weight: 600;
+        }
+
+        .check-icon {
+            color: var(--success-green);
+            font-size: 1.5rem;
+            text-align: center;
+        }
+
+        .cross-icon {
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 1.5rem;
+            text-align: center;
+        }
+
+        /* FAQ */
+        .faq {
+            padding: 100px 0;
+            background-color: var(--dark-bg);
+        }
+
+        .faq-container {
+            max-width: 800px;
+            margin: 50px auto 0;
+        }
+
+        .faq-item {
+            background: rgba(30, 30, 30, 0.6);
+            border-radius: 15px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .faq-question {
+            padding: 25px 30px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .faq-question:hover {
+            background: rgba(157, 78, 221, 0.05);
+        }
+
+        .faq-answer {
+            padding: 0 30px;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.8;
+        }
+
+        .faq-item.active .faq-answer {
+            padding: 0 30px 25px;
+            max-height: 500px;
+        }
+
+        /* Pricing */
+        .pricing {
+            padding: 100px 0;
+            background: linear-gradient(180deg, rgba(20, 20, 20, 0.9), var(--dark-bg));
+        }
+
+        .pricing-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .pricing-card {
+            background: rgba(30, 30, 30, 0.8);
+            border-radius: 20px;
+            padding: 40px 30px;
+            border: 2px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(157, 78, 221, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .pricing-card.featured {
+            border-color: rgba(157, 78, 221, 0.5);
+            transform: scale(1.05);
+            background: rgba(40, 40, 40, 0.9);
+        }
+
+        .pricing-card.featured:hover {
+            transform: scale(1.05) translateY(-10px);
+        }
+
+        .badge {
+            position: absolute;
+            top: -15px;
+            right: 30px;
+            background: linear-gradient(135deg, var(--ai-purple), var(--primary-red-light));
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .plan-name {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            color: white;
+        }
+
+        .plan-period {
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 25px;
+        }
+
+        .price {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--ai-purple);
+            margin-bottom: 10px;
+        }
+
+        .price small {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .price-old {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.4);
+            text-decoration: line-through;
+            margin-bottom: 5px;
+        }
+
+        .price-description {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+            margin-bottom: 30px;
+        }
+
+        .discount-badge {
+            display: inline-block;
+            background: var(--success-green);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-left: 10px;
+        }
+
+        .features-list {
+            list-style: none;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+
+        .features-list li {
+            padding: 12px 0;
+            color: rgba(255, 255, 255, 0.9);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .features-list li:before {
+            content: "✓ ";
+            color: var(--success-green);
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .buy-button {
+            display: block;
+            width: 100%;
+            background: linear-gradient(135deg, var(--ai-purple), var(--primary-red-light));
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .buy-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(157, 78, 221, 0.4);
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 100px 0;
+            background: linear-gradient(135deg, var(--ai-purple), var(--primary-red-dark));
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-content h2 {
+            font-size: 2.8rem;
+            margin-bottom: 20px;
+        }
+
+        .cta-content p {
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+            opacity: 0.95;
+        }
+
+        .cta-btn {
+            background: white;
+            color: var(--primary-red-dark);
+            padding: 18px 45px;
+            border-radius: 30px;
+            font-weight: 700;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Footer */
+        footer {
+            background-color: rgba(10, 10, 10, 0.95);
+            padding: 40px 0 20px;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: var(--primary-red-light);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+
+            .hero-stats {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .comparison-row {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .pricing-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .pricing-card.featured {
+                transform: scale(1);
+            }
+        }
+
+        /* Botão Hambúrguer Mobile */
+        .mobile-menu-btn {
+            display: none;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10001;
+            background: var(--primary-gradient);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            cursor: pointer;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            box-shadow: 0 4px 15px rgba(255, 90, 90, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu-btn span {
+            width: 25px;
+            height: 3px;
+            background: white;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu-btn.active span:nth-child(1) {
+            transform: rotate(45deg) translate(7px, 7px);
+        }
+
+        .mobile-menu-btn.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .mobile-menu-btn.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -7px);
+        }
+
+        /* Overlay Mobile */
+        .mobile-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 9998;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .mobile-overlay.active {
+            display: block;
+            opacity: 1;
+        }
+
+        /* Sidebar Mobile */
+        .mobile-sidebar {
+            position: fixed;
+            right: -100%;
+            top: 0;
+            width: 280px;
+            height: 100vh;
+            background: rgba(18, 18, 18, 0.98);
+            backdrop-filter: blur(10px);
+            z-index: 9999;
+            transition: right 0.3s ease;
+            overflow-y: auto;
+            box-shadow: -5px 0 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .mobile-sidebar.open {
+            right: 0;
+        }
+
+        .mobile-sidebar nav {
+            padding: 80px 30px 30px 30px;
+        }
+
+        .mobile-sidebar nav ul {
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .mobile-sidebar nav ul li {
+            margin: 0;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .mobile-sidebar nav ul li:last-child {
+            border-bottom: none;
+        }
+
+        .mobile-sidebar nav ul li a {
+            display: block;
+            font-size: 1.1rem;
+        }
+
+        .mobile-sidebar .cta-button {
+            width: 100%;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        @media screen and (max-width: 768px) {
+            .mobile-menu-btn {
+                display: flex !important;
+            }
+
+            header nav,
+            header .cta-button {
+                display: none !important;
+            }
+
+            .header-container {
+                justify-content: center;
+            }
+        }
+
+        /* Submenu Mobile */
+        .mobile-sidebar nav ul li.has-submenu > a {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .mobile-sidebar nav ul li.has-submenu > a::after {
+            content: '▼';
+            font-size: 0.8rem;
+            transition: transform 0.3s ease;
+        }
+
+        .mobile-sidebar nav ul li.has-submenu.open > a::after {
+            transform: rotate(180deg);
+        }
+
+        .mobile-sidebar nav ul li .submenu {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            padding-left: 20px;
+        }
+
+        .mobile-sidebar nav ul li.has-submenu.open .submenu {
+            max-height: 300px;
+            margin-top: 10px;
+        }
+
+        .mobile-sidebar nav ul li .submenu a {
+            display: block;
+            padding: 10px 0;
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.8);
+            border-left: 2px solid rgba(255, 90, 90, 0.3);
+            padding-left: 15px;
+            margin-bottom: 8px;
+            text-decoration: none;
+        }
+
+        .mobile-sidebar nav ul li .submenu a:hover {
+            color: #FF5A5A;
+            border-left-color: #FF5A5A;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <a href="/"><img src="logo.png" alt="Kairix Logo"></a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="/#hero">Home</a></li>
+                    <li><a href="/#products">Soluções</a></li>
+                    <li><a href="/#benefits">Benefícios</a></li>
+                    <li><a href="/#testimonials">Depoimentos</a></li>
+                    <li><a href="/login">Meu Painel</a></li>
+                </ul>
+            </nav>
+            <a href="/#contact" class="cta-button">Fale Conosco</a>
+        </div>
+    </header>
+
+    <!-- Botão Menu Mobile -->
+    <button class="mobile-menu-btn" id="mobileMenuBtn" onclick="toggleMobileMenu()">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
+    <!-- Overlay Mobile -->
+    <div class="mobile-overlay" id="mobileOverlay" onclick="closeMobileMenu()"></div>
+
+    <!-- Sidebar Mobile -->
+    <div class="mobile-sidebar" id="mobileSidebar">
+        <nav>
+            <ul>
+                <li><a href="/#hero" onclick="closeMobileMenu()">Home</a></li>
+                <li class="has-submenu">
+                    <a onclick="toggleSubmenu(event)">Soluções</a>
+                    <div class="submenu">
+                        <a href="http://localhost:8012/bot-normal.html" onclick="closeMobileMenu()">Bot Normal</a>
+                        <a href="http://localhost:8012/bot-ia.html" onclick="closeMobileMenu()">Bot IA</a>
+                        <a href="http://localhost:8012/agente-financeiro.html" onclick="closeMobileMenu()">Agente Financeiro</a>
+                    </div>
+                </li>
+                <li><a href="/#benefits" onclick="closeMobileMenu()">Benefícios</a></li>
+                <li><a href="/#testimonials" onclick="closeMobileMenu()">Depoimentos</a></li>
+                <li><a href="/login" onclick="closeMobileMenu()">Meu Painel</a></li>
+            </ul>
+            <a href="/#contact" class="cta-button">Fale Conosco</a>
+        </nav>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-bg">
+            <video autoplay loop muted playsinline>
+                <source src="fundo.mp4" type="video/mp4">
+            </video>
+            <div class="hero-gradient"></div>
+        </div>
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-badge">🧠 Powered by RAG Technology</div>
+                <h1>Assistente <span class="highlight">Inteligente com IA</span> que Realmente Aprende</h1>
+                <p class="subtitle">
+                    Vá além das respostas automáticas. Um agente que aprende com seus documentos, entende contexto e conversa naturalmente.
+                    Tecnologia RAG para respostas personalizadas baseadas no conhecimento da sua empresa.
+                </p>
+                <a href="#pricing" class="cta-button" style="font-size: 1.1rem; padding: 18px 40px;">Começar a Usar Agora</a>
+
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <div class="stat-number">99%</div>
+                        <div class="stat-label">Precisão nas Respostas</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">1000+</div>
+                        <div class="stat-label">Interações/Dia</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">< 3s</div>
+                        <div class="stat-label">Tempo de Resposta IA</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Value Proposition -->
+    <section class="value-prop">
+        <div class="container">
+            <div class="section-heading">
+                <h2>IA que Entende Seu Negócio</h2>
+                <p>Não é apenas um assistente automático. É um agente inteligente treinado especificamente para sua empresa.</p>
+            </div>
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <div class="benefit-icon">🧠</div>
+                    <h3>Tecnologia RAG Avançada</h3>
+                    <p>Alimente o agente com PDFs, documentos, planilhas e sites. Ele aprende com seu conteúdo e responde baseado no conhecimento da sua empresa, não em respostas genéricas.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">🎙️</div>
+                    <h3>Entende Áudio Naturalmente</h3>
+                    <p>Clientes podem enviar mensagens de voz e o agente transcreve, entende o contexto e responde adequadamente. Perfeito para quem não gosta de digitar.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">💬</div>
+                    <h3>Conversas Contextuais</h3>
+                    <p>Não esquece o que foi dito anteriormente. Mantém o contexto da conversa inteira, criando diálogos naturais e relevantes como um humano faria.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">🔄</div>
+                    <h3>Aprendizado Contínuo</h3>
+                    <p>Quanto mais interage, mais inteligente fica. Analisa conversas passadas e se adapta às necessidades específicas dos seus clientes automaticamente.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">🌐</div>
+                    <h3>Multiidioma Inteligente</h3>
+                    <p>Detecta automaticamente o idioma do cliente e responde na mesma língua. Perfeito para empresas que atendem públicos internacionais.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">🔒</div>
+                    <h3>Privacidade e Segurança</h3>
+                    <p>Seus documentos e conversas são criptografados de ponta a ponta. Dados nunca são compartilhados ou usados para treinar modelos públicos.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Use Cases -->
+    <section class="use-cases">
+        <div class="container">
+            <div class="section-heading">
+                <h2>Casos de Uso Inteligentes</h2>
+                <p>IA aplicada a problemas reais de negócios</p>
+            </div>
+            <div class="use-case-grid">
+                <div class="use-case-card">
+                    <h3>🎓 Suporte Técnico Especializado</h3>
+                    <p>Treine o agente com manuais técnicos, documentação de produtos e FAQs. Ele responde dúvidas complexas consultando automaticamente sua base de conhecimento.</p>
+                </div>
+                <div class="use-case-card">
+                    <h3>🏢 Onboarding de Clientes</h3>
+                    <p>Guie novos clientes através de processos complexos. O agente explica funcionalidades, tira dúvidas e direciona para recursos específicos baseado nas necessidades.</p>
+                </div>
+                <div class="use-case-card">
+                    <h3>🛒 Recomendações Personalizadas</h3>
+                    <p>Analisa o histórico e preferências do cliente para sugerir produtos relevantes. Aumenta vendas com recomendações contextualizadas e inteligentes.</p>
+                </div>
+                <div class="use-case-card">
+                    <h3>📚 Consultor de Conteúdo</h3>
+                    <p>Transforme seu blog, documentos e materiais em um assistente interativo. Clientes perguntam e recebem respostas precisas extraídas do seu conteúdo.</p>
+                </div>
+                <div class="use-case-card">
+                    <h3>⚖️ Assistente Jurídico</h3>
+                    <p>Carregue contratos, políticas e documentos legais. O agente responde questões consultando automaticamente os documentos relevantes.</p>
+                </div>
+                <div class="use-case-card">
+                    <h3>🏥 Triagem Médica Inteligente</h3>
+                    <p>Coleta sintomas, histórico e faz triagem inicial baseada em protocolos médicos. Direciona pacientes para especialidades corretas automaticamente.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Comparison -->
+    <section class="features-comparison">
+        <div class="container">
+            <div class="section-heading">
+                <h2>Atendimento Manual vs IA Kairix</h2>
+                <p>Veja como a inteligência artificial transforma o atendimento</p>
+            </div>
+            <div class="comparison-table">
+                <div class="comparison-row">
+                    <div><strong>Capacidade</strong></div>
+                    <div><strong>Atendente Humano</strong></div>
+                    <div><strong>IA Kairix</strong></div>
+                    <div><strong>Vantagem</strong></div>
+                </div>
+                <div class="comparison-row">
+                    <div>Entende Contexto</div>
+                    <div>Sim, limitado</div>
+                    <div>100% da conversa</div>
+                    <div class="check-icon">✓</div>
+                </div>
+                <div class="comparison-row">
+                    <div>Consulta Documentos</div>
+                    <div>Manual (lento)</div>
+                    <div>Instantâneo</div>
+                    <div class="check-icon">✓</div>
+                </div>
+                <div class="comparison-row">
+                    <div>Aprende com Dados</div>
+                    <div>Experiência individual</div>
+                    <div>Toda base de conhecimento</div>
+                    <div class="check-icon">✓</div>
+                </div>
+                <div class="comparison-row">
+                    <div>Custo por Atendimento</div>
+                    <div>R$ 15-25</div>
+                    <div>R$ 0,05-0,15</div>
+                    <div class="check-icon">✓</div>
+                </div>
+                <div class="comparison-row">
+                    <div>Processamento de Áudio</div>
+                    <div>Manual</div>
+                    <div>Automático</div>
+                    <div class="check-icon">✓</div>
+                </div>
+                <div class="comparison-row">
+                    <div>Disponibilidade</div>
+                    <div>8h/dia</div>
+                    <div>24/7/365</div>
+                    <div class="check-icon">✓</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="faq">
+        <div class="container">
+            <div class="section-heading">
+                <h2>Perguntas sobre IA</h2>
+                <p>Entenda como funciona a inteligência artificial do Kairix</p>
+            </div>
+            <div class="faq-container">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        Como a IA aprende com meus documentos?
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        Utilizamos tecnologia RAG (Retrieval-Augmented Generation). Você carrega seus documentos (PDFs, Word, Excel, etc.) e nosso sistema processa, indexa e armazena o conteúdo de forma estruturada. Quando um cliente faz uma pergunta, a IA busca informações relevantes nos seus documentos e gera uma resposta contextualizada e precisa.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        Meus dados são seguros? Vocês usam para treinar outros modelos?
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        Absolutamente seguros. Seus documentos e conversas são criptografados e armazenados em servidores isolados. Nunca compartilhamos, vendemos ou usamos seus dados para treinar modelos públicos. Cada cliente tem sua própria base de conhecimento privada e isolada.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        A IA pode cometer erros ou "alucinar" informações?
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        Nossa tecnologia RAG minimiza drasticamente esse risco. A IA só responde baseada nos documentos que você forneceu, não inventa informações. Se não encontrar a resposta na sua base de conhecimento, ela informa que não sabe e pode transferir para um humano. Você também pode revisar e aprovar respostas antes de ir para produção.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        Preciso treinar a IA ou ela já vem pronta?
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        A IA já vem com capacidade de compreensão de linguagem natural. Você só precisa carregar seus documentos - ela faz o resto automaticamente. Não requer treinamento técnico. Oferecemos também consultoria para otimização, mas não é obrigatório.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        Consigo atualizar o conhecimento da IA?
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        Sim, a qualquer momento! Você pode adicionar, remover ou atualizar documentos através do painel de controle. As mudanças são refletidas instantaneamente. A IA sempre usa a versão mais recente dos seus documentos.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        Funciona em outros idiomas além do português?
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        Sim! A IA detecta automaticamente o idioma da mensagem e responde na mesma língua. Suportamos português, inglês, espanhol, francês, alemão e mais de 50 outros idiomas. Perfeito para empresas com audiência internacional.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="pricing" id="pricing">
+        <div class="container">
+            <div class="section-heading">
+                <h2>Invista em Inteligência Artificial</h2>
+                <p>Planos flexíveis para empresas de todos os tamanhos</p>
+            </div>
+            <div class="pricing-cards">
+                <!-- Plano Mensal -->
+                <div class="pricing-card">
+                    <h3 class="plan-name">IA Essencial</h3>
+                    <p class="plan-period">Plano Mensal</p>
+                    <div class="price-old">De R$ 194/mês</div>
+                    <div class="price">R$ 64<small>/mês</small> <span class="discount-badge">67% OFF</span></div>
+                    <p class="price-description">Ideal para começar com IA</p>
+                    <ul class="features-list">
+                        <li>IA com tecnologia RAG</li>
+                        <li>Base de conhecimento até 100 MB</li>
+                        <li>Até 1000 interações/mês</li>
+                        <li>Processamento de áudio e texto</li>
+                        <li>Respostas contextualizadas</li>
+                        <li>Relatórios de desempenho</li>
+                        <li>Integração WhatsApp Business</li>
+                        <li>Suporte por email (24h)</li>
+                    </ul>
+                    <a href="http://localhost:8012/cadastro?plan=4" target="_blank" class="buy-button">Assinar Agora</a>
+                </div>
+
+                <!-- Plano Semestral -->
+                <div class="pricing-card featured">
+                    <div class="badge">⭐ Mais Escolhido</div>
+                    <h3 class="plan-name">IA Professional</h3>
+                    <p class="plan-period">Plano Semestral</p>
+                    <div class="price-old">De R$ 384/semestre</div>
+                    <div class="price">R$ 345<small>/semestre</small> <span class="discount-badge">10% OFF</span></div>
+                    <p class="price-description">Apenas R$ 57,50/mês - Pagamento semestral</p>
+                    <ul class="features-list">
+                        <li>Tudo do plano Essencial, mais:</li>
+                        <li>Base de conhecimento até 500 MB</li>
+                        <li>Até 5000 interações/mês</li>
+                        <li>Treinamento personalizado da IA</li>
+                        <li>Múltiplos fluxos inteligentes</li>
+                        <li>Analytics avançado com insights</li>
+                        <li>Integração com CRM</li>
+                        <li>Suporte prioritário (6h)</li>
+                        <li>Consultoria de otimização</li>
+                    </ul>
+                    <a href="http://localhost:8012/cadastro?plan=5" target="_blank" class="buy-button">Assinar Agora</a>
+                </div>
+
+                <!-- Plano Anual -->
+                <div class="pricing-card">
+                    <div class="badge">🏆 Melhor Investimento</div>
+                    <h3 class="plan-name">IA Enterprise</h3>
+                    <p class="plan-period">Plano Anual</p>
+                    <div class="price-old">De R$ 768/ano</div>
+                    <div class="price">R$ 614<small>/ano</small> <span class="discount-badge">20% OFF</span></div>
+                    <p class="price-description">Apenas R$ 51/mês - Pagamento anual</p>
+                    <ul class="features-list">
+                        <li>Tudo do plano Professional, mais:</li>
+                        <li>Base de conhecimento ilimitada</li>
+                        <li>Interações ilimitadas</li>
+                        <li>IA personalizada exclusiva</li>
+                        <li>Fine-tuning do modelo</li>
+                        <li>API completa para integrações</li>
+                        <li>Consultoria mensal estratégica</li>
+                        <li>Gerente de sucesso dedicado</li>
+                        <li>Suporte VIP 24/7</li>
+                        <li>Atualizações prioritárias</li>
+                    </ul>
+                    <a href="http://localhost:8012/cadastro?plan=6" target="_blank" class="buy-button">Assinar Agora</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container cta-content">
+            <h2>Pronto para IA de Verdade?</h2>
+            <p>Teste gratuitamente por 7 dias. Sem cartão de crédito. Sem compromisso.</p>
+            <a href="#pricing" class="cta-btn">Começar a Usar Agora</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <a href="/" class="back-link">← Voltar para página inicial</a>
+            <p>&copy; 2025 Kairix. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Slow down background video
+        const bgVideo = document.querySelector('.hero-bg video');
+        if (bgVideo) {
+            bgVideo.playbackRate = 0.5;
+        }
+
+        // Header scroll effect
+        const header = document.querySelector('header');
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // FAQ Accordion
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                const item = question.parentElement;
+                const wasActive = item.classList.contains('active');
+
+                // Close all items
+                document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('active'));
+
+                // Open clicked item if it wasn't active
+                if (!wasActive) {
+                    item.classList.add('active');
+                }
+            });
+        });
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        function toggleSubmenu(event) {
+            event.preventDefault();
+            const parentLi = event.target.closest('li.has-submenu');
+            parentLi.classList.toggle('open');
+        }
+    </script>
+
+    <!-- JavaScript do Menu Mobile -->
+    <script>
+        // Funções do Menu Mobile
+        function toggleMobileMenu() {
+            const sidebar = document.getElementById('mobileSidebar');
+            const overlay = document.getElementById('mobileOverlay');
+            const btn = document.getElementById('mobileMenuBtn');
+
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('active');
+            btn.classList.toggle('active');
+
+            // Prevenir scroll do body quando menu está aberto
+            if (sidebar.classList.contains('open')) {
+                document.body.style.overflow = 'hidden';
+            } else {
+                document.body.style.overflow = '';
+            }
+        }
+
+        function closeMobileMenu() {
+            const sidebar = document.getElementById('mobileSidebar');
+            const overlay = document.getElementById('mobileOverlay');
+            const btn = document.getElementById('mobileMenuBtn');
+
+            sidebar.classList.remove('open');
+            overlay.classList.remove('active');
+            btn.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function toggleSubmenu(event) {
+            event.preventDefault();
+            const parentLi = event.target.closest('li.has-submenu');
+            parentLi.classList.toggle('open');
+        }
+    </script>
+</body>
+</html>

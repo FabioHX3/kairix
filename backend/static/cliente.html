@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel do Cliente | Kairix</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background: #f5f5f5; color: #333; }
+
+        .header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            padding: 20px 40px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 { font-size: 24px; }
+        .header .user-info { font-size: 14px; opacity: 0.9; }
+        .logout { background: rgba(255,255,255,0.2); padding: 8px 16px; border-radius: 8px; border: none; color: white; cursor: pointer; }
+
+        .container { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
+
+        /* Alerta de Vencimento */
+        .alert-vencimento {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            display: none;
+        }
+
+        .alert-vencimento h3 { margin-bottom: 10px; font-size: 20px; }
+        .alert-vencimento p { margin-bottom: 15px; }
+        .btn-renovar {
+            background: white;
+            color: #ff6b6b;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        /* Cards */
+        .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .card-icon { font-size: 32px; margin-bottom: 10px; }
+        .card-value { font-size: 36px; font-weight: 700; color: #667eea; margin-bottom: 5px; }
+        .card-label { color: #666; font-size: 14px; }
+
+        /* Plano Ativo */
+        .plano-ativo {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .plano-ativo h2 { margin-bottom: 15px; }
+        .plano-info { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 20px; }
+        .plano-info-item label { opacity: 0.8; font-size: 12px; display: block; margin-bottom: 5px; }
+        .plano-info-item value { font-size: 18px; font-weight: 600; }
+
+        /* Histórico */
+        .historico { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .historico h3 { margin-bottom: 20px; }
+        .pedido-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .pedido-item:last-child { border-bottom: none; }
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-aprovado { background: #d4edda; color: #155724; }
+        .status-aguardando { background: #fff3cd; color: #856404; }
+        .status-cancelado { background: #f8d7da; color: #721c24; }
+
+        /* Base de Conhecimento IA */
+        .base-conhecimento {
+            background: linear-gradient(135deg, #FF5A5A, #9A0000);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            display: none;
+        }
+
+        .base-conhecimento h2 { margin-bottom: 15px; }
+        .base-conhecimento p { margin-bottom: 20px; opacity: 0.9; }
+        .btn-base-conhecimento {
+            background: white;
+            color: #9A0000;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .btn-base-conhecimento:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div>
+            <h1>Painel do Cliente</h1>
+            <div class="user-info" id="user-info">Carregando...</div>
+        </div>
+        <button class="logout" onclick="logout()">Sair</button>
+    </div>
+
+    <div class="container">
+        <!-- Alerta de Vencimento -->
+        <div class="alert-vencimento" id="alert-vencimento">
+            <h3>⚠️ Seu plano está próximo do vencimento!</h3>
+            <p id="alert-text"></p>
+            <button class="btn-renovar" onclick="renovarPlano()">Renovar Plano Agora</button>
+        </div>
+
+        <!-- Plano Ativo -->
+        <div class="plano-ativo" id="plano-ativo" style="display:none;">
+            <h2>📦 Seu Plano Ativo</h2>
+            <div class="plano-info">
+                <div class="plano-info-item">
+                    <label>Plano</label>
+                    <div class="value" id="plano-nome">-</div>
+                </div>
+                <div class="plano-info-item">
+                    <label>Tipo</label>
+                    <div class="value" id="plano-tipo">-</div>
+                </div>
+                <div class="plano-info-item">
+                    <label>Data de Início</label>
+                    <div class="value" id="plano-inicio">-</div>
+                </div>
+                <div class="plano-info-item">
+                    <label>Válido Até</label>
+                    <div class="value" id="plano-validade">-</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cards de Métricas -->
+        <div class="cards">
+            <div class="card">
+                <div class="card-icon">💬</div>
+                <div class="card-value" id="total-conversas">0</div>
+                <div class="card-label">Total de Conversas</div>
+            </div>
+            <div class="card">
+                <div class="card-icon">📨</div>
+                <div class="card-value" id="total-mensagens">0</div>
+                <div class="card-label">Total de Mensagens</div>
+            </div>
+            <div class="card">
+                <div class="card-icon">📅</div>
+                <div class="card-value" id="dias-restantes">-</div>
+                <div class="card-label">Dias Restantes</div>
+            </div>
+        </div>
+
+        <!-- Base de Conhecimento (apenas para Agente IA) -->
+        <div class="base-conhecimento" id="base-conhecimento">
+            <h2>🤖 Base de Conhecimento - Agente IA</h2>
+            <p>Gerencie os documentos que o seu assistente inteligente utiliza para responder perguntas dos clientes via WhatsApp.</p>
+            <button class="btn-base-conhecimento" onclick="window.location.href='/base-conhecimento'">
+                Gerenciar Base de Conhecimento
+            </button>
+        </div>
+
+        <!-- Histórico de Pedidos -->
+        <div class="historico">
+            <h3>Histórico de Pedidos</h3>
+            <div id="lista-pedidos">
+                <p style="text-align:center; color:#999;">Carregando...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Verificar autenticação de cliente e limpar sessão de admin
+        if (localStorage.getItem('client_logged') !== 'true') {
+            window.location.href = '/cliente/login';
+        }
+
+        // Limpar qualquer sessão de admin que possa existir
+        localStorage.removeItem('admin_logged');
+
+        const clientId = localStorage.getItem('client_id');
+        let pedidoAtivoId = null;
+        let linkRenovacao = null;
+
+        async function loadDashboard() {
+            try {
+                const res = await fetch(`/api/clients/${clientId}/dashboard`);
+                const data = await res.json();
+
+                // Informações do usuário
+                document.getElementById('user-info').textContent = `Olá, ${data.cliente.nome}!`;
+
+                // Plano ativo
+                if (data.pedido_ativo) {
+                    pedidoAtivoId = data.pedido_ativo.id;
+                    document.getElementById('plano-ativo').style.display = 'block';
+                    document.getElementById('plano-nome').textContent = data.pedido_ativo.plano.nome;
+                    document.getElementById('plano-tipo').textContent = data.pedido_ativo.plano.tipo;
+                    document.getElementById('plano-inicio').textContent = formatarData(data.pedido_ativo.data_inicio);
+                    document.getElementById('plano-validade').textContent = formatarData(data.pedido_ativo.data_validade);
+
+                    // Mostrar Base de Conhecimento apenas para Agente IA
+                    if (data.pedido_ativo.plano.tipo === 'AGENTE_IA') {
+                        document.getElementById('base-conhecimento').style.display = 'block';
+                    }
+                }
+
+                // Alerta de vencimento
+                if (data.alerta_vencimento && data.dias_restantes !== null) {
+                    const alertDiv = document.getElementById('alert-vencimento');
+                    const alertText = document.getElementById('alert-text');
+
+                    if (data.dias_restantes <= 0) {
+                        alertText.textContent = `Seu plano venceu! Renove agora para continuar usando o serviço.`;
+                    } else if (data.dias_restantes === 1) {
+                        alertText.textContent = `Seu plano vence AMANHÃ! Renove agora para não perder o acesso.`;
+                    } else {
+                        alertText.textContent = `Seu plano vence em ${data.dias_restantes} dias. Renove agora para garantir a continuidade do serviço.`;
+                    }
+
+                    alertDiv.style.display = 'block';
+                }
+
+                // Métricas
+                document.getElementById('total-conversas').textContent = data.metricas.total_conversas;
+                document.getElementById('total-mensagens').textContent = data.metricas.total_mensagens;
+                document.getElementById('dias-restantes').textContent = data.dias_restantes !== null ? data.dias_restantes : '-';
+
+                // Histórico de pedidos
+                const listaPedidos = document.getElementById('lista-pedidos');
+                if (data.pedidos.length === 0) {
+                    listaPedidos.innerHTML = '<p style="text-align:center; color:#999;">Nenhum pedido encontrado</p>';
+                } else {
+                    listaPedidos.innerHTML = data.pedidos.map(p => {
+                        const statusClass =
+                            p.status === 'pagamento_aprovado' || p.status === 'concluido' ? 'status-aprovado' :
+                            p.status === 'aguardando_pagamento' ? 'status-aguardando' :
+                            'status-cancelado';
+
+                        const statusText =
+                            p.status === 'pagamento_aprovado' ? 'Aprovado' :
+                            p.status === 'concluido' ? 'Concluído' :
+                            p.status === 'aguardando_pagamento' ? 'Aguardando Pagamento' :
+                            p.status === 'cancelado' ? 'Cancelado' :
+                            p.status;
+
+                        // Guardar link de pagamento se estiver aguardando
+                        if (p.status === 'aguardando_pagamento' && p.link_pagamento) {
+                            linkRenovacao = p.link_pagamento;
+                        }
+
+                        return `
+                            <div class="pedido-item">
+                                <div>
+                                    <strong>${p.plano?.nome || 'Sem plano'}</strong>
+                                    <br>
+                                    <small>${formatarData(p.criado_em)}</small>
+                                </div>
+                                <div>
+                                    <span class="status-badge ${statusClass}">${statusText}</span>
+                                    ${p.status === 'aguardando_pagamento' && p.link_pagamento ?
+                                        `<button onclick="window.open('${p.link_pagamento}', '_blank')" style="margin-left: 10px; padding: 5px 12px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer;">Pagar</button>` : ''
+                                    }
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                }
+            } catch (err) {
+                alert('Erro ao carregar dados do painel');
+                console.error(err);
+            }
+        }
+
+        async function renovarPlano() {
+            if (!pedidoAtivoId) {
+                alert('Nenhum plano ativo encontrado');
+                return;
+            }
+
+            if (!confirm('Deseja criar um pedido de renovação do seu plano?')) return;
+
+            try {
+                const res = await fetch(`/api/admin/pedidos/${pedidoAtivoId}/renovar`, {
+                    method: 'POST'
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    alert(data.message);
+
+                    // Abrir link de pagamento
+                    if (data.pedido_renovacao.link_pagamento) {
+                        window.open(data.pedido_renovacao.link_pagamento, '_blank');
+                    }
+
+                    // Recarregar dashboard
+                    loadDashboard();
+                } else {
+                    const error = await res.json();
+                    alert(error.detail || 'Erro ao criar renovação');
+                }
+            } catch (err) {
+                alert('Erro ao processar renovação');
+                console.error(err);
+            }
+        }
+
+        function formatarData(dataStr) {
+            if (!dataStr) return '-';
+            const data = new Date(dataStr);
+            return data.toLocaleDateString('pt-BR');
+        }
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = '/cliente/login';
+        }
+
+        // Carregar dados ao abrir página
+        loadDashboard();
+    </script>
+</body>
+</html>

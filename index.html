@@ -1,0 +1,2432 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-C6V6SBDJVZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-C6V6SBDJVZ');
+    </script>
+
+    <!-- Meta Pixel Code -->
+    <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '2467105923626482');
+    fbq('track', 'PageView');
+    </script>
+    <noscript>
+      <img height="1" width="1" style="display:none"
+      src="https://www.facebook.com/tr?id=2467105923626482&ev=PageView&noscript=1"/>
+    </noscript>
+    <!-- End Meta Pixel Code -->
+    <title>Kairix - Automação Inteligente para WhatsApp</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.149.0/three.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+        
+        :root {
+            --primary-red-light: #FF5A5A;
+            --primary-red-dark: #9A0000;
+            --primary-gradient: linear-gradient(135deg, var(--primary-red-light), var(--primary-red-dark));
+            --dark-bg: #121212;
+            --light-bg: #f8f8f8;
+            --text-light: #ffffff;
+            --text-dark: #333333;
+            --card-bg: rgba(255, 255, 255, 0.05);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 120px;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px 0;
+            z-index: 1000;
+            transition: background-color 0.3s ease;
+        }
+        
+        header.scrolled {
+            background-color: rgba(18, 18, 18, 0.9);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 28px;
+            font-weight: 800;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            position: relative;
+        }
+        
+        .logo span {
+            position: relative;
+        }
+        
+        .logo .dot {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            background: var(--primary-red-light);
+            border-radius: 50%;
+            margin: 0 2px;
+            vertical-align: middle;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 30px;
+        }
+        
+        nav ul li a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.05rem;
+            transition: color 0.3s ease;
+        }
+        
+        nav ul li a:hover {
+            color: var(--primary-red-light);
+        }
+        
+        .cta-button {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(255, 90, 90, 0.3);
+        }
+        
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            padding: 100px 0;
+        }
+        
+        .hero-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .hero-bg video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            transform: translate(-50%, -50%);
+            object-fit: cover;
+            opacity: 0.3;
+        }
+        
+        .hero-gradient {
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 1000px;
+            height: 1000px;
+            background: radial-gradient(circle, rgba(154, 0, 0, 0.3) 0%, rgba(18, 18, 18, 0) 70%);
+            border-radius: 50%;
+            z-index: -1;
+        }
+        
+        .hero-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+        
+        .hero-text {
+            flex: 1;
+            max-width: 600px;
+        }
+        
+        .hero-badge {
+            display: inline-block;
+            background: rgba(255, 90, 90, 0.1);
+            color: var(--primary-red-light);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        
+        .hero-badge svg {
+            width: 16px;
+            height: 16px;
+            vertical-align: middle;
+            margin-right: 5px;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            line-height: 1.2;
+            margin-bottom: 20px;
+        }
+        
+        .hero h1 .highlight {
+            color: var(--primary-red-light);
+        }
+        
+        .hero p {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
+        .hero-cta {
+            display: inline-block;
+            margin-top: 10px;
+        }
+        
+        .phone-container {
+            flex: 1;
+            position: relative;
+            height: 600px;
+            perspective: 1000px;
+        }
+        
+        .phone {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotateY(-20deg) rotateX(10deg);
+            width: 280px;
+            height: 580px;
+            background: #111;
+            border-radius: 36px;
+            box-shadow: 0 50px 100px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            transition: all 0.5s ease;
+        }
+        
+        .phone:hover {
+            transform: translate(-50%, -50%) rotateY(-15deg) rotateX(5deg) scale(1.05);
+        }
+        
+        .phone-screen {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            right: 12px;
+            bottom: 12px;
+            background: #0d0d0d;
+            border-radius: 28px;
+            overflow: hidden;
+        }
+        
+        .phone-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #2b0413, #1a0035);
+            overflow: hidden;
+        }
+        
+        .chat-container {
+            padding: 20px;
+            height: 100%;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        .chat-container::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .chat-header {
+            text-align: center;
+            padding: 20px 0;
+            position: relative;
+        }
+        
+        .chat-header h3 {
+            font-size: 18px;
+            color: white;
+        }
+        
+        .chat-bubble {
+            max-width: 70%;
+            padding: 12px 15px;
+            border-radius: 18px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            line-height: 1.4;
+            position: relative;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        
+        .chat-audio {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 18px;
+            margin-bottom: 15px;
+            opacity: 0;
+            transform: translateY(20px);
+            max-width: 70%;
+        }
+        
+        .chat-audio.chat-ai {
+            background: var(--primary-gradient);
+            color: white;
+            align-self: flex-start;
+            border-bottom-left-radius: 5px;
+        }
+        
+        .chat-audio.chat-user {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 5px;
+        }
+        
+        .chat-audio.animated {
+            animation: bubbleAppear 0.5s forwards;
+        }
+        
+        .audio-play-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 8px;
+            flex-shrink: 0;
+        }
+        
+        .audio-play-btn svg {
+            width: 14px;
+            height: 14px;
+            fill: white;
+        }
+        
+        .audio-waveform {
+            flex: 1;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            padding: 0 8px;
+        }
+        
+        .audio-waveform .waveform-line {
+            flex: 1;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.3);
+            position: relative;
+        }
+        
+        .audio-waveform .waveform-line::before {
+            content: '';
+            position: absolute;
+            top: -4px;
+            left: 0;
+            width: 100%;
+            height: 10px;
+            background: url("data:image/svg+xml,%3Csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,5 Q5,0 10,5 Q15,10 20,5 Q25,0 30,5 Q35,10 40,5 Q45,0 50,5 Q55,10 60,5 Q65,0 70,5 Q75,10 80,5 Q85,0 90,5 Q95,10 100,5' stroke='rgba(255,255,255,0.5)' stroke-width='1' fill='none'/%3E%3C/svg%3E") repeat-x;
+            background-size: 20px 10px;
+        }
+        
+        .audio-duration {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-left: 8px;
+        }
+        
+        .chat-ai {
+            background: var(--primary-gradient);
+            color: white;
+            align-self: flex-start;
+            border-bottom-left-radius: 5px;
+        }
+        
+        .chat-user {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 5px;
+        }
+        
+        .chat-bubble.animated {
+            animation: bubbleAppear 0.5s forwards;
+        }
+        
+        @keyframes bubbleAppear {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .message-3d {
+            display: none; /* Completely hide any 3D messages */
+        }
+        
+        /* Problems Section */
+        .problems {
+            padding: 100px 0;
+            background-color: rgba(20, 20, 20, 0.8);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .problems-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at bottom right, rgba(154, 0, 0, 0.15), transparent 70%);
+            z-index: -1;
+        }
+        
+        .section-heading {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .section-heading h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .section-heading h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: var(--primary-gradient);
+            border-radius: 2px;
+        }
+        
+        .problem-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .problem-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .problem-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border-color: rgba(255, 90, 90, 0.2);
+        }
+
+        .problem-card svg {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+            vertical-align: middle;
+            fill: none;
+            stroke: var(--primary-red-light);
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* Product Cards */
+        .product-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .product-card {
+            background: rgba(30, 30, 30, 0.8);
+            border-radius: 20px;
+            padding: 40px 30px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+            text-align: center;
+            position: relative;
+        }
+
+        .product-card.featured {
+            border-color: rgba(255, 90, 90, 0.3);
+            transform: scale(1.05);
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 90, 90, 0.4);
+        }
+
+        .product-card.featured:hover {
+            transform: scale(1.05) translateY(-10px);
+        }
+
+        .product-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 90, 90, 0.1);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+        }
+
+        .product-icon svg {
+            width: 40px;
+            height: 40px;
+            stroke: var(--primary-red-light);
+        }
+
+        .product-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: white;
+        }
+
+        .product-card > p {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .product-features {
+            list-style: none;
+            text-align: left;
+            margin: 25px 0;
+            padding: 0;
+        }
+
+        .product-features li {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 12px;
+            font-size: 0.95rem;
+        }
+
+        .product-cta {
+            display: inline-block;
+            background: var(--primary-gradient);
+            color: white;
+            padding: 15px 35px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .product-cta:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(255, 90, 90, 0.3);
+        }
+        
+        /* Features Section */
+        .features {
+            padding: 100px 0;
+            background-color: var(--dark-bg);
+            position: relative;
+        }
+        
+        .features-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 40px;
+        }
+        
+        .feature-card {
+            background: rgba(30, 30, 30, 0.5);
+            border-radius: 20px;
+            padding: 30px;
+            transition: all 0.3s ease;
+            height: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--primary-gradient);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+        
+        .feature-icon {
+            background: rgba(255, 90, 90, 0.1);
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        
+        .feature-icon svg {
+            width: 30px;
+            height: 30px;
+            fill: none;
+            stroke: var(--primary-red-light);
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: white;
+        }
+        
+        .feature-card p {
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.6;
+        }
+        
+        /* Stats Section */
+        .stats {
+            padding: 100px 0;
+            background-color: var(--dark-bg);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stats-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at top left, rgba(154, 0, 0, 0.15), transparent 70%);
+            z-index: -1;
+        }
+        
+        .stats-grid {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 20px;
+            margin: 20px;
+        }
+        
+        .stat-circle {
+            width: 180px;
+            height: 180px;
+            margin: 0 auto 30px;
+            position: relative;
+        }
+        
+        .stat-circle svg {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+        }
+        
+        .stat-circle .circle-bg {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.1);
+            stroke-width: 10;
+        }
+        
+        .stat-circle .circle-progress {
+            fill: none;
+            stroke: url(#statGradient);
+            stroke-width: 10;
+            stroke-linecap: round;
+            stroke-dasharray: 440;
+            transition: stroke-dashoffset 1s ease;
+        }
+        
+        .stat-number {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3rem;
+            font-weight: 700;
+            color: white;
+        }
+        
+        .stat-label {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.8);
+            max-width: 200px;
+            margin: 0 auto;
+        }
+        
+        /* Roles Section */
+        .roles {
+            padding: 100px 0;
+            background-color: rgba(20, 20, 20, 0.9);
+        }
+        
+        .roles-container {
+            text-align: center;
+        }
+        
+        .roles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+        
+        .role-card {
+            background: rgba(30, 30, 30, 0.5);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: left;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .role-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            border-color: rgba(255, 90, 90, 0.2);
+        }
+        
+        .role-title {
+            color: var(--primary-red-light);
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        
+        .role-list {
+            list-style: none;
+        }
+        
+        .role-list li {
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .role-list li svg {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            fill: none;
+            stroke: var(--primary-red-light);
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        
+        /* Testimonials */
+        .testimonials {
+            padding: 100px 0;
+            background-color: var(--dark-bg);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .testimonials-container {
+            position: relative;
+        }
+        
+        .testimonials-bg {
+            position: absolute;
+            top: -50%;
+            left: -20%;
+            width: 1000px;
+            height: 1000px;
+            background: radial-gradient(circle, rgba(154, 0, 0, 0.1) 0%, rgba(18, 18, 18, 0) 70%);
+            border-radius: 50%;
+            z-index: -1;
+        }
+        
+        .testimonial-video {
+            max-width: 900px;
+            margin: 0 auto 60px;
+            background: rgba(30, 30, 30, 0.5);
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .video-container {
+            aspect-ratio: 16 / 9;
+            background: #111;
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .video-placeholder {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .play-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            background: var(--primary-red-light);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .play-button:hover {
+            transform: translate(-50%, -50%) scale(1.1);
+            background: var(--primary-red-dark);
+        }
+        
+        .play-button svg {
+            width: 30px;
+            height: 30px;
+            margin-left: 5px;
+            fill: white;
+        }
+        
+        .testimonial-content {
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .testimonial-content h3 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+        }
+        
+        .testimonial-author {
+            font-weight: 600;
+            color: var(--primary-red-light);
+        }
+        
+        .testimonial-position {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .testimonial-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+        
+        .testimonial-card {
+            background: rgba(30, 30, 30, 0.5);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .testimonial-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            border-color: rgba(255, 90, 90, 0.1);
+        }
+        
+        .testimonial-stars {
+            color: #FFD700;
+            margin-bottom: 15px;
+        }
+        
+        .testimonial-text {
+            color: rgba(255, 255, 255, 0.9);
+            font-style: italic;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        
+        .card-author {
+            display: flex;
+            align-items: center;
+        }
+        
+        .author-image {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: 15px;
+        }
+        
+        .author-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .author-details h4 {
+            font-size: 1rem;
+            margin-bottom: 5px;
+        }
+        
+        .author-details p {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        /* Pricing Section */
+        .pricing {
+            padding: 100px 0;
+            background-color: rgba(20, 20, 20, 0.9);
+            position: relative;
+        }
+        
+        .pricing-container {
+            text-align: center;
+        }
+        
+        .pricing-toggle {
+            display: flex;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 30px;
+            padding: 5px;
+            width: fit-content;
+            margin: 0 auto 50px;
+        }
+        
+        .toggle-option {
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .toggle-option.active {
+            background: var(--primary-gradient);
+            color: white;
+        }
+        
+        .pricing-cards {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .pricing-card {
+            background: rgba(30, 30, 30, 0.5);
+            border-radius: 20px;
+            padding: 40px;
+            width: 350px;
+            text-align: left;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .pricing-card.popular {
+            border-color: rgba(255, 90, 90, 0.3);
+            transform: scale(1.05);
+        }
+        
+        .pricing-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .pricing-card.popular:hover {
+            transform: scale(1.05) translateY(-10px);
+        }
+        
+        .popular-badge {
+            position: absolute;
+            top: -15px;
+            right: 30px;
+            background: var(--primary-gradient);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+        
+        .pricing-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 90, 90, 0.1);
+            border-radius: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .pricing-icon svg {
+            width: 30px;
+            height: 30px;
+            fill: none;
+            stroke: var(--primary-red-light);
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        
+        .pricing-name {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .pricing-description {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 30px;
+            font-size: 0.9rem;
+        }
+        
+        .pricing-price {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+            color: white;
+        }
+        
+        .pricing-price small {
+            font-size: 1rem;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .pricing-features {
+            list-style: none;
+            margin-bottom: 30px;
+        }
+        
+        .pricing-features li {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .pricing-features li svg {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            fill: none;
+            stroke: var(--primary-red-light);
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        
+        .pricing-cta {
+            display: block;
+            text-align: center;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+        
+        .primary-cta {
+            background: var(--primary-gradient);
+            color: white;
+        }
+        
+        .primary-cta:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(255, 90, 90, 0.3);
+        }
+        
+        .secondary-cta {
+            background: transparent;
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .secondary-cta:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            padding: 100px 0;
+            background: var(--primary-gradient);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cta-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.3;
+            z-index: 0;
+        }
+        
+        .cta-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .cta-section h2 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: white;
+        }
+        
+        .cta-section p {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 40px;
+        }
+        
+        .cta-btn {
+            display: inline-block;
+            background: white;
+            color: var(--primary-red-dark);
+            font-size: 1.1rem;
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .cta-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--dark-bg);
+            padding: 80px 0 30px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+        }
+        
+        .footer-logo {
+            grid-column: 1 / -1;
+            font-size: 2rem;
+            font-weight: 800;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 40px;
+        }
+        
+        .footer-col h4 {
+            color: white;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .footer-col h4::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background: var(--primary-gradient);
+        }
+        
+        .footer-col ul {
+            list-style: none;
+        }
+        
+        .footer-col ul li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-col ul li a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .footer-col ul li a:hover {
+            color: var(--primary-red-light);
+            padding-left: 5px;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+        
+        .social-icon:hover {
+            background: var(--primary-gradient);
+            transform: translateY(-5px);
+        }
+        
+        .social-icon svg {
+            width: 20px;
+            height: 20px;
+            fill: white;
+        }
+        
+        .copyright {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+        }
+        
+        /* Animations */
+        @keyframes floating {
+            0%, 100% {
+                transform: translate(-50%, -50%) rotateY(-20deg) rotateX(10deg) translateY(0);
+            }
+            50% {
+                transform: translate(-50%, -50%) rotateY(-22deg) rotateX(12deg) translateY(-15px);
+            }
+        }
+        
+        @keyframes pulseGlow {
+            0%, 100% {
+                box-shadow: 0 0 20px 5px rgba(255, 90, 90, 0.3);
+            }
+            50% {
+                box-shadow: 0 0 30px 10px rgba(255, 90, 90, 0.5);
+            }
+        }
+        
+        /* Responsive */
+        @media screen and (max-width: 1200px) {
+            .hero-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .hero-text {
+                margin-bottom: 50px;
+                max-width: 100%;
+            }
+            
+            .phone-container {
+                height: 400px;
+            }
+            
+            .phone {
+                transform: translate(-50%, -50%) rotateY(-15deg) rotateX(5deg) scale(0.9);
+            }
+            
+            .feature-grid {
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            }
+            
+            .pricing-cards {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .pricing-card {
+                width: 100%;
+                max-width: 400px;
+            }
+            
+            .pricing-card.popular {
+                transform: scale(1);
+            }
+            
+            .pricing-card.popular:hover {
+                transform: translateY(-10px);
+            }
+        }
+        
+        @media screen and (max-width: 768px) {
+            .mobile-menu-btn {
+                display: flex !important;
+            }
+
+            .header-container nav,
+            .header-container .cta-button {
+                display: none !important;
+            }
+
+            .header-container {
+                justify-content: center;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .phone-container {
+                height: auto;
+                display: flex;
+                justify-content: center;
+                padding: 40px 0;
+            }
+
+            /* Ocultar floating-phone em mobile */
+            .phone {
+                display: none !important;
+            }
+            
+            .section-heading h2 {
+                font-size: 2rem;
+            }
+            
+            .stats-grid {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .roles-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .testimonial-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .cta-section h2 {
+                font-size: 2.5rem;
+            }
+        }
+        /* Estilos para animação de texto destacado */
+        .highlight-text {
+            position: relative;
+            color: var(--primary-red-light);
+            font-weight: 700;
+            opacity: 0;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            transform: translateY(10px);
+        }
+
+        .highlight-text.animate {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Efeito de pulsação opcional */
+        @keyframes pulse {
+            0%, 100% {
+                color: var(--primary-red-light);
+            }
+            50% {
+                color: var(--primary-red-dark);
+            }
+        }
+
+        .highlight-text.animate {
+            animation: pulse 2s infinite;
+        }
+        /* Estilo para efeito de cursor de digitação */
+        .typing-text {
+            border-right: 2px solid var(--primary-red-light);
+            /* Alteramos white-space para permitir quebra de linha */
+            white-space: normal;
+            /* Garantimos que o texto não ultrapasse a largura do contêiner */
+            width: 100%;
+            /* Mantemos o overflow hidden */
+            overflow: hidden;
+            margin: 0 auto;
+            /* Reduzimos o letter-spacing para dar mais espaço */
+            letter-spacing: 0.05em;
+            animation: blink-caret 0.75s step-end infinite;
+            /* Garantir que a altura se ajuste automaticamente */
+            min-height: 5em;
+            /* Texto não quebra no meio de palavras */
+            word-wrap: break-word;
+        }
+
+        /* Animação do cursor piscante */
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: var(--primary-red-light) }
+        }
+
+        /* Estilo para quando a digitação estiver completa */
+        .typing-complete {
+            border-right: none;
+            white-space: normal;
+            animation: none;
+        }
+        /* Estilo para o ícone do WhatsApp */
+        .whatsapp-icon {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            margin-left: 8px;
+            vertical-align: middle;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512'%3E%3Cpath fill='white' d='M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: contain;
+        }
+
+        /* Ajuste no botão CTA para acomodar o ícone */
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Efeito de hover adicional para os botões de WhatsApp */
+        .cta-button:hover, .pricing-cta.primary-cta:hover, .cta-btn:hover {
+            background: linear-gradient(135deg, #25d366, #128c7e);
+            box-shadow: 0 10px 20px rgba(37, 211, 102, 0.3);
+        }
+
+        /* Botão Hambúrguer Mobile */
+        .mobile-menu-btn {
+            display: none;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10001;
+            background: var(--primary-gradient);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            cursor: pointer;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            box-shadow: 0 4px 15px rgba(255, 90, 90, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu-btn span {
+            width: 25px;
+            height: 3px;
+            background: white;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu-btn.active span:nth-child(1) {
+            transform: rotate(45deg) translate(7px, 7px);
+        }
+
+        .mobile-menu-btn.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .mobile-menu-btn.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -7px);
+        }
+
+        /* Overlay Mobile */
+        .mobile-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 9998;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .mobile-overlay.active {
+            display: block;
+            opacity: 1;
+        }
+
+        /* Sidebar Mobile */
+        .mobile-sidebar {
+            position: fixed;
+            right: -100%;
+            top: 0;
+            width: 280px;
+            height: 100vh;
+            background: rgba(18, 18, 18, 0.98);
+            backdrop-filter: blur(10px);
+            z-index: 9999;
+            transition: right 0.3s ease;
+            overflow-y: auto;
+            box-shadow: -5px 0 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .mobile-sidebar.open {
+            right: 0;
+        }
+
+        .mobile-sidebar nav {
+            padding: 80px 30px 30px 30px;
+        }
+
+        .mobile-sidebar nav ul {
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .mobile-sidebar nav ul li {
+            margin: 0;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .mobile-sidebar nav ul li:last-child {
+            border-bottom: none;
+        }
+
+        .mobile-sidebar nav ul li a {
+            display: block;
+            font-size: 1.1rem;
+        }
+
+        .mobile-sidebar .cta-button {
+            width: 100%;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        /* Submenu Mobile */
+        .mobile-sidebar nav ul li.has-submenu > a {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .mobile-sidebar nav ul li.has-submenu > a::after {
+            content: '▼';
+            font-size: 0.8rem;
+            transition: transform 0.3s ease;
+        }
+
+        .mobile-sidebar nav ul li.has-submenu.open > a::after {
+            transform: rotate(180deg);
+        }
+
+        .mobile-sidebar nav ul li .submenu {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            padding-left: 20px;
+        }
+
+        .mobile-sidebar nav ul li.has-submenu.open .submenu {
+            max-height: 300px;
+            margin-top: 10px;
+        }
+
+        .mobile-sidebar nav ul li .submenu a {
+            display: block;
+            padding: 10px 0;
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.8);
+            border-left: 2px solid rgba(255, 90, 90, 0.3);
+            padding-left: 15px;
+            margin-bottom: 8px;
+            text-decoration: none;
+        }
+
+        .mobile-sidebar nav ul li .submenu a:hover {
+            color: #FF5A5A;
+            border-left-color: #FF5A5A;
+        }
+    </style>
+</head>
+<body>
+    <!-- SVG Definitions -->
+    <svg width="0" height="0" style="position: absolute;">
+        <defs>
+            <linearGradient id="statGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#FF5A5A" />
+                <stop offset="100%" stop-color="#9A0000" />
+            </linearGradient>
+        </defs>
+    </svg>
+
+    <!-- Header -->
+    <header id="header">
+        <div class="container header-container">
+            <div class="logo">
+                <a href="#hero"><img src="logo.png" alt="Kairix Logo" style="height: 80px;"></a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#hero">Home</a></li>
+                    <li><a href="#products">Soluções</a></li>
+                    <li><a href="#benefits">Benefícios</a></li>
+                    <li><a href="#testimonials">Depoimentos</a></li>
+                    <li><a href="http://localhost:8012/login">Meu Painel</a></li>
+                </ul>
+            </nav>
+            <a href="https://wa.me/5565996610840?text=Olá!%20Gostaria%20de%20saber%20mais%20sobre%20a%20Kairix" target="_blank" rel="noopener" class="cta-button">Fale conosco</a>
+        </div>
+    </header>
+
+    <!-- Botão Menu Mobile -->
+    <button class="mobile-menu-btn" id="mobileMenuBtn" onclick="toggleMobileMenu()">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
+    <!-- Overlay Mobile -->
+    <div class="mobile-overlay" id="mobileOverlay" onclick="closeMobileMenu()"></div>
+
+    <!-- Sidebar Mobile -->
+    <div class="mobile-sidebar" id="mobileSidebar">
+        <nav>
+            <ul>
+                <li><a href="#hero" onclick="closeMobileMenu()">Home</a></li>
+                <li class="has-submenu">
+                    <a onclick="toggleSubmenu(event)">Soluções</a>
+                    <div class="submenu">
+                        <a href="http://localhost:8012/bot-normal.html" onclick="closeMobileMenu()">Bot Normal</a>
+                        <a href="http://localhost:8012/bot-ia.html" onclick="closeMobileMenu()">Bot IA</a>
+                        <a href="http://localhost:8012/agente-financeiro.html" onclick="closeMobileMenu()">Agente Financeiro</a>
+                    </div>
+                </li>
+                <li><a href="#benefits" onclick="closeMobileMenu()">Benefícios</a></li>
+                <li><a href="#testimonials" onclick="closeMobileMenu()">Depoimentos</a></li>
+                <li><a href="http://localhost:8012/login" onclick="closeMobileMenu()">Meu Painel</a></li>
+            </ul>
+            <a href="https://wa.me/5565996610840?text=Olá!%20Gostaria%20de%20saber%20mais%20sobre%20a%20Kairix" target="_blank" rel="noopener" class="cta-button">Fale conosco</a>
+        </nav>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero" id="hero" style="scroll-margin-top: 0;">
+        <div class="hero-bg">
+            <video autoplay loop muted playsinline>
+                <source src="fundo.mp4" type="video/mp4">
+            </video>
+            <div class="hero-gradient"></div>
+        </div>
+        <div class="container hero-content">
+            <div class="hero-text">
+                <div class="hero-badge">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                    MAIS VENDAS COM MENOS TRABALHO
+                </div>
+                <h1>Automação <span class="highlight">Inteligente</span> para seu WhatsApp</h1>
+                <p>Escolha a solução perfeita para seu negócio: desde bots simples até inteligência artificial avançada. Automatize atendimento, vendas e até sua gestão financeira através do WhatsApp.</p>
+                <a href="#products" class="cta-button hero-cta">Conheça nossas soluções</a>
+            </div>
+            <div class="phone-container">
+                <div class="phone" id="floating-phone">
+                    <div class="phone-screen">
+                        <div class="phone-content">
+                            <div class="chat-container" id="chat-container">
+                                <div class="chat-header">
+                                    <h3>Kairix Agente</h3>
+                                </div>
+                                <!-- Chat messages will be added here by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- 3D messages will be added here by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section class="problems" id="products">
+        <div class="problems-bg"></div>
+        <div class="container">
+            <div class="section-heading">
+                <h2>Nossas Soluções para WhatsApp</h2>
+                <p>Escolha o produto ideal para as necessidades do seu negócio</p>
+            </div>
+            <div class="product-cards-grid">
+                <div class="product-card">
+                    <div class="product-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                            <line x1="9" y1="10" x2="15" y2="10"></line>
+                            <line x1="9" y1="14" x2="15" y2="14"></line>
+                        </svg>
+                    </div>
+                    <h3>Agente Normal</h3>
+                    <p>Respostas automáticas e predefinidas para perguntas frequentes. Simples, rápido e eficiente.</p>
+                    <ul class="product-features">
+                        <li>✓ Perguntas e respostas personalizadas</li>
+                        <li>✓ Menu interativo</li>
+                        <li>✓ Atendimento 24/7</li>
+                        <li>✓ Fácil configuração</li>
+                    </ul>
+                    <a href="bot-normal.html" class="product-cta">Ver planos</a>
+                </div>
+
+                <div class="product-card featured">
+                    <div class="popular-badge">Mais Popular</div>
+                    <div class="product-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                            <path d="M2 17l10 5 10-5"></path>
+                            <path d="M2 12l10 5 10-5"></path>
+                        </svg>
+                    </div>
+                    <h3>Agente com IA</h3>
+                    <p>Assistente inteligente com RAG que compreende contexto e responde de forma natural e personalizada.</p>
+                    <ul class="product-features">
+                        <li>✓ Inteligência Artificial avançada</li>
+                        <li>✓ Aprende com suas informações</li>
+                        <li>✓ Respostas contextualizadas</li>
+                        <li>✓ Entende áudio e texto</li>
+                    </ul>
+                    <a href="bot-ia.html" class="product-cta">Ver planos</a>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="1" x2="12" y2="23"></line>
+                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                        </svg>
+                    </div>
+                    <h3>Agente Financeiro IA</h3>
+                    <p>Registre despesas e receitas direto pelo WhatsApp. Envie texto, voz ou foto de notas fiscais.</p>
+                    <ul class="product-features">
+                        <li>✓ Registro por voz, texto ou foto</li>
+                        <li>✓ Reconhecimento de imagens</li>
+                        <li>✓ Categorização automática</li>
+                        <li>✓ Relatórios financeiros</li>
+                    </ul>
+                    <a href="agente-financeiro.html" class="product-cta">Ver planos</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section class="features" id="benefits">
+        <div class="container features-container">
+            <div class="section-heading">
+                <h2>Por que escolher a Kairix?</h2>
+                <p>Benefícios que transformam seu negócio</p>
+            </div>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                    </div>
+                    <h3>Disponibilidade 24/7</h3>
+                    <p>Seus clientes nunca mais ficarão sem resposta. Atendimento automático funciona dia e noite, todos os dias do ano.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                    </div>
+                    <h3>Redução de Custos</h3>
+                    <p>Reduza drasticamente custos operacionais com automação inteligente. Menos tempo gasto em tarefas repetitivas, mais foco no que realmente importa.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                    </div>
+                    <h3>Tecnologia de Ponta</h3>
+                    <p>Inteligência Artificial avançada com reconhecimento de voz e imagem. Conversas naturais e processamento de documentos automatizado.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        </svg>
+                    </div>
+                    <h3>Segurança Garantida</h3>
+                    <p>Dados criptografados e armazenamento seguro. Conformidade com LGPD e proteção total das informações dos seus clientes.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
+                    </div>
+                    <h3>Fácil Implementação</h3>
+                    <p>Integração rápida e simples com WhatsApp. Comece a usar em minutos sem complicação técnica.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24">
+                            <circle cx="18" cy="5" r="3"></circle>
+                            <circle cx="6" cy="12" r="3"></circle>
+                            <circle cx="18" cy="19" r="3"></circle>
+                            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                        </svg>
+                    </div>
+                    <h3>Escalabilidade</h3>
+                    <p>Atenda milhares de clientes simultaneamente sem perder qualidade. Cresça seu negócio sem aumentar proporcionalmente sua equipe.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Testimonials Section -->
+    <section class="testimonials" id="testimonials">
+        <div class="testimonials-bg"></div>
+        <div class="container testimonials-container">
+            <div class="section-heading">
+                <h2>Quem usa, recomenda</h2>
+                <p>Veja o que nossos clientes falam sobre a Kairix</p>
+            </div>
+            <div class="testimonial-cards">
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <div class="testimonial-text">
+                        "Com o Agente da Kairix, automatizamos 80% do nosso atendimento. Agora respondemos instantaneamente e nossos clientes adoram!"
+                    </div>
+                    <div class="card-author">
+                        <div class="author-details">
+                            <h4>Carolina Santos</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <div class="testimonial-text">
+                        "O Agente com IA da Kairix entende perfeitamente nossos clientes. É como ter um atendente especialista 24/7 que nunca precisa de férias!"
+                    </div>
+                    <div class="card-author">
+                        <div class="author-details">
+                            <h4>João Ricardo</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <div class="testimonial-text">
+                        "O Agente Financeiro IA revolucionou nossa gestão. Agora registro despesas por voz enquanto dirijo. Economia de tempo absurda!"
+                    </div>
+                    <div class="card-author">
+                        <div class="author-details">
+                            <h4>Márcia Vieira</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- CTA Section -->
+    <section class="cta-section" id="cta">
+        <div class="cta-pattern"></div>
+        <div class="container cta-content">
+            <h2>Pronto para automatizar seu WhatsApp?</h2>
+            <p>Escolha a solução perfeita para seu negócio e comece a economizar tempo hoje mesmo!</p>
+            <a href="#products" class="cta-btn">Escolher meu produto</a>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="features" id="contact" style="background-color: rgba(20, 20, 20, 0.9);">
+        <div class="container">
+            <div class="section-heading">
+                <h2>Entre em Contato</h2>
+                <p>Tire suas dúvidas ou solicite uma demonstração</p>
+            </div>
+            <div style="text-align: center; max-width: 600px; margin: 0 auto;">
+                <p style="color: rgba(255, 255, 255, 0.8); margin-bottom: 30px; font-size: 1.1rem;">
+                    Nossa equipe está pronta para ajudá-lo a escolher a melhor solução para seu negócio.
+                </p>
+                <div style="margin-bottom: 20px;">
+                    <a href="mailto:contato@kairix.com.br" style="color: var(--primary-red-light); text-decoration: none; font-size: 1.2rem; display: block; margin-bottom: 15px;">
+                        📧 contato@kairix.com.br
+                    </a>
+                    <a href="https://wa.me/5565996610840" target="_blank" rel="noopener" style="color: var(--primary-red-light); text-decoration: none; font-size: 1.2rem; display: block;">
+                        📱 (65) 99661-0840
+                    </a>
+                </div>
+                <a href="https://wa.me/5565996610840?text=Olá!%20Gostaria%20de%20conhecer%20as%20soluções%20da%20Kairix" target="_blank" rel="noopener" class="cta-button" style="margin-top: 30px;">
+                    Falar no WhatsApp
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <img src="logo.png" alt="Kairix Logo" style="height: 100px;">
+                </div>
+                <div class="footer-col">
+                    <h4>Produtos</h4>
+                    <ul>
+                        <li><a href="bot-normal.html">Agente Normal</a></li>
+                        <li><a href="bot-ia.html">Agente com IA</a></li>
+                        <li><a href="agente-financeiro.html">Agente Financeiro IA</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Empresa</h4>
+                    <ul>
+                        <li><a href="#products">Produtos</a></li>
+                        <li><a href="#benefits">Benefícios</a></li>
+                        <li><a href="#testimonials">Depoimentos</a></li>
+                        <li><a href="#contact">Contato</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Contato</h4>
+                    <p>contato@kairix.com.br</p>
+                    <p>(65) 99661-0840</p>
+                    <div class="social-links">
+                        <a href="#" class="social-icon">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                            </svg>
+                        </a>
+                        <a href="#" class="social-icon">
+                            <svg viewBox="0 0 24 24">
+                                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                            </svg>
+                        </a>
+                        <a href="#" class="social-icon">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright">
+                &copy; 2025 Kairix. Todos os direitos reservados.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Slow down background video
+            const bgVideo = document.querySelector('.hero-bg video');
+            if (bgVideo) {
+                bgVideo.playbackRate = 0.5; // Velocidade reduzida pela metade
+            }
+
+            // Smooth scroll for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        const offsetTop = target.id === 'hero' ? 0 : target.offsetTop - 100;
+                        window.scrollTo({
+                            top: offsetTop,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+
+            // Header scroll effect
+            const header = document.getElementById('header');
+            window.addEventListener('scroll', function() {
+                if (window.scrollY > 50) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            });
+            
+            // Phone floating animation
+            const phone = document.getElementById('floating-phone');
+            phone.style.animation = 'floating 6s ease-in-out infinite, pulseGlow 4s ease-in-out infinite';
+            
+            // Chat messages animation
+            const chatContainer = document.getElementById('chat-container');
+            const messages = [
+                { type: 'ai', text: 'Olá! Como posso ajudar?', messageType: 'text', project3D: true },
+                { type: 'user', text: 'Quero saber sobre a IA de vocês', messageType: 'text', project3D: false },
+                { type: 'ai', text: '0:12', messageType: 'audio', project3D: true },
+                { type: 'user', text: 'Entendi! Obrigado', messageType: 'text', project3D: false },
+                { type: 'user', text: '0:08', messageType: 'audio', project3D: true },
+                { type: 'ai', text: 'Ótimo! Agendamento confirmado.', messageType: 'text', project3D: false },
+                { type: 'ai', text: '0:05', messageType: 'audio', project3D: true }
+            ];
+            
+            // Add messages to chat with delay
+            let delay = 1000;
+            messages.forEach((message, index) => {
+                setTimeout(() => {
+                    let messageElement;
+                    
+                    if (message.messageType === 'text') {
+                        messageElement = document.createElement('div');
+                        messageElement.classList.add('chat-bubble', `chat-${message.type}`);
+                        messageElement.textContent = message.text;
+                    } else if (message.messageType === 'audio') {
+                        messageElement = document.createElement('div');
+                        messageElement.classList.add('chat-audio', `chat-${message.type}`);
+                        messageElement.innerHTML = `
+                            <div class="audio-play-btn">
+                                <svg viewBox="0 0 24 24">
+                                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                                </svg>
+                            </div>
+                            <div class="audio-waveform">
+                                <div class="waveform-line"></div>
+                            </div>
+                            <div class="audio-duration">${message.text}</div>
+                        `;
+                    }
+                    
+                    chatContainer.appendChild(messageElement);
+                    
+                    // Animate message
+                    setTimeout(() => {
+                        messageElement.classList.add('animated');
+                        
+                        // Create 3D message effect only for messages marked for 3D projection
+                        if (message.project3D) {
+                            if (message.messageType === 'text') {
+                                create3DMessage(message.text, message.type, index);
+                            } else {
+                                create3DAudio(message.type, index);
+                            }
+                        }
+                    }, 100);
+                    
+                    // Scroll to bottom
+                    chatContainer.scrollTop = chatContainer.scrollHeight;
+                }, delay);
+                
+                delay += 800; // Fixed shorter delay between messages
+            });
+            
+            // Removed 3D message effects as requested
+            
+            // Stats animation
+            const stats = [
+                { element: document.querySelectorAll('.circle-progress')[0], value: "Ideal Realizado", offset: 220 },
+                { element: document.querySelectorAll('.circle-progress')[1], value: 62, offset: 165 },
+                { element: document.querySelectorAll('.circle-progress')[2], value: 94, offset: 26 }
+            ];
+            
+            // Animate hero text highlights
+            const heroText = document.querySelector('.hero p');
+            const hours = document.getElementById('hours');
+            const days = document.getElementById('days');
+
+            if (hours && days) {
+                // Animar imediatamente ou quando visível
+                setTimeout(() => {
+                    hours.classList.add('animate');
+                    
+                    // Delay para o segundo elemento
+                    setTimeout(() => {
+                        days.classList.add('animate');
+                    }, 800);
+                }, 1500);
+            }
+            
+            const heroObserver = new IntersectionObserver((entries) => {
+                if (entries[0].isIntersecting) {
+                    if (hours && days) {
+                        setTimeout(() => {
+                            hours.classList.add('animate');
+                            
+                            setTimeout(() => {
+                                days.classList.add('animate');
+                            }, 800);
+                        }, 500);
+                        
+                        heroObserver.disconnect();
+                    }
+                }
+            }, { threshold: 0.5 });
+
+            if (heroText) {
+                heroObserver.observe(heroText);
+            }
+            
+            // Função para efeito de digitação
+            function typeWriterEffect(element, text, speed = 30, callback) {
+                let i = 0;
+                element.textContent = '';
+                element.classList.remove('typing-complete');
+                
+                function type() {
+                    if (i < text.length) {
+                        element.textContent += text.charAt(i);
+                        i++;
+                        setTimeout(type, speed);
+                    } else {
+                        // Digitação completa
+                        element.classList.add('typing-complete');
+                        if (callback) callback();
+                    }
+                }
+                
+                type();
+            }
+
+            // Função para iniciar a animação quando o elemento estiver visível
+            function setupTypingAnimation() {
+                const testimonialText = document.getElementById('testimonial-text');
+                const testimonialSection = document.querySelector('.testimonials');
+                const testimonialContent = '"Há mais de 1 ano o Grupo Roma confia na Kairix e conseguimos impulsionar nossos resultados em 3x. O número de vendas aumentou significativamente."';
+                
+                if (!testimonialText) return;
+                
+                const observer = new IntersectionObserver((entries) => {
+                    if (entries[0].isIntersecting) {
+                        // Inicia a animação de digitação
+                        typeWriterEffect(testimonialText, testimonialContent, 15);
+                        // Remove o observer depois de iniciar a animação
+                        observer.disconnect();
+                    }
+                }, { threshold: 0.5 });
+                
+                observer.observe(testimonialSection);
+            }
+
+            // Chama a função para configurar a animação
+            setupTypingAnimation();
+            
+            // Audio player simulation
+            const audioPlayButtons = document.querySelectorAll('.audio-play-btn');
+            audioPlayButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Toggle animation of waveform
+                    const waveform = this.nextElementSibling;
+                    
+                    // Create the animation if it doesn't exist
+                    if (!waveform.querySelector('.progress-highlight')) {
+                        const progressHighlight = document.createElement('div');
+                        progressHighlight.classList.add('progress-highlight');
+                        progressHighlight.style.cssText = `
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            height: 100%;
+                            width: 0;
+                            background: rgba(255, 255, 255, 0.5);
+                            transition: width 3s linear;
+                        `;
+                        waveform.querySelector('.waveform-line').appendChild(progressHighlight);
+                        
+                        // After a small delay, animate the progress
+                        setTimeout(() => {
+                            progressHighlight.style.width = '100%';
+                        }, 50);
+                    } else {
+                        // Reset the animation
+                        const progressHighlight = waveform.querySelector('.progress-highlight');
+                        progressHighlight.style.transition = 'none';
+                        progressHighlight.style.width = '0';
+                        
+                        setTimeout(() => {
+                            progressHighlight.style.transition = 'width 3s linear';
+                            progressHighlight.style.width = '100%';
+                        }, 50);
+                    }
+                });
+            });
+            
+            // Animate stats when in viewport with progressive animation
+            const statSection = document.getElementById('stats');
+            const statObserver = new IntersectionObserver((entries) => {
+                if (entries[0].isIntersecting) {
+                    // Animate each stat progressively
+                    stats.forEach((stat, index) => {
+                        setTimeout(() => {
+                            // Start from full circle and animate to the proper value
+                            const startOffset = 440;
+                            const endOffset = stat.offset;
+                            const duration = 1500; // Animation duration in ms
+                            const startTime = performance.now();
+                            
+                            function animateCircle(currentTime) {
+                                const elapsedTime = currentTime - startTime;
+                                const progress = Math.min(elapsedTime / duration, 1);
+                                
+                                // Easing function for smooth animation
+                                const easeOutQuad = progress * (2 - progress);
+                                
+                                // Calculate current offset
+                                const currentOffset = startOffset - (startOffset - endOffset) * easeOutQuad;
+                                
+                                // Apply to the element
+                                stat.element.style.strokeDashoffset = currentOffset;
+                                
+                                // Continue animation if not complete
+                                if (progress < 1) {
+                                    requestAnimationFrame(animateCircle);
+                                }
+                            }
+                            
+                            requestAnimationFrame(animateCircle);
+                            
+                            // For numeric stats, animate the number
+                            const statNumber = document.querySelectorAll('.stat-number')[index];
+                            if (typeof stat.value === 'number') {
+                                let startValue = 0;
+                                
+                                function animateNumber(currentTime) {
+                                    const elapsedTime = currentTime - startTime;
+                                    const progress = Math.min(elapsedTime / duration, 1);
+                                    
+                                    // Easing function for smooth animation
+                                    const easeOutQuad = progress * (2 - progress);
+                                    
+                                    // Calculate current value
+                                    const currentValue = Math.round(startValue + (stat.value - startValue) * easeOutQuad);
+                                    
+                                    // Apply to the element
+                                    statNumber.textContent = `${currentValue}%`;
+                                    
+                                    // Continue animation if not complete
+                                    if (progress < 1) {
+                                        requestAnimationFrame(animateNumber);
+                                    }
+                                }
+                                
+                                requestAnimationFrame(animateNumber);
+                            }
+                            // For text, we'll just use the value directly
+                            
+                        }, index * 300); // Stagger start of animations
+                    });
+                    
+                    statObserver.disconnect();
+                }
+            }, { threshold: 0.5 });
+            
+            statObserver.observe(statSection);
+            
+            // Animate elements on scroll
+            const animateOnScroll = () => {
+                const elements = document.querySelectorAll('.feature-card, .problem-card, .role-card, .testimonial-card');
+                
+                elements.forEach(element => {
+                    const elementTop = element.getBoundingClientRect().top;
+                    const elementVisible = 150;
+                    
+                    if (elementTop < window.innerHeight - elementVisible) {
+                        element.style.opacity = '1';
+                        element.style.transform = 'translateY(0)';
+                    }
+                });
+            };
+            
+            // Set initial styles for animation
+            const elementsToAnimate = document.querySelectorAll('.feature-card, .problem-card, .role-card, .testimonial-card');
+            
+            elementsToAnimate.forEach(element => {
+                element.style.opacity = '0';
+                element.style.transform = 'translateY(30px)';
+                element.style.transition = 'all 0.6s ease';
+            });
+            
+            window.addEventListener('scroll', animateOnScroll);
+            animateOnScroll(); // Run once on load
+            
+            // Pricing toggle
+            const toggleOptions = document.querySelectorAll('.toggle-option');
+            
+            toggleOptions.forEach(option => {
+                option.addEventListener('click', () => {
+                    toggleOptions.forEach(opt => opt.classList.remove('active'));
+                    option.classList.add('active');
+                });
+            });
+        });
+    </script>
+
+    <!-- JavaScript do Menu Mobile -->
+    <script>
+        // Funções do Menu Mobile
+        function toggleMobileMenu() {
+            const sidebar = document.getElementById('mobileSidebar');
+            const overlay = document.getElementById('mobileOverlay');
+            const btn = document.getElementById('mobileMenuBtn');
+
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('active');
+            btn.classList.toggle('active');
+
+            // Prevenir scroll do body quando menu está aberto
+            if (sidebar.classList.contains('open')) {
+                document.body.style.overflow = 'hidden';
+            } else {
+                document.body.style.overflow = '';
+            }
+        }
+
+        function closeMobileMenu() {
+            const sidebar = document.getElementById('mobileSidebar');
+            const overlay = document.getElementById('mobileOverlay');
+            const btn = document.getElementById('mobileMenuBtn');
+
+            sidebar.classList.remove('open');
+            overlay.classList.remove('active');
+            btn.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function toggleSubmenu(event) {
+            event.preventDefault();
+            const parentLi = event.target.closest('li.has-submenu');
+            parentLi.classList.toggle('open');
+        }
+    </script>
+</body>
+</html>

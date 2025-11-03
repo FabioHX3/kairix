@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block title %}Menu Interativo - Kairix{% endblock %}
+
+{% block content %}
+<div class="content-header">
+    <h1>📱 Menu Interativo</h1>
+    <p>Configure menus de opções para seus clientes</p>
+</div>
+
+<div class="preview-grid">
+    <!-- Coluna de Configuração -->
+    <div class="config-column">
+        <div class="section-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3>Configurar Menu</h3>
+                <button class="btn btn-success" onclick="saveMenu()">💾 Salvar Menu</button>
+            </div>
+
+            <!-- Formulário de Menu -->
+            <div class="form-group">
+                <label>Mensagem de Boas-Vindas *</label>
+                <textarea id="menu-welcome" placeholder="Olá! Bem-vindo ao nosso atendimento..." rows="3"></textarea>
+                <small>Mensagem inicial que o bot enviará junto com o menu</small>
+            </div>
+
+            <div class="form-group">
+                <label>Título do Menu</label>
+                <input type="text" id="menu-title" placeholder="Ex: 📋 Menu Principal">
+                <small>Título que aparece no topo do menu</small>
+            </div>
+
+            <!-- Lista de Opções do Menu -->
+            <div style="margin-top: 30px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h4>Opções do Menu</h4>
+                    <button class="btn btn-primary" onclick="addMenuOption()">➕ Adicionar Opção</button>
+                </div>
+
+                <div id="menu-options-list">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📋</div>
+                        <p>Nenhuma opção cadastrada</p>
+                        <p style="font-size: 0.9rem;">Clique em "Adicionar Opção" para começar</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Coluna de Preview -->
+    <div class="preview-column">
+        <h3>📱 Preview em Tempo Real</h3>
+        <div class="preview-phone">
+            <div class="preview-screen">
+                <div class="preview-whatsapp-header">
+                    <div class="preview-logo-circle"><img src="/logo.png" alt="Logo"></div>
+                    <span style="font-weight: 600;">Sua Empresa</span>
+                </div>
+                <div class="preview-chat" id="preview-chat-menu">
+                    <div class="preview-msg preview-msg-bot">Olá! Bem-vindo ao nosso atendimento.</div>
+                    <div class="preview-msg preview-msg-bot">
+                        <strong>📋 Menu Principal</strong><br><br>
+                        Digite o número da opção desejada:
+                    </div>
+                </div>
+                <div class="preview-input-box">
+                    <input type="text" id="preview-input-menu" placeholder="Digite o número..." onkeypress="if(event.key==='Enter') testPreviewMenu()">
+                    <button onclick="testPreviewMenu()">▶</button>
+                </div>
+            </div>
+        </div>
+        <p class="preview-helper-text">💡 Digite números para testar as opções</p>
+    </div>
+</div>
+
+<!-- Modal para Adicionar/Editar Opção -->
+<div id="modal-menu-option" class="modal">
+    <div class="modal-content">
+        <h3 id="modal-menu-option-title">Nova Opção de Menu</h3>
+        <form id="form-menu-option" onsubmit="saveMenuOption(event)">
+            <input type="hidden" id="option-index">
+
+            <div class="form-group">
+                <label>Número da Opção *</label>
+                <input type="text" id="option-number" placeholder="Ex: 1" required>
+                <small>Número que o cliente digitará para selecionar esta opção</small>
+            </div>
+
+            <div class="form-group">
+                <label>Texto da Opção *</label>
+                <input type="text" id="option-text" placeholder="Ex: 📦 Ver Produtos" required>
+                <small>Texto que aparecerá no menu</small>
+            </div>
+
+            <div class="form-group">
+                <label>Tipo de Resposta *</label>
+                <select id="option-type" onchange="toggleResponseType()">
+                    <option value="text">Texto Simples</option>
+                    <option value="submenu">Submenu</option>
+                    <option value="transfer">Transferir para Atendente</option>
+                </select>
+            </div>
+
+            <div class="form-group" id="option-response-group">
+                <label>Resposta *</label>
+                <textarea id="option-response" placeholder="Digite a resposta que será enviada..." rows="4"></textarea>
+            </div>
+
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button type="submit" class="btn btn-success">💾 Salvar</button>
+                <button type="button" class="btn btn-secondary" onclick="closeMenuOptionModal()">❌ Cancelar</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    loadMenu();
+});
+</script>
+{% endblock %}

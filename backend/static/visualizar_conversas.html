@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversas e Mensagens - Kairix</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            margin-bottom: 10px;
+        }
+
+        .content {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 20px;
+            height: calc(100vh - 200px);
+        }
+
+        .conversations-list {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            overflow-y: auto;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .conversation-item {
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .conversation-item:hover {
+            background: #f8f9fa;
+            border-color: #667eea;
+        }
+
+        .conversation-item.active {
+            background: #e3f2fd;
+            border-color: #667eea;
+        }
+
+        .conv-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .conv-phone {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .conv-status {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .conv-status.ativa {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .conv-status.finalizada {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .messages-area {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            overflow-y: auto;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .message {
+            margin-bottom: 20px;
+            padding: 15px 20px;
+            border-radius: 10px;
+            max-width: 70%;
+        }
+
+        .message.recebida {
+            background: #f1f3f5;
+            border-left: 4px solid #667eea;
+            margin-right: auto;
+        }
+
+        .message.enviada {
+            background: #e3f2fd;
+            border-right: 4px solid #2196F3;
+            margin-left: auto;
+        }
+
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .message-text {
+            color: #333;
+            white-space: pre-wrap;
+            line-height: 1.6;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #999;
+            padding: 100px 20px;
+        }
+
+        .empty-state i {
+            font-size: 64px;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: #666;
+        }
+
+        .refresh-btn {
+            background: white;
+            border: 2px solid #667eea;
+            color: #667eea;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .refresh-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .stats {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .stat {
+            background: rgba(255,255,255,0.2);
+            padding: 10px 15px;
+            border-radius: 8px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💬 Conversas e Mensagens</h1>
+            <p>Visualize todas as conversas e mensagens gravadas no sistema</p>
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-value" id="totalConversas">0</div>
+                    <div class="stat-label">Conversas</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="totalMensagens">0</div>
+                    <div class="stat-label">Mensagens</div>
+                </div>
+            </div>
+            <div style="margin-top: 15px;">
+                <button class="refresh-btn" onclick="loadConversations()">🔄 Atualizar</button>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="conversations-list" id="conversationsList">
+                <div class="loading">Carregando conversas...</div>
+            </div>
+
+            <div class="messages-area" id="messagesArea">
+                <div class="empty-state">
+                    <i>💬</i>
+                    <p>Selecione uma conversa para ver as mensagens</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let conversations = [];
+
+        async function loadConversations() {
+            try {
+                const response = await fetch('/api/conversas/pedido/1');
+                conversations = await response.json();
+
+                const container = document.getElementById('conversationsList');
+
+                if (conversations.length === 0) {
+                    container.innerHTML = '<div class="empty-state"><p>Nenhuma conversa encontrada</p></div>';
+                    return;
+                }
+
+                // Atualizar stats
+                document.getElementById('totalConversas').textContent = conversations.length;
+
+                let totalMensagens = 0;
+                conversations.forEach(c => totalMensagens += c.total_mensagens);
+                document.getElementById('totalMensagens').textContent = totalMensagens;
+
+                // Renderizar conversas
+                container.innerHTML = conversations.map(conv => `
+                    <div class="conversation-item" onclick="loadMessages(${conv.id})">
+                        <div class="conv-name">${conv.contato_nome}</div>
+                        <div class="conv-phone">📱 ${conv.contato_numero}</div>
+                        <div>
+                            <span class="conv-status ${conv.status}">${conv.status}</span>
+                        </div>
+                        <div style="margin-top: 8px; font-size: 12px; color: #999;">
+                            ${conv.total_mensagens} mensagens
+                        </div>
+                    </div>
+                `).join('');
+
+            } catch (error) {
+                console.error('Erro ao carregar conversas:', error);
+                document.getElementById('conversationsList').innerHTML =
+                    '<div class="empty-state"><p>❌ Erro ao carregar conversas</p></div>';
+            }
+        }
+
+        async function loadMessages(conversaId) {
+            try {
+                // Marcar conversa como ativa
+                document.querySelectorAll('.conversation-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+                event.currentTarget.classList.add('active');
+
+                const response = await fetch(`/api/conversas/${conversaId}/mensagens`);
+                const messages = await response.json();
+
+                const container = document.getElementById('messagesArea');
+
+                if (messages.length === 0) {
+                    container.innerHTML = '<div class="empty-state"><p>Nenhuma mensagem nesta conversa</p></div>';
+                    return;
+                }
+
+                container.innerHTML = messages.map(msg => `
+                    <div class="message ${msg.direcao}">
+                        <div class="message-header">
+                            <span><strong>${msg.direcao === 'recebida' ? '📱 Cliente' : '🤖 Bot'}</strong></span>
+                            <span>${new Date(msg.timestamp).toLocaleString('pt-BR')}</span>
+                        </div>
+                        <div class="message-text">${msg.conteudo}</div>
+                        ${msg.tempo_resposta ? `
+                            <div style="margin-top: 8px; font-size: 11px; color: #999;">
+                                ⚡ Respondido em ${msg.tempo_resposta.toFixed(2)}s
+                            </div>
+                        ` : ''}
+                    </div>
+                `).join('');
+
+                // Scroll para o final
+                container.scrollTop = container.scrollHeight;
+
+            } catch (error) {
+                console.error('Erro ao carregar mensagens:', error);
+                document.getElementById('messagesArea').innerHTML =
+                    '<div class="empty-state"><p>❌ Erro ao carregar mensagens</p></div>';
+            }
+        }
+
+        // Carregar conversas ao iniciar
+        loadConversations();
+
+        // Auto-refresh a cada 10 segundos
+        setInterval(loadConversations, 10000);
+    </script>
+</body>
+</html>

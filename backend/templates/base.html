@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Kairix - Painel de Controle{% endblock %}</title>
+
+    <!-- CSS Global -->
+    <link rel="stylesheet" href="/static/css/common.css?v=20251029-007">
+
+    <!-- CSS Específico da Página -->
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Botão Mobile Menu -->
+    <button class="mobile-menu-btn" id="mobileMenuBtn" onclick="toggleMobileSidebar()">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
+    <!-- Overlay Mobile -->
+    <div class="mobile-overlay" id="mobileOverlay" onclick="closeMobileSidebar()"></div>
+
+    <!-- Sidebar -->
+    {% include 'components/sidebar.html' %}
+
+    <!-- Main Content -->
+    <div class="main-content">
+        {% block content %}
+        <!-- Conteúdo da página será inserido aqui -->
+        {% endblock %}
+    </div>
+
+    <!-- Modals Globais -->
+
+    <!-- Modal Meus Dados -->
+    <div class="modal-overlay" id="myDataModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Meus Dados</h2>
+                <button class="modal-close" onclick="closeMyDataModal()">&times;</button>
+            </div>
+
+            <div id="myDataSuccessMsg" class="modal-success">
+                Dados atualizados com sucesso!
+            </div>
+            <div id="myDataErrorMsg" class="modal-error">
+                Erro ao atualizar dados.
+            </div>
+
+            <form id="myDataForm" onsubmit="saveMyData(event)">
+                <div class="modal-form-group">
+                    <label>Nome Completo <span class="modal-required">*</span></label>
+                    <input type="text" id="clientNome" required>
+                </div>
+
+                <div class="modal-form-row">
+                    <div class="modal-form-group">
+                        <label>Email <span class="modal-required">*</span></label>
+                        <input type="email" id="clientEmail" required>
+                    </div>
+                    <div class="modal-form-group">
+                        <label>Telefone <span class="modal-required">*</span></label>
+                        <input type="tel" id="clientTelefone" required>
+                    </div>
+                </div>
+
+                <div class="modal-form-group">
+                    <label>Nome da Empresa</label>
+                    <input type="text" id="clientEmpresa">
+                </div>
+
+                <div class="modal-form-row">
+                    <div class="modal-form-group">
+                        <label>CPF/CNPJ</label>
+                        <input type="text" id="clientCpfCnpj">
+                    </div>
+                    <div class="modal-form-group">
+                        <label>WhatsApp <span class="modal-required">*</span></label>
+                        <input type="tel" id="clientWhatsapp" required>
+                    </div>
+                </div>
+
+                <div class="modal-form-group">
+                    <label>Endereço</label>
+                    <input type="text" id="clientEndereco">
+                </div>
+
+                <div class="modal-form-row">
+                    <div class="modal-form-group">
+                        <label>Cidade</label>
+                        <input type="text" id="clientCidade">
+                    </div>
+                    <div class="modal-form-group">
+                        <label>Estado</label>
+                        <input type="text" id="clientEstado" maxlength="2" placeholder="EX: SP">
+                    </div>
+                </div>
+
+                <div class="modal-form-group">
+                    <label>CEP</label>
+                    <input type="text" id="clientCep" placeholder="00000-000">
+                </div>
+
+                <button type="submit" class="modal-btn-save" id="saveMyDataBtn">
+                    Salvar Alterações
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Alterar Senha -->
+    <div class="modal-overlay" id="changePasswordModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Alterar Senha</h2>
+                <button class="modal-close" onclick="closeChangePasswordModal()">&times;</button>
+            </div>
+
+            <div id="passwordSuccessMsg" class="modal-success">
+                Senha alterada com sucesso!
+            </div>
+            <div id="passwordErrorMsg" class="modal-error">
+                Erro ao alterar senha.
+            </div>
+
+            <form id="changePasswordForm" onsubmit="changePassword(event)">
+                <div class="modal-form-group">
+                    <label>Senha Atual <span class="modal-required">*</span></label>
+                    <div class="password-input-wrapper">
+                        <input type="password" id="currentPassword" required>
+                        <span class="password-toggle-icon" onclick="togglePasswordVisibility('currentPassword')">👁️</span>
+                    </div>
+                </div>
+
+                <div class="modal-form-group">
+                    <label>Nova Senha <span class="modal-required">*</span></label>
+                    <div class="password-input-wrapper">
+                        <input type="password" id="newPassword" required minlength="6">
+                        <span class="password-toggle-icon" onclick="togglePasswordVisibility('newPassword')">👁️</span>
+                    </div>
+                </div>
+
+                <div class="modal-form-group">
+                    <label>Confirmar Nova Senha <span class="modal-required">*</span></label>
+                    <div class="password-input-wrapper">
+                        <input type="password" id="confirmPassword" required minlength="6">
+                        <span class="password-toggle-icon" onclick="togglePasswordVisibility('confirmPassword')">👁️</span>
+                    </div>
+                </div>
+
+                <button type="submit" class="modal-btn-save" id="changePasswordBtn">
+                    Alterar Senha
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- JavaScript Global -->
+    <script src="/static/js/common.js?v=20251029-008"></script>
+
+    <!-- JavaScript Específico da Página -->
+    {% block extra_js %}{% endblock %}
+
+    <!-- Script Inline para Inicialização -->
+    <script>
+        // Carregar configurações ao inicializar a página
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar se está logado
+            const token = localStorage.getItem('token');
+            if (!token) {
+                console.log('[DEBUG] Token não encontrado no base.html, mas redirect comentado');
+                // window.location.href = '/login';
+                // return;
+            }
+
+            // Carregar dados do painel
+            loadPanelData();
+        });
+    </script>
+</body>
+</html>

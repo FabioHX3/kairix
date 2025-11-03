@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+
+{% block title %}Fluxos de Conversa - Kairix{% endblock %}
+
+{% block content %}
+<div class="content-header">
+    <h1>🔄 Fluxos de Conversa</h1>
+    <p>Crie fluxos automáticos de conversa para diferentes situações</p>
+</div>
+
+<div class="preview-grid">
+    <!-- Coluna de Configuração -->
+    <div class="config-column">
+        <div class="section-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3>Meus Fluxos</h3>
+                <button class="btn btn-primary" onclick="showFluxoForm()">➕ Novo Fluxo</button>
+            </div>
+
+            <!-- Formulário de Novo/Editar Fluxo -->
+            <div id="fluxo-form" style="display: none; margin-bottom: 30px; padding: 20px; background: rgba(255, 255, 255, 0.03); border-radius: 10px;">
+                <h4 id="fluxo-form-title">Novo Fluxo</h4>
+                <form id="form-fluxo" onsubmit="saveFluxo(event)">
+                    <input type="hidden" id="fluxo-id">
+
+                    <div class="form-group">
+                        <label>Nome do Fluxo *</label>
+                        <input type="text" id="fluxo-nome" placeholder="Ex: Fluxo de Vendas" required>
+                        <small>Nome para identificar este fluxo</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Gatilho (Palavra-Chave) *</label>
+                        <input type="text" id="fluxo-gatilho" placeholder="Ex: comprar, preço, produto" required>
+                        <small>Palavras que acionam este fluxo (separadas por vírgula)</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Ativo?</label>
+                        <select id="fluxo-ativo">
+                            <option value="true">Sim</option>
+                            <option value="false">Não</option>
+                        </select>
+                    </div>
+
+                    <!-- Etapas do Fluxo -->
+                    <div style="margin-top: 20px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                            <h4>Etapas do Fluxo</h4>
+                            <button type="button" class="btn btn-sm btn-primary" onclick="addFluxoStep()">➕ Adicionar Etapa</button>
+                        </div>
+
+                        <div id="fluxo-steps-list">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">🔄</div>
+                                <p>Nenhuma etapa adicionada</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 10px; margin-top: 20px;">
+                        <button type="submit" class="btn btn-success">💾 Salvar</button>
+                        <button type="button" class="btn btn-secondary" onclick="hideFluxoForm()">❌ Cancelar</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Lista de Fluxos -->
+            <div id="fluxos-list">
+                <div class="empty-state">
+                    <div class="empty-state-icon">🔄</div>
+                    <p>Nenhum fluxo cadastrado ainda</p>
+                    <p style="font-size: 0.9rem;">Clique em "Novo Fluxo" para começar</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Coluna de Preview -->
+    <div class="preview-column">
+        <h3>📱 Preview em Tempo Real</h3>
+        <div class="preview-phone">
+            <div class="preview-screen">
+                <div class="preview-whatsapp-header">
+                    <div class="preview-logo-circle"><img src="/logo.png" alt="Logo"></div>
+                    <span style="font-weight: 600;">Sua Empresa</span>
+                </div>
+                <div class="preview-chat" id="preview-chat-fluxos">
+                    <div class="preview-msg preview-msg-bot">Olá! Bem-vindo ao nosso atendimento.</div>
+                </div>
+                <div class="preview-input-box">
+                    <input type="text" id="preview-input-fluxos" placeholder="Digite para testar fluxos..." onkeypress="if(event.key==='Enter') testPreviewFluxos()">
+                    <button onclick="testPreviewFluxos()">▶</button>
+                </div>
+            </div>
+        </div>
+        <p class="preview-helper-text">💡 Digite palavras-chave para testar os fluxos</p>
+    </div>
+</div>
+
+<!-- Modal para Adicionar/Editar Etapa -->
+<div id="modal-fluxo-step" class="modal">
+    <div class="modal-content">
+        <h3>Nova Etapa do Fluxo</h3>
+        <form id="form-fluxo-step" onsubmit="saveFluxoStep(event)">
+            <input type="hidden" id="step-index">
+
+            <div class="form-group">
+                <label>Ordem da Etapa *</label>
+                <input type="number" id="step-order" placeholder="1" required>
+                <small>Ordem em que esta etapa será executada</small>
+            </div>
+
+            <div class="form-group">
+                <label>Tipo de Etapa *</label>
+                <select id="step-type">
+                    <option value="message">Enviar Mensagem</option>
+                    <option value="question">Fazer Pergunta</option>
+                    <option value="wait">Aguardar Resposta</option>
+                    <option value="condition">Condição (Se/Então)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Conteúdo da Etapa *</label>
+                <textarea id="step-content" placeholder="Digite o conteúdo desta etapa..." rows="4" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Delay (segundos)</label>
+                <input type="number" id="step-delay" placeholder="0" min="0">
+                <small>Tempo de espera antes de executar esta etapa</small>
+            </div>
+
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button type="submit" class="btn btn-success">💾 Salvar</button>
+                <button type="button" class="btn btn-secondary" onclick="closeFluxoStepModal()">❌ Cancelar</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    loadFluxos();
+});
+</script>
+{% endblock %}

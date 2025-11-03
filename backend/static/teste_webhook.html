@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de Webhook - Kairix Bot</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 800px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+        }
+
+        .chat-area {
+            display: flex;
+            height: 500px;
+        }
+
+        .form-section {
+            flex: 1;
+            padding: 30px;
+            border-right: 1px solid #eee;
+            overflow-y: auto;
+        }
+
+        .messages-section {
+            flex: 1;
+            padding: 30px;
+            background: #f5f5f5;
+            overflow-y: auto;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .message {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .message.sent {
+            background: #e3f2fd;
+            border-left: 4px solid #2196F3;
+        }
+
+        .message.received {
+            background: #f1f8e9;
+            border-left: 4px solid #8bc34a;
+        }
+
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .message-text {
+            color: #333;
+            white-space: pre-wrap;
+            line-height: 1.5;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #999;
+            padding: 50px 20px;
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .chat-area {
+                flex-direction: column;
+                height: auto;
+            }
+
+            .form-section {
+                border-right: none;
+                border-bottom: 1px solid #eee;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 Teste de Bot WhatsApp</h1>
+            <p>Simule mensagens recebidas para testar o bot</p>
+        </div>
+
+        <div class="chat-area">
+            <div class="form-section">
+                <form id="messageForm">
+                    <div class="form-group">
+                        <label for="phoneNumber">📱 Número do Cliente</label>
+                        <input
+                            type="text"
+                            id="phoneNumber"
+                            value="5511999887766"
+                            placeholder="Ex: 5511999887766"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="clientName">👤 Nome do Cliente</label>
+                        <input
+                            type="text"
+                            id="clientName"
+                            value="Cliente Teste"
+                            placeholder="Ex: João Silva"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="messageText">💬 Mensagem</label>
+                        <input
+                            type="text"
+                            id="messageText"
+                            placeholder="Digite a mensagem aqui..."
+                            required
+                            autofocus
+                        >
+                    </div>
+
+                    <button type="submit">📤 Enviar Mensagem</button>
+                </form>
+
+                <div style="margin-top: 20px; padding: 15px; background: #fff3cd; border-radius: 8px; font-size: 13px;">
+                    <strong>💡 Dicas:</strong><br>
+                    • Digite "menu" para ver as opções<br>
+                    • Digite números (1, 2, 3...) para navegar<br>
+                    • Digite "voltar" para retornar ao menu principal
+                </div>
+            </div>
+
+            <div class="messages-section">
+                <h3 style="margin-bottom: 20px; color: #666;">💬 Histórico de Mensagens</h3>
+                <div id="messagesContainer">
+                    <div class="empty-state">
+                        <i>💬</i>
+                        <p>Nenhuma mensagem ainda.<br>Envie uma mensagem para começar!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('messageForm');
+        const messagesContainer = document.getElementById('messagesContainer');
+        const messageInput = document.getElementById('messageText');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const phone = document.getElementById('phoneNumber').value;
+            const name = document.getElementById('clientName').value;
+            const text = messageInput.value;
+
+            if (!text.trim()) return;
+
+            // Adicionar mensagem enviada
+            addMessage('sent', name, text);
+
+            // Enviar para webhook
+            try {
+                const response = await fetch('/api/evolution/webhook/1', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        event: 'messages.upsert',
+                        instance: 'Chrystian',
+                        data: {
+                            key: {
+                                remoteJid: `${phone}@s.whatsapp.net`,
+                                fromMe: false,
+                                id: `MSG_${Date.now()}`
+                            },
+                            pushName: name,
+                            message: {
+                                conversation: text
+                            }
+                        }
+                    })
+                });
+
+                const data = await response.json();
+
+                // Adicionar resposta do bot
+                if (data.response) {
+                    setTimeout(() => {
+                        addMessage('received', 'Bot Kairix', data.response);
+                    }, 500);
+                }
+
+            } catch (error) {
+                console.error('Erro ao enviar:', error);
+                addMessage('received', 'Sistema', '❌ Erro ao enviar mensagem');
+            }
+
+            // Limpar campo
+            messageInput.value = '';
+            messageInput.focus();
+        });
+
+        function addMessage(type, sender, text) {
+            // Remover empty state
+            const emptyState = messagesContainer.querySelector('.empty-state');
+            if (emptyState) {
+                emptyState.remove();
+            }
+
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            messageDiv.innerHTML = `
+                <div class="message-header">
+                    <span><strong>${sender}</strong></span>
+                    <span>${new Date().toLocaleTimeString('pt-BR')}</span>
+                </div>
+                <div class="message-text">${text}</div>
+            `;
+
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        // Atalho Enter para enviar
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                form.requestSubmit();
+            }
+        });
+    </script>
+</body>
+</html>

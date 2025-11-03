@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+
+{% block title %}Integrações - Kairix{% endblock %}
+
+{% block content %}
+<div class="content-header">
+    <h1>🔌 Integrações</h1>
+    <p>Configure integrações com Evolution API e outros serviços</p>
+</div>
+
+<div class="section-card">
+    <h3>🚀 Evolution API</h3>
+    <p style="color: rgba(255,255,255,0.7); margin-bottom: 20px;">
+        Configure a conexão com a Evolution API para envio e recebimento de mensagens WhatsApp
+    </p>
+
+    <form id="form-evolution">
+        <div class="form-group">
+            <label>URL da Evolution API *</label>
+            <input type="url" id="evolution-url" placeholder="https://evolution-api.com" required>
+            <small>URL base da sua instância Evolution API</small>
+        </div>
+
+        <div class="form-group">
+            <label>API Key *</label>
+            <input type="text" id="evolution-apikey" placeholder="Sua API Key" required>
+            <small>Chave de autenticação da Evolution API</small>
+        </div>
+
+        <div class="form-group">
+            <label>Nome da Instância *</label>
+            <input type="text" id="evolution-instance" placeholder="Ex: minha-empresa" required>
+            <small>Nome da instância WhatsApp na Evolution API</small>
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+            <button type="submit" class="btn btn-success">💾 Salvar Configuração</button>
+            <button type="button" class="btn btn-primary" onclick="testEvolutionConnection()">🔍 Testar Conexão</button>
+        </div>
+    </form>
+
+    <!-- Status da Conexão -->
+    <div id="evolution-status" style="margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 8px; display: none;">
+        <h4>Status da Conexão</h4>
+        <div id="evolution-status-content"></div>
+    </div>
+</div>
+
+<div class="section-card" style="margin-top: 20px;">
+    <h3>📊 Webhook Configuration</h3>
+    <p style="color: rgba(255,255,255,0.7); margin-bottom: 20px;">
+        Configure o webhook para receber eventos da Evolution API
+    </p>
+
+    <div class="form-group">
+        <label>URL do Webhook</label>
+        <input type="text" id="webhook-url" readonly value="{{ webhook_url }}">
+        <small>Use esta URL na configuração da sua Evolution API</small>
+    </div>
+
+    <div class="form-group">
+        <label>Eventos Monitorados</label>
+        <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px;">
+            <label style="display: flex; align-items: center; gap: 10px;">
+                <input type="checkbox" id="event-messages" checked disabled>
+                <span>📨 Mensagens (MESSAGES_UPSERT)</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 10px;">
+                <input type="checkbox" id="event-connection" checked disabled>
+                <span>🔗 Status de Conexão (CONNECTION_UPDATE)</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 10px;">
+                <input type="checkbox" id="event-qrcode" checked disabled>
+                <span>📱 QR Code (QRCODE_UPDATED)</span>
+            </label>
+        </div>
+    </div>
+
+    <button class="btn btn-primary" onclick="refreshWebhookStatus()">🔄 Verificar Status</button>
+
+    <!-- Log de Webhooks Recentes -->
+    <div style="margin-top: 30px;">
+        <h4>📋 Webhooks Recentes (Últimas 24h)</h4>
+        <div id="webhook-logs" style="margin-top: 15px;">
+            <div class="empty-state">
+                <div class="empty-state-icon">📭</div>
+                <p>Nenhum webhook recebido ainda</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="section-card" style="margin-top: 20px;">
+    <h3>🔧 Outras Integrações</h3>
+    <p style="color: rgba(255,255,255,0.7); margin-bottom: 20px;">
+        Integrações adicionais disponíveis em breve
+    </p>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+        <div style="padding: 20px; background: rgba(255,255,255,0.03); border-radius: 10px; border: 2px dashed rgba(255,255,255,0.1);">
+            <h4 style="margin: 0 0 10px 0;">💳 Pagamentos</h4>
+            <p style="color: rgba(255,255,255,0.6); font-size: 0.9rem; margin-bottom: 15px;">
+                Integração com gateways de pagamento
+            </p>
+            <span style="padding: 5px 10px; background: rgba(255,255,255,0.1); border-radius: 5px; font-size: 0.85rem;">Em Breve</span>
+        </div>
+
+        <div style="padding: 20px; background: rgba(255,255,255,0.03); border-radius: 10px; border: 2px dashed rgba(255,255,255,0.1);">
+            <h4 style="margin: 0 0 10px 0;">📧 Email</h4>
+            <p style="color: rgba(255,255,255,0.6); font-size: 0.9rem; margin-bottom: 15px;">
+                Envio de emails automatizados
+            </p>
+            <span style="padding: 5px 10px; background: rgba(255,255,255,0.1); border-radius: 5px; font-size: 0.85rem;">Em Breve</span>
+        </div>
+
+        <div style="padding: 20px; background: rgba(255,255,255,0.03); border-radius: 10px; border: 2px dashed rgba(255,255,255,0.1);">
+            <h4 style="margin: 0 0 10px 0;">🗄️ CRM</h4>
+            <p style="color: rgba(255,255,255,0.6); font-size: 0.9rem; margin-bottom: 15px;">
+                Sincronização com CRM externo
+            </p>
+            <span style="padding: 5px 10px; background: rgba(255,255,255,0.1); border-radius: 5px; font-size: 0.85rem;">Em Breve</span>
+        </div>
+
+        <div style="padding: 20px; background: rgba(255,255,255,0.03); border-radius: 10px; border: 2px dashed rgba(255,255,255,0.1);">
+            <h4 style="margin: 0 0 10px 0;">📊 Analytics</h4>
+            <p style="color: rgba(255,255,255,0.6); font-size: 0.9rem; margin-bottom: 15px;">
+                Google Analytics e métricas
+            </p>
+            <span style="padding: 5px 10px; background: rgba(255,255,255,0.1); border-radius: 5px; font-size: 0.85rem;">Em Breve</span>
+        </div>
+    </div>
+</div>
+
+<div class="section-card" style="margin-top: 20px;">
+    <h3>ℹ️ Informações Importantes</h3>
+    <ul style="color: rgba(255,255,255,0.7); line-height: 1.8;">
+        <li>A Evolution API é necessária para o funcionamento do bot WhatsApp</li>
+        <li>Certifique-se de que sua instância Evolution está ativa e conectada</li>
+        <li>O webhook deve estar configurado na Evolution API para receber eventos</li>
+        <li>Teste a conexão antes de começar a usar o bot</li>
+        <li>Mantenha sua API Key segura e não compartilhe com terceiros</li>
+    </ul>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    loadEvolutionConfig();
+    loadWebhookUrl();
+});
+</script>
+{% endblock %}

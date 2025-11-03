@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}Conversas - Kairix{% endblock %}
+
+{% block content %}
+<div class="content-header">
+    <h1>💬 Conversas</h1>
+    <p>Visualize todas as conversas e mensagens dos seus clientes</p>
+</div>
+
+<!-- Filtros e Cards de Estatísticas -->
+<div style="display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; align-items: center;">
+    <!-- Filtros de Data -->
+    <div style="display: flex; gap: 10px; align-items: center;">
+        <label style="font-size: 13px; color: rgba(255,255,255,0.7);">Período:</label>
+        <input type="date" id="data-inicio-conversas" style="padding: 5px 10px; border-radius: 5px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: white; font-size: 12px;">
+        <span style="color: rgba(255,255,255,0.5);">até</span>
+        <input type="date" id="data-fim-conversas" style="padding: 5px 10px; border-radius: 5px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: white; font-size: 12px;">
+        <button onclick="filtrarConversasPorData()" style="padding: 6px 15px; border-radius: 5px; background: var(--primary-red); border: 2px solid var(--primary-red-light); color: white; font-size: 12px; cursor: pointer; font-weight: 600; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 5px 15px rgba(255,90,90,0.4)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">Filtrar</button>
+        <button onclick="limparFiltroConversas()" style="padding: 6px 15px; border-radius: 5px; background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.2); color: white; font-size: 12px; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.15)'; this.style.borderColor='rgba(255,255,255,0.4)';" onmouseout="this.style.background='rgba(255,255,255,0.1)'; this.style.borderColor='rgba(255,255,255,0.2)';">Limpar</button>
+    </div>
+
+    <!-- Cards Compactos -->
+    <div style="flex: 1; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px;">
+        <div class="stat-card" style="padding: 8px 12px; display: flex; align-items: center; gap: 10px;">
+            <span style="font-size: 20px;">💬</span>
+            <div>
+                <div class="stat-value" id="total-conversas-stat" style="font-size: 20px; margin: 0;">{{ stats.total_conversas | default(0) }}</div>
+                <div class="stat-label" style="font-size: 10px; margin: 0;">Conversas</div>
+            </div>
+        </div>
+        <div class="stat-card" style="padding: 8px 12px; display: flex; align-items: center; gap: 10px;">
+            <span style="font-size: 20px;">✅</span>
+            <div>
+                <div class="stat-value" id="conversas-ativas-stat" style="font-size: 20px; margin: 0;">{{ stats.conversas_ativas | default(0) }}</div>
+                <div class="stat-label" style="font-size: 10px; margin: 0;">Ativas</div>
+            </div>
+        </div>
+        <div class="stat-card" style="padding: 8px 12px; display: flex; align-items: center; gap: 10px;">
+            <span style="font-size: 20px;">📨</span>
+            <div>
+                <div class="stat-value" id="total-mensagens-stat" style="font-size: 20px; margin: 0;">{{ stats.total_mensagens | default(0) }}</div>
+                <div class="stat-label" style="font-size: 10px; margin: 0;">Mensagens</div>
+            </div>
+        </div>
+        <div class="stat-card" style="padding: 8px 12px; display: flex; align-items: center; gap: 10px;">
+            <span style="font-size: 20px;">⚡</span>
+            <div>
+                <div class="stat-value" id="tempo-medio-resposta" style="font-size: 20px; margin: 0;">{{ stats.tempo_medio | default('0s') }}</div>
+                <div class="stat-label" style="font-size: 10px; margin: 0;">Tempo Médio</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Grid de Conversas e Mensagens -->
+<div style="display: grid; grid-template-columns: 400px 1fr; gap: 20px; height: calc(100vh - 320px);">
+    <!-- Lista de Conversas -->
+    <div class="section-card" style="display: flex; flex-direction: column; padding: 0; max-height: calc(100vh - 320px);">
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 20px; border-bottom: 1px solid var(--border-color);">
+            <h3 style="margin: 0;">📋 Lista de Conversas</h3>
+            <button class="btn-secondary" onclick="loadConversasSection()" style="padding: 8px 16px; font-size: 14px;">🔄 Atualizar</button>
+        </div>
+        <div id="conversas-list-section" style="flex: 1; overflow-y: auto; padding: 10px;">
+            <div style="text-align: center; padding: 50px 20px; color: rgba(255,255,255,0.5);">
+                Carregando conversas...
+            </div>
+        </div>
+    </div>
+
+    <!-- Mensagens da Conversa Selecionada -->
+    <div class="section-card" style="display: flex; flex-direction: column; padding: 0; max-height: calc(100vh - 320px);">
+        <div style="border-bottom: 1px solid var(--border-color); padding: 20px;">
+            <h3 style="margin: 0 0 5px 0;" id="conversa-titulo-section">📱 Selecione uma conversa</h3>
+            <p style="margin: 0; font-size: 13px; color: rgba(255,255,255,0.6);" id="conversa-info-section"></p>
+        </div>
+        <div id="mensagens-list-section" style="flex: 1; overflow-y: auto; padding: 20px;">
+            <div style="text-align: center; padding: 100px 20px; color: rgba(255,255,255,0.5);">
+                👈 Selecione uma conversa à esquerda para ver as mensagens
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Carregar conversas ao abrir a página
+document.addEventListener('DOMContentLoaded', function() {
+    loadConversasSection();
+});
+</script>
+{% endblock %}

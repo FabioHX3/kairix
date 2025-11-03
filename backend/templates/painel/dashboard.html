@@ -1,0 +1,236 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Kairix{% endblock %}
+
+{% block content %}
+<div class="content-header">
+    <h1>Dashboard de Configuração</h1>
+    <p>Acompanhe o progresso da configuração do seu bot</p>
+</div>
+
+<!-- Cards de Estatísticas -->
+<div class="dashboard-grid">
+    {% if plan_type and plan_type.value == 'agente_ia' %}
+    <!-- Cards para Agente IA -->
+    <div class="stat-card">
+        <div class="stat-icon">🤖</div>
+        <div class="stat-value" id="stat-msgs">{{ stats.total_mensagens | default(0) }}</div>
+        <div class="stat-label">Consultas Respondidas</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon">📚</div>
+        <div class="stat-value" id="stat-contacts">{{ config.documentos_count | default(0) }}</div>
+        <div class="stat-label">Documentos Treinados</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon">🎯</div>
+        <div class="stat-value">-</div>
+        <div class="stat-label">Taxa de Precisão</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon">⚡</div>
+        <div class="stat-value">< 1s</div>
+        <div class="stat-label">Tempo Resposta IA</div>
+    </div>
+
+    {% elif plan_type and plan_type.value == 'agente_financeiro' %}
+    <!-- Cards para Agente Financeiro -->
+    <div class="stat-card">
+        <div class="stat-icon">💰</div>
+        <div class="stat-value">R$ 0,00</div>
+        <div class="stat-label">Receitas do Mês</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon">💸</div>
+        <div class="stat-value">R$ 0,00</div>
+        <div class="stat-label">Despesas do Mês</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon">📊</div>
+        <div class="stat-value">R$ 0,00</div>
+        <div class="stat-label">Saldo Atual</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon">📈</div>
+        <div class="stat-value">0</div>
+        <div class="stat-label">Transações Hoje</div>
+    </div>
+
+    {% else %}
+    <!-- Cards para Agente Normal (Padrão) -->
+    <div class="stat-card">
+        <div class="stat-icon">💬</div>
+        <div class="stat-value" id="stat-msgs">{{ stats.total_mensagens | default(0) }}</div>
+        <div class="stat-label">Mensagens Hoje</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon">👥</div>
+        <div class="stat-value" id="stat-contacts">{{ stats.total_contatos | default(0) }}</div>
+        <div class="stat-label">Contatos Ativos</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon">⚡</div>
+        <div class="stat-value">< 1s</div>
+        <div class="stat-label">Tempo Resposta</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon">📈</div>
+        <div class="stat-value">-</div>
+        <div class="stat-label">Taxa Conversão</div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Status da Configuração -->
+<div class="section-card">
+    <h3>Status da Configuração</h3>
+
+    <div class="dashboard-grid" style="margin-top: 20px;">
+        {% if plan_type and plan_type.value == 'agente_ia' %}
+        <!-- Cards de Status para Agente IA -->
+        <div class="stat-card" style="border-left-color: {{ '#00D95F' if config.evolution_instance else '#FF5A5A' }}">
+            <div class="stat-icon">📱</div>
+            <div class="stat-value">{{ 'Conectado' if config.evolution_instance else 'Pendente' }}</div>
+            <div class="stat-label">WhatsApp</div>
+        </div>
+
+        <div class="stat-card" style="border-left-color: {{ '#00D95F' if config.documentos_count > 0 else '#FF5A5A' }}">
+            <div class="stat-icon">📚</div>
+            <div class="stat-value">{{ config.documentos_count | default(0) }}</div>
+            <div class="stat-label">Base de Conhecimento</div>
+        </div>
+
+        <div class="stat-card" style="border-left-color: {{ '#00D95F' if config.modelo_ia_configurado else '#FF5A5A' }}">
+            <div class="stat-icon">🧠</div>
+            <div class="stat-value">{{ 'Configurado' if config.modelo_ia_configurado else 'Pendente' }}</div>
+            <div class="stat-label">Modelo IA</div>
+        </div>
+
+        <div class="stat-card" style="border-left-color: {{ '#00D95F' if config.rag_configurado else '#FF5A5A' }}">
+            <div class="stat-icon">⚙️</div>
+            <div class="stat-value">{{ 'Configurado' if config.rag_configurado else 'Não Configurado' }}</div>
+            <div class="stat-label">RAG Config</div>
+        </div>
+
+        {% elif plan_type and plan_type.value == 'agente_financeiro' %}
+        <!-- Cards de Status para Agente Financeiro -->
+        <div class="stat-card" style="border-left-color: {{ '#00D95F' if config.evolution_instance else '#FF5A5A' }}">
+            <div class="stat-icon">📱</div>
+            <div class="stat-value">{{ 'Conectado' if config.evolution_instance else 'Pendente' }}</div>
+            <div class="stat-label">WhatsApp</div>
+        </div>
+
+        <div class="stat-card" style="border-left-color: #FF5A5A">
+            <div class="stat-icon">🏦</div>
+            <div class="stat-value">Pendente</div>
+            <div class="stat-label">Conta Bancária</div>
+        </div>
+
+        <div class="stat-card" style="border-left-color: #FF5A5A">
+            <div class="stat-icon">💳</div>
+            <div class="stat-value">0</div>
+            <div class="stat-label">Categorias</div>
+        </div>
+
+        <div class="stat-card" style="border-left-color: #FF5A5A">
+            <div class="stat-icon">📊</div>
+            <div class="stat-value">Inativo</div>
+            <div class="stat-label">Relatórios</div>
+        </div>
+
+        {% else %}
+        <!-- Cards de Status para Agente Normal (Padrão) -->
+        <div class="stat-card" style="border-left-color: {{ '#00D95F' if config.evolution_instance else '#FF5A5A' }}">
+            <div class="stat-icon">📱</div>
+            <div class="stat-value">{{ 'Conectado' if config.evolution_instance else 'Pendente' }}</div>
+            <div class="stat-label">WhatsApp</div>
+        </div>
+
+        <div class="stat-card" style="border-left-color: {{ '#00D95F' if config.respostas_rapidas else '#FF5A5A' }}">
+            <div class="stat-icon">💬</div>
+            <div class="stat-value">{{ config.respostas_count | default(0) }}</div>
+            <div class="stat-label">Respostas Rápidas</div>
+        </div>
+
+        <div class="stat-card" style="border-left-color: {{ '#00D95F' if config.menu_interativo else '#FF5A5A' }}">
+            <div class="stat-icon">📋</div>
+            <div class="stat-value">{{ 'Configurado' if config.menu_interativo else 'Pendente' }}</div>
+            <div class="stat-label">Menu Interativo</div>
+        </div>
+
+        <div class="stat-card" style="border-left-color: #FF5A5A">
+            <div class="stat-icon">👥</div>
+            <div class="stat-value">0</div>
+            <div class="stat-label">Atendentes</div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Gráfico de Mensagens (Placeholder) -->
+<div class="chart-container">
+    <div class="chart-title">Mensagens nos Últimos 7 Dias</div>
+    <div class="chart-placeholder">
+        📊 Gráfico será implementado em breve
+    </div>
+</div>
+
+<!-- Atividade Recente -->
+<div class="section-card">
+    <h3>Atividade Recente</h3>
+
+    {% if conversas_recentes %}
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Contato</th>
+                    <th>Última Mensagem</th>
+                    <th>Status</th>
+                    <th>Data</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for conversa in conversas_recentes %}
+                <tr>
+                    <td>{{ conversa.contato_nome }}</td>
+                    <td>{{ conversa.ultima_mensagem[:50] }}...</td>
+                    <td>{{ conversa.status }}</td>
+                    <td>{{ conversa.ultima_interacao.strftime('%d/%m/%Y %H:%M') }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="empty-state">
+            <div class="empty-state-icon">💬</div>
+            <p>Nenhuma conversa registrada ainda</p>
+            <p style="font-size: 0.9rem; color: rgba(255,255,255,0.5); margin-top: 10px;">
+                As conversas aparecerão aqui quando seu bot começar a receber mensagens
+            </p>
+        </div>
+    {% endif %}
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Atualizar estatísticas em tempo real (opcional)
+    async function updateDashboardStats() {
+        try {
+            const response = await fetchAuth('/api/dashboard/stats');
+            if (response.ok) {
+                const stats = await response.json();
+
+                document.getElementById('stat-msgs').textContent = stats.total_mensagens || 0;
+                document.getElementById('stat-contacts').textContent = stats.total_contatos || 0;
+            }
+        } catch (error) {
+            console.error('Erro ao atualizar stats:', error);
+        }
+    }
+
+    // Atualizar a cada 30 segundos
+    setInterval(updateDashboardStats, 30000);
+</script>
+{% endblock %}

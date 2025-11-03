@@ -1,0 +1,359 @@
+{% extends "base.html" %}
+
+{% block title %}Base de Conhecimento - Kairix{% endblock %}
+
+{% block content %}
+<div class="content-header">
+    <h1>🧠 Base de Conhecimento (RAG + IA)</h1>
+    <p>Gerencie documentos para treinar seu Agente IA</p>
+</div>
+
+<div class="preview-grid" style="align-items: start;">
+    <!-- Coluna de Configuração -->
+    <div class="config-column">
+        <div class="section-card">
+            <h3>📤 Upload de Documentos</h3>
+            <form id="form-upload-documento">
+                <div class="form-group">
+                    <label>Arquivo (PDF, DOCX ou TXT) *</label>
+                    <input type="file" id="arquivo-documento" accept=".pdf,.docx,.txt" required>
+                    <small>O documento será processado e vetorizado automaticamente</small>
+                </div>
+                <button type="submit" class="btn btn-success">📤 Enviar Documento</button>
+            </form>
+        </div>
+
+        <div class="section-card" style="margin-top: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3>📚 Documentos Cadastrados</h3>
+                <button class="btn btn-danger" onclick="limparBaseConhecimento()">🗑️ Limpar Tudo</button>
+            </div>
+
+            <div id="documentos-list">
+                <div class="empty-state">
+                    <div class="empty-state-icon">📄</div>
+                    <p>Nenhum documento cadastrado ainda</p>
+                    <p style="font-size: 0.9rem;">Faça upload de documentos para treinar seu Agente IA</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Coluna de Preview -->
+    <div class="preview-column">
+        <h3>📱 Preview em Tempo Real</h3>
+        <div class="preview-phone">
+            <div class="preview-screen">
+                <div class="preview-whatsapp-header">
+                    <div class="preview-logo-circle"><img src="/logo.png" alt="Logo"></div>
+                    <span style="font-weight: 600;">Agente IA</span>
+                </div>
+                <div class="preview-chat" id="preview-chat-base">
+                    <div class="preview-msg preview-msg-user">Olá, preciso de ajuda</div>
+                    <div class="preview-msg preview-msg-bot">Olá! Sou seu Agente IA. Como posso ajudá-lo?</div>
+                </div>
+                <div class="preview-input-box">
+                    <input type="text" id="preview-input-base" placeholder="Digite para testar..." onkeypress="if(event.key==='Enter') testPreviewBase()">
+                    <button onclick="testPreviewBase()">▶</button>
+                </div>
+            </div>
+        </div>
+        <p class="preview-helper-text">💡 Digite perguntas para testar a IA com seus documentos</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// v1.1 - Corrigido redeclaração de variável
+// currentPedidoId já declarado em common.js
+currentPedidoId = null;
+
+document.addEventListener('DOMContentLoaded', async function() {
+    // Buscar pedido ID do cliente
+    try {
+        const response = await fetch('/api/orders/me', { credentials: 'include' });
+        if (response.ok) {
+            const orders = await response.json();
+            if (orders && orders.length > 0) {
+                currentPedidoId = orders[0].id;
+                loadDocumentos();
+            }
+        }
+    } catch (error) {
+        console.error('Erro ao buscar pedido:', error);
+    }
+});
+
+// Upload de documento
+document.getElementById('form-upload-documento').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    console.log('[DEBUG] Iniciando upload, currentPedidoId:', currentPedidoId);
+
+    if (!currentPedidoId) {
+        alert('Erro: Pedido não encontrado. Recarregue a página.');
+        console.error('[DEBUG] currentPedidoId é null');
+        return;
+    }
+
+    const fileInput = document.getElementById('arquivo-documento');
+    const file = fileInput.files[0];
+
+    console.log('[DEBUG] Arquivo selecionado:', file ? file.name : 'nenhum');
+
+    if (!file) {
+        alert('Selecione um arquivo');
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    console.log('[DEBUG] Enviando para:', `/api/knowledge/upload/${currentPedidoId}`);
+
+    try {
+        const response = await fetch(`/api/knowledge/upload/${currentPedidoId}`, {
+            method: 'POST',
+            credentials: 'include',
+            body: formData
+        });
+
+        console.log('[DEBUG] Response status:', response.status);
+
+        if (response.ok) {
+            const result = await response.json();
+            console.log('[DEBUG] Upload OK:', result);
+            alert('✅ Documento enviado com sucesso!');
+            fileInput.value = '';
+            loadDocumentos();
+        } else {
+            const error = await response.json();
+            console.error('[DEBUG] Erro da API:', error);
+            alert(`Erro: ${error.detail || 'Falha no upload'}`);
+        }
+    } catch (error) {
+        console.error('[DEBUG] Erro no upload:', error);
+        alert('Erro ao fazer upload do documento: ' + error.message);
+    }
+});
+
+// Carregar lista de documentos
+async function loadDocumentos() {
+    if (!currentPedidoId) return;
+
+    const container = document.getElementById('documentos-list');
+
+    try {
+        const response = await fetch(`/api/knowledge/list/${currentPedidoId}`, {
+            credentials: 'include'
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            console.log('[DEBUG] Documentos recebidos:', data);
+
+            if (!data || !data.documents || data.documents.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📄</div>
+                        <p>Nenhum documento cadastrado ainda</p>
+                        <p style="font-size: 0.9rem;">Faça upload de documentos para treinar seu Agente IA</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            data.documents.forEach(doc => {
+                const size = doc.size ? (doc.size / 1024).toFixed(2) + ' KB' : '-';
+                const isVectorized = data.vectorized && data.vectorized.includes(doc.filename);
+                const statusIcon = isVectorized ? '✅' : '⏳';
+
+                html += `
+                    <div style="padding: 15px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <div style="font-weight: 600;">${statusIcon} ${doc.filename}</div>
+                            <div style="font-size: 12px; color: rgba(255,255,255,0.6);">
+                                📄 Tamanho: ${size} ${isVectorized ? '• Vetorizado' : '• Processando...'}
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn btn-primary" onclick="viewDocumento('${doc.filename}')" style="padding: 8px 16px;">👁️ Ver Texto</button>
+                            <button class="btn btn-danger" onclick="deleteDocumento('${doc.filename}')" style="padding: 8px 16px;">🗑️</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+    } catch (error) {
+        console.error('Erro ao carregar documentos:', error);
+    }
+}
+
+// Deletar documento
+async function deleteDocumento(filename) {
+    if (!confirm(`Deseja realmente excluir o documento "${filename}"?`)) return;
+
+    try {
+        const response = await fetch(`/api/knowledge/delete/${currentPedidoId}/${filename}`, {
+            method: 'DELETE',
+            credentials: 'include'
+        });
+
+        if (response.ok) {
+            alert('✅ Documento excluído!');
+            loadDocumentos();
+        } else {
+            alert('Erro ao excluir documento');
+        }
+    } catch (error) {
+        console.error('Erro ao excluir:', error);
+        alert('Erro ao excluir documento');
+    }
+}
+
+// Limpar base de conhecimento
+async function limparBaseConhecimento() {
+    if (!confirm('Deseja realmente limpar TODA a base de conhecimento?')) return;
+
+    try {
+        const response = await fetch(`/api/knowledge/clear/${currentPedidoId}`, {
+            method: 'DELETE',
+            credentials: 'include'
+        });
+
+        if (response.ok) {
+            alert('✅ Base de conhecimento limpa!');
+            loadDocumentos();
+        } else {
+            alert('Erro ao limpar base de conhecimento');
+        }
+    } catch (error) {
+        console.error('Erro ao limpar:', error);
+        alert('Erro ao limpar base de conhecimento');
+    }
+}
+
+// Visualizar texto extraído do documento
+async function viewDocumento(filename) {
+    try {
+        const response = await fetch(`/api/knowledge/view/${currentPedidoId}/${filename}`, {
+            credentials: 'include'
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+
+            // Criar modal para exibir o texto
+            const modal = document.createElement('div');
+            modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 9999; padding: 20px;';
+
+            modal.innerHTML = `
+                <div style="background: var(--card-bg); border-radius: 12px; max-width: 900px; width: 100%; max-height: 80vh; display: flex; flex-direction: column; border: 1px solid var(--border-color);">
+                    <div style="padding: 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+                        <h3 style="margin: 0; color: #fff;">📄 ${data.filename}</h3>
+                        <button onclick="this.closest('div').parentElement.parentElement.remove()" style="background: none; border: none; color: #fff; font-size: 24px; cursor: pointer;">&times;</button>
+                    </div>
+                    <div style="padding: 20px; overflow-y: auto; flex: 1; color: rgba(255,255,255,0.9); line-height: 1.6; white-space: pre-wrap; font-family: monospace; font-size: 14px;">
+                        ${data.content || 'Não foi possível extrair o texto deste documento.'}
+                    </div>
+                    <div style="padding: 15px; border-top: 1px solid var(--border-color); color: rgba(255,255,255,0.6); font-size: 12px;">
+                        📊 Aproximadamente ${data.chunks} chunks gerados
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+
+            // Fechar ao clicar fora do conteúdo
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.remove();
+                }
+            });
+        } else {
+            alert('Erro ao carregar documento');
+        }
+    } catch (error) {
+        console.error('Erro ao visualizar documento:', error);
+        alert('Erro ao visualizar documento');
+    }
+}
+
+// Função para testar preview com a base de conhecimento
+async function testPreviewBase() {
+    const input = document.getElementById('preview-input-base');
+    const chat = document.getElementById('preview-chat-base');
+    const pergunta = input.value.trim();
+
+    if (!pergunta) return;
+
+    // Adicionar mensagem do usuário
+    const msgUser = document.createElement('div');
+    msgUser.className = 'preview-msg preview-msg-user';
+    msgUser.textContent = pergunta;
+    chat.appendChild(msgUser);
+
+    // Adicionar mensagem de processamento
+    const msgProcessing = document.createElement('div');
+    msgProcessing.className = 'preview-msg preview-msg-bot';
+    msgProcessing.innerHTML = '🤖 Processando sua pergunta...<br><small style="opacity: 0.7;">Isso pode levar até 1 minuto</small>';
+    chat.appendChild(msgProcessing);
+    chat.scrollTop = chat.scrollHeight;
+
+    input.value = '';
+
+    // Testar RAG real com timeout de 90 segundos
+    try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 90000);
+
+        const response = await fetch(`/api/knowledge/test/${currentPedidoId}`, {
+            method: 'POST',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ query: pergunta }),
+            signal: controller.signal
+        });
+
+        clearTimeout(timeoutId);
+
+        // Remover mensagem de processamento
+        msgProcessing.remove();
+
+        if (response.ok) {
+            const result = await response.json();
+            const msgBot = document.createElement('div');
+            msgBot.className = 'preview-msg preview-msg-bot';
+            msgBot.textContent = result.response || '🤖 Resposta do Agente IA';
+            chat.appendChild(msgBot);
+        } else {
+            const error = await response.json();
+            const msgBot = document.createElement('div');
+            msgBot.className = 'preview-msg preview-msg-bot';
+            msgBot.textContent = '⚠️ Erro: ' + (error.detail || 'Falha ao consultar base de conhecimento');
+            chat.appendChild(msgBot);
+        }
+    } catch (error) {
+        // Remover mensagem de processamento
+        msgProcessing.remove();
+
+        console.error('Erro ao testar RAG:', error);
+        const msgBot = document.createElement('div');
+        msgBot.className = 'preview-msg preview-msg-bot';
+
+        if (error.name === 'AbortError') {
+            msgBot.textContent = '⏱️ Tempo esgotado. A IA está processando muitos dados. Tente novamente.';
+        } else {
+            msgBot.textContent = '❌ Erro de conexão. Verifique se o serviço de IA está ativo.';
+        }
+        chat.appendChild(msgBot);
+    }
+
+    chat.scrollTop = chat.scrollHeight;
+}
+</script>
+{% endblock %}

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Configurar Cookie de Teste</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #1a1a2e;
+            color: white;
+        }
+        .container {
+            background: #16213e;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #ff5a5a;
+            margin-bottom: 20px;
+        }
+        button {
+            background: #ff5a5a;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #ff3333;
+        }
+        .success {
+            background: #10b981;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 20px;
+            display: none;
+        }
+        input {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.1);
+            color: white;
+            width: 100px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Configurar Cookie de Teste</h1>
+        <p>Esta página define o cookie <code>client_id</code> para testar o painel.</p>
+
+        <div style="margin: 20px 0;">
+            <label>Client ID: </label>
+            <input type="number" id="clientId" value="1" min="1">
+        </div>
+
+        <button onclick="setCookie()">✅ Definir Cookie e Ir para Conversas</button>
+        <button onclick="setCookieAndGoDashboard()">📊 Definir Cookie e Ir para Dashboard</button>
+        <button onclick="clearCookie()">🗑️ Limpar Cookie</button>
+
+        <div class="success" id="successMsg">
+            ✅ Cookie definido com sucesso!
+        </div>
+
+        <div style="margin-top: 30px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 5px; font-size: 14px;">
+            <strong>📝 IDs disponíveis no banco:</strong><br>
+            • Cliente ID 1: Chrystian de Paula Rezende<br>
+            • Cliente ID 5: Fabio Amorim<br><br>
+            <strong>Pedido ID 1</strong> (Cliente 1) tem 3 conversas de teste.
+        </div>
+    </div>
+
+    <script>
+        function setCookie() {
+            const clientId = document.getElementById('clientId').value;
+            document.cookie = `client_id=${clientId}; path=/; max-age=86400`; // 24 horas
+
+            const msg = document.getElementById('successMsg');
+            msg.style.display = 'block';
+
+            setTimeout(() => {
+                window.location.href = '/painel/conversas';
+            }, 1000);
+        }
+
+        function setCookieAndGoDashboard() {
+            const clientId = document.getElementById('clientId').value;
+            document.cookie = `client_id=${clientId}; path=/; max-age=86400`;
+
+            const msg = document.getElementById('successMsg');
+            msg.style.display = 'block';
+
+            setTimeout(() => {
+                window.location.href = '/painel/dashboard';
+            }, 1000);
+        }
+
+        function clearCookie() {
+            document.cookie = 'client_id=; path=/; max-age=0';
+            alert('Cookie limpo!');
+        }
+    </script>
+</body>
+</html>

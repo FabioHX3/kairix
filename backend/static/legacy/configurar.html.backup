@@ -1,0 +1,4392 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurar Bot - Kairix</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --primary-red-light: #FF5A5A;
+            --primary-red-dark: #9A0000;
+            --primary-gradient: linear-gradient(135deg, var(--primary-red-light), var(--primary-red-dark));
+            --dark-bg: #121212;
+            --sidebar-bg: #1a1a1a;
+            --card-bg: #1e1e1e;
+            --text-light: #ffffff;
+            --success-green: #00D95F;
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: var(--sidebar-bg);
+            padding: 30px 20px;
+            border-right: 1px solid var(--border-color);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            margin-bottom: 40px;
+        }
+
+        .sidebar-header img {
+            height: 60px;
+            margin-bottom: 10px;
+        }
+
+        .sidebar-header h3 {
+            font-size: 1.2rem;
+            color: var(--primary-red-light);
+        }
+
+        .sidebar-header p {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .menu-section {
+            margin-bottom: 30px;
+        }
+
+        .menu-section-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .menu-item {
+            padding: 12px 15px;
+            margin-bottom: 5px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .menu-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .menu-item.active {
+            background: var(--primary-gradient);
+        }
+
+        .menu-item-icon {
+            font-size: 1.2rem;
+        }
+
+        .menu-item-text {
+            flex: 1;
+        }
+
+        .menu-item-badge {
+            background: var(--success-green);
+            color: white;
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        .menu-item-badge.pending {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            flex: 1;
+            padding: 40px;
+        }
+
+        .content-header {
+            margin-bottom: 30px;
+        }
+
+        .content-header h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .content-header p {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Dashboard Cards */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+            padding: 15px;
+            border-left: 4px solid #FF5A5A;
+        }
+
+        .stat-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: rgba(255,255,255,0.6);
+            margin-top: 3px;
+        }
+
+        .chart-container {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 30px;
+            border: 1px solid rgba(255,90,90,0.1);
+            margin-bottom: 30px;
+        }
+
+        .chart-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .chart-placeholder {
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255,255,255,0.3);
+        }
+
+        /* Content Section */
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        /* Esconder preview-column quando seção não está ativa */
+        .content-section:not(.active) .preview-column {
+            display: none !important;
+            visibility: hidden !important;
+            position: absolute !important;
+            left: -9999px !important;
+        }
+
+        /* Garantir que preview-column só apareça na seção de base-conhecimento ativa */
+        #section-base-conhecimento:not(.active) .preview-column {
+            display: none !important;
+        }
+
+        .section-card {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 20px;
+        }
+
+        .section-card h3 {
+            margin-bottom: 20px;
+            color: var(--primary-red-light);
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-group small {
+            display: block;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.85rem;
+            margin-top: 5px;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 25px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255, 90, 90, 0.3);
+        }
+
+        .btn-success {
+            background: var(--success-green);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        /* Table */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .data-table th {
+            text-align: left;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .data-table td {
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .data-table tr:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-icon {
+            padding: 8px 12px;
+            font-size: 0.9rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        /* Order Card Styles */
+        .order-info-card {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 30px;
+        }
+
+        .order-info-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .order-info-title {
+            font-size: 1.5rem;
+            color: var(--primary-red-light);
+        }
+
+        .order-info-id {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+        }
+
+        .order-info-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .order-details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .order-detail-item {
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+        }
+
+        .order-detail-label {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.85rem;
+            margin-bottom: 5px;
+        }
+
+        .order-detail-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        /* Timeline Styles */
+        .status-timeline-section {
+            margin-top: 30px;
+        }
+
+        .timeline-title {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            color: var(--primary-red-light);
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 40px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-bottom: 25px;
+        }
+
+        .timeline-item:last-child {
+            padding-bottom: 0;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: -32px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            border: 3px solid var(--dark-bg);
+        }
+
+        .timeline-item.active .timeline-dot {
+            background: var(--primary-red-light);
+            box-shadow: 0 0 0 4px rgba(255, 90, 90, 0.2);
+        }
+
+        .timeline-item.completed .timeline-dot {
+            background: var(--success-green);
+        }
+
+        .timeline-content {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .timeline-status {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .timeline-date {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .timeline-notes {
+            margin-top: 8px;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Modal Meus Dados */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 9999;
+            overflow-y: auto;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: #1a1a1a;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .modal-header h2 {
+            font-size: 1.8rem;
+            color: #FF5A5A;
+        }
+
+        .modal-close {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 90, 90, 0.3);
+            transform: rotate(90deg);
+        }
+
+        .modal-form-group {
+            margin-bottom: 20px;
+        }
+
+        .modal-form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .modal-form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .modal-form-group input:focus {
+            outline: none;
+            border-color: #FF5A5A;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .modal-form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .modal-required {
+            color: #FF5A5A;
+        }
+
+        .modal-btn-save {
+            width: 100%;
+            background: linear-gradient(135deg, #FF5A5A, #9A0000);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .modal-btn-save:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(255, 90, 90, 0.4);
+        }
+
+        .modal-btn-save:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .modal-success {
+            background: rgba(0, 217, 95, 0.2);
+            border: 1px solid rgba(0, 217, 95, 0.5);
+            color: #00D95F;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .modal-success.active {
+            display: block;
+        }
+
+        .modal-error {
+            background: rgba(255, 0, 0, 0.2);
+            border: 1px solid rgba(255, 0, 0, 0.5);
+            color: #ff6b6b;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .modal-error.active {
+            display: block;
+        }
+
+        /* Botão Hambúrguer Mobile */
+        .mobile-menu-btn {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 10001;
+            background: var(--primary-gradient);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            cursor: pointer;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            box-shadow: 0 4px 15px rgba(255, 90, 90, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(255, 90, 90, 0.4);
+        }
+
+        .mobile-menu-btn span {
+            width: 25px;
+            height: 3px;
+            background: white;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu-btn.active span:nth-child(1) {
+            transform: rotate(45deg) translate(7px, 7px);
+        }
+
+        .mobile-menu-btn.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .mobile-menu-btn.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -7px);
+        }
+
+        /* Overlay para Mobile */
+        .mobile-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 9998;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .mobile-overlay.active {
+            display: block;
+            opacity: 1;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: flex;
+            }
+
+            .sidebar {
+                position: fixed;
+                left: -100%;
+                top: 0;
+                width: 280px;
+                height: 100vh;
+                z-index: 9999;
+                transition: left 0.3s ease;
+                overflow-y: auto;
+            }
+
+            .sidebar.mobile-open {
+                left: 0;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 80px 20px 20px 20px;
+                width: 100%;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .order-info-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .timeline {
+                padding-left: 30px;
+            }
+
+            .timeline-dot {
+                left: -27px;
+            }
+
+            .modal-content {
+                padding: 25px;
+                max-width: 95%;
+            }
+
+            .modal-form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .content-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .stat-card {
+                padding: 15px;
+            }
+
+            .stat-value {
+                font-size: 24px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .mobile-menu-btn {
+                width: 45px;
+                height: 45px;
+                top: 15px;
+                left: 15px;
+            }
+
+            .main-content {
+                padding: 70px 15px 15px 15px;
+            }
+
+            .sidebar {
+                width: 100%;
+                left: -100%;
+            }
+
+            .sidebar.mobile-open {
+                left: 0;
+            }
+        }
+
+        /* Submenu Mobile */
+        .mobile-sidebar nav ul li.has-submenu > a {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .mobile-sidebar nav ul li.has-submenu > a::after {
+            content: '▼';
+            font-size: 0.8rem;
+            transition: transform 0.3s ease;
+        }
+
+        .mobile-sidebar nav ul li.has-submenu.open > a::after {
+            transform: rotate(180deg);
+        }
+
+        .mobile-sidebar nav ul li .submenu {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            padding-left: 20px;
+        }
+
+        .mobile-sidebar nav ul li.has-submenu.open .submenu {
+            max-height: 300px;
+            margin-top: 10px;
+        }
+
+        .mobile-sidebar nav ul li .submenu a {
+            padding: 10px 0;
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.8);
+            border-left: 2px solid rgba(255, 90, 90, 0.3);
+            padding-left: 15px;
+            margin-bottom: 8px;
+        }
+
+        .mobile-sidebar nav ul li .submenu a:hover {
+            color: #FF5A5A;
+            border-left-color: #FF5A5A;
+        }
+
+        /* Formulário Meus Dados Tab */
+        .form-container-tab {
+            padding: 40px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .form-section {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 20px;
+        }
+
+        /* Plano Card */
+        .plan-card {
+            background: linear-gradient(135deg, rgba(255,90,90,0.2), rgba(154,0,0,0.2));
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+
+        .plan-name {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .plan-price {
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+
+        .plan-features {
+            list-style: none;
+        }
+
+        .plan-features li {
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .plan-features li::before {
+            content: '✓ ';
+            color: var(--success-green);
+            margin-right: 10px;
+        }
+
+        /* WhatsApp Phone Preview */
+        /* Grid Layout para Seções com Preview */
+        .preview-grid {
+            display: grid;
+            grid-template-columns: 60% 40%;
+            gap: 30px;
+            min-height: 80vh;
+        }
+
+        .config-column {
+            padding-right: 20px;
+        }
+
+        .preview-column {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: transparent;
+            padding: 20px;
+            position: sticky;
+            top: 80px;
+            align-self: flex-start;
+        }
+
+        .preview-column h3 {
+            color: #25D366;
+            font-size: 18px;
+            margin-bottom: 10px;
+            margin-top: 0;
+            text-align: center;
+        }
+
+        .preview-phone {
+            background: #000;
+            border-radius: 40px;
+            padding: 15px;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.9);
+            border: 3px solid #333;
+            width: 100%;
+            max-width: 350px;
+        }
+
+        .preview-screen {
+            background: #ECE5DD;
+            border-radius: 25px;
+            overflow: hidden;
+            height: 600px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .preview-whatsapp-header {
+            background: #075E54;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+        }
+
+        .preview-logo-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .preview-logo-circle img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .preview-chat {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #ECE5DD url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><text x="10" y="50" font-size="80" opacity="0.05">💬</text></svg>');
+        }
+
+        .preview-msg {
+            max-width: 70%;
+            padding: 10px 12px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            word-wrap: break-word;
+            animation: fadeIn 0.3s;
+            color: #000;
+            font-size: 14px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .preview-msg-user {
+            background: white;
+            margin-left: auto;
+            margin-right: 0;
+            border-bottom-right-radius: 2px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .preview-msg-bot {
+            background: #DCF8C6;
+            margin-right: auto;
+            margin-left: 0;
+            border-bottom-left-radius: 2px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .preview-input-box {
+            background: white;
+            padding: 10px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .preview-input-box input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            font-size: 13px;
+            background: #F0F0F0;
+            color: #333;
+            max-width: calc(100% - 60px);
+        }
+
+        .preview-input-box button {
+            background: #25D366;
+            border: none;
+            border-radius: 50%;
+            width: 42px;
+            height: 42px;
+            min-width: 42px;
+            min-height: 42px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            font-size: 18px;
+            padding: 0;
+            flex-shrink: 0;
+        }
+
+        .preview-input-box button:hover {
+            background: #128C7E;
+        }
+
+        .preview-menu-option {
+            background: white;
+            padding: 12px;
+            margin: 5px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            color: #000;
+            font-size: 14px;
+        }
+
+        .preview-menu-option:hover {
+            background: #f5f5f5;
+        }
+
+        .preview-helper-text {
+            font-size: 11px;
+            color: rgba(255,255,255,0.5);
+            margin-top: 8px;
+            margin-bottom: 0;
+            text-align: center;
+        }
+
+        .phone {
+            background: #000;
+            border-radius: 40px;
+            padding: 15px;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.9);
+            border: 3px solid #333;
+            width: 100%;
+            max-width: 380px;
+        }
+
+        .screen {
+            background: #ECE5DD;
+            border-radius: 25px;
+            overflow: hidden;
+            height: 650px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .whatsapp-header {
+            background: #25D366;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+        }
+
+        .logo-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+            padding: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-circle img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .chat {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAADNJREFUeNpi/P//PwMhwATEDEQqZgQRQwMhwATGDEQqZgQRQwMhwATGDEQqZgQRQAABAH1KA/+hLDr7AAAAAElFTkSuQmCC') repeat;
+        }
+
+        .msg {
+            max-width: 70%;
+            padding: 10px 14px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            font-size: 14px;
+            line-height: 1.4;
+            word-wrap: break-word;
+        }
+
+        .msg-user {
+            background: #DCF8C6;
+            margin-left: auto;
+            color: #000;
+        }
+
+        .msg-bot {
+            background: white;
+            margin-right: auto;
+            color: #000;
+        }
+
+        .menu-btn {
+            background: white;
+            border: 1px solid #25D366;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 5px 0;
+            color: #000;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .menu-btn:hover {
+            background: rgba(37,211,102,0.1);
+        }
+
+        .input-box {
+            background: #f0f0f0;
+            padding: 10px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .input-box input {
+            flex: 1;
+            padding: 10px;
+            border-radius: 20px;
+            border: none;
+            background: white;
+            color: #000;
+        }
+
+        .input-box button {
+            background: #25D366;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .input-box button:hover {
+            background: #1fa855;
+        }
+    </style>
+</head>
+<body>
+    <!-- Botão Menu Mobile -->
+    <button class="mobile-menu-btn" id="mobileMenuBtn" onclick="toggleMobileMenu()">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
+    <!-- Overlay Mobile -->
+    <div class="mobile-overlay" id="mobileOverlay" onclick="closeMobileMenu()"></div>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <img src="/logo.png" alt="Kairix">
+            <h3 id="productName">Carregando...</h3>
+            <p id="planName">Carregando...</p>
+        </div>
+
+        <div class="menu-section">
+            <div class="menu-section-title">Visão Geral</div>
+            <div class="menu-item active" onclick="showSection('dashboard')">
+                <span class="menu-item-icon">📊</span>
+                <span class="menu-item-text">Dashboard</span>
+            </div>
+            <div class="menu-item" onclick="showSection('conversas')">
+                <span class="menu-item-icon">💬</span>
+                <span class="menu-item-text">Conversas</span>
+                <span class="menu-item-badge" id="badge-conversas" style="background: var(--success-green);">0</span>
+            </div>
+        </div>
+
+        <div class="menu-section">
+            <div class="menu-section-title">Configurações</div>
+            <div class="menu-item" id="menu-item-respostas" onclick="showSection('respostas')">
+                <span class="menu-item-icon">💬</span>
+                <span class="menu-item-text">Respostas Predefinidas</span>
+                <span class="menu-item-badge pending" id="badge-respostas">0</span>
+            </div>
+            <div class="menu-item" id="menu-item-menu" onclick="showSection('menu')">
+                <span class="menu-item-icon">📋</span>
+                <span class="menu-item-text">Menu Interativo</span>
+                <span class="menu-item-badge pending" id="badge-menu">Pendente</span>
+            </div>
+            <div class="menu-item" id="menu-item-base-conhecimento" onclick="showSection('base-conhecimento')" style="display: none;">
+                <span class="menu-item-icon">🤖</span>
+                <span class="menu-item-text">Base de Conhecimento</span>
+                <span class="menu-item-badge" id="badge-base-conhecimento">0</span>
+            </div>
+            <div class="menu-item" onclick="showSection('fluxos')" style="display: none;">
+                <span class="menu-item-icon">🔄</span>
+                <span class="menu-item-text">Fluxos de Conversa</span>
+                <span class="menu-item-badge pending" id="badge-fluxos">0</span>
+            </div>
+            <div class="menu-item" onclick="showSection('integracoes')" style="display: none;">
+                <span class="menu-item-icon">🔗</span>
+                <span class="menu-item-text">Integrações</span>
+                <span class="menu-item-badge pending" id="badge-integracoes">Pendente</span>
+            </div>
+            <div class="menu-item" onclick="showSection('atendentes')">
+                <span class="menu-item-icon">👥</span>
+                <span class="menu-item-text">Atendentes</span>
+                <span class="menu-item-badge" id="badge-atendentes">0</span>
+            </div>
+        </div>
+
+        <div class="menu-section">
+            <div class="menu-section-title">Ações</div>
+            <div class="menu-item" onclick="openMyDataModal()">
+                <span class="menu-item-icon">👤</span>
+                <span class="menu-item-text">Meus Dados</span>
+            </div>
+            <div class="menu-item" onclick="openChangePasswordModal()">
+                <span class="menu-item-icon">🔒</span>
+                <span class="menu-item-text">Alterar Senha</span>
+            </div>
+            <div class="menu-item" onclick="logout()">
+                <span class="menu-item-icon">🚪</span>
+                <span class="menu-item-text">Sair do Painel</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Dashboard Section -->
+        <div class="content-section active" id="section-dashboard">
+            <div class="content-header">
+                <h1>Dashboard de Configuração</h1>
+                <p>Acompanhe o progresso da configuração do seu bot</p>
+            </div>
+
+            <!-- Cards de Estatísticas -->
+            <div class="dashboard-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">💬</div>
+                    <div class="stat-value" id="stat-msgs">0</div>
+                    <div class="stat-label">Mensagens Hoje</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-value" id="stat-contacts">0</div>
+                    <div class="stat-label">Contatos Ativos</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⚡</div>
+                    <div class="stat-value">< 1s</div>
+                    <div class="stat-label">Tempo Resposta</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📈</div>
+                    <div class="stat-value">-</div>
+                    <div class="stat-label">Taxa Conversão</div>
+                </div>
+            </div>
+
+            <!-- Gráfico de Atividade -->
+            <div class="chart-container">
+                <div class="chart-title">📊 Atividade de Conversas</div>
+                <canvas id="metricsChart" width="400" height="120"></canvas>
+            </div>
+        </div>
+
+        <!-- Seção de Conversas -->
+        <div class="content-section" id="section-conversas">
+            <div class="content-header">
+                <h1>💬 Conversas</h1>
+                <p>Visualize todas as conversas e mensagens dos seus clientes</p>
+            </div>
+
+            <!-- Filtros e Cards de Estatísticas -->
+            <div style="display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; align-items: center;">
+                <!-- Filtros de Data -->
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <label style="font-size: 13px; color: rgba(255,255,255,0.7);">Período:</label>
+                    <input type="date" id="data-inicio-conversas" style="padding: 5px 10px; border-radius: 5px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: white; font-size: 12px;">
+                    <span style="color: rgba(255,255,255,0.5);">até</span>
+                    <input type="date" id="data-fim-conversas" style="padding: 5px 10px; border-radius: 5px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: white; font-size: 12px;">
+                    <button onclick="filtrarConversasPorData()" style="padding: 6px 15px; border-radius: 5px; background: var(--primary-red); border: 2px solid var(--primary-red-light); color: white; font-size: 12px; cursor: pointer; font-weight: 600; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 5px 15px rgba(255,90,90,0.4)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">Filtrar</button>
+                    <button onclick="limparFiltroConversas()" style="padding: 6px 15px; border-radius: 5px; background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.2); color: white; font-size: 12px; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.15)'; this.style.borderColor='rgba(255,255,255,0.4)';" onmouseout="this.style.background='rgba(255,255,255,0.1)'; this.style.borderColor='rgba(255,255,255,0.2)';">Limpar</button>
+                </div>
+
+                <!-- Cards Compactos -->
+                <div style="flex: 1; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px;">
+                    <div class="stat-card" style="padding: 8px 12px; display: flex; align-items: center; gap: 10px;">
+                        <span style="font-size: 20px;">💬</span>
+                        <div>
+                            <div class="stat-value" id="total-conversas-stat" style="font-size: 20px; margin: 0;">0</div>
+                            <div class="stat-label" style="font-size: 10px; margin: 0;">Conversas</div>
+                        </div>
+                    </div>
+                    <div class="stat-card" style="padding: 8px 12px; display: flex; align-items: center; gap: 10px;">
+                        <span style="font-size: 20px;">✅</span>
+                        <div>
+                            <div class="stat-value" id="conversas-ativas-stat" style="font-size: 20px; margin: 0;">0</div>
+                            <div class="stat-label" style="font-size: 10px; margin: 0;">Ativas</div>
+                        </div>
+                    </div>
+                    <div class="stat-card" style="padding: 8px 12px; display: flex; align-items: center; gap: 10px;">
+                        <span style="font-size: 20px;">📨</span>
+                        <div>
+                            <div class="stat-value" id="total-mensagens-stat" style="font-size: 20px; margin: 0;">0</div>
+                            <div class="stat-label" style="font-size: 10px; margin: 0;">Mensagens</div>
+                        </div>
+                    </div>
+                    <div class="stat-card" style="padding: 8px 12px; display: flex; align-items: center; gap: 10px;">
+                        <span style="font-size: 20px;">⚡</span>
+                        <div>
+                            <div class="stat-value" id="tempo-medio-resposta" style="font-size: 20px; margin: 0;">0s</div>
+                            <div class="stat-label" style="font-size: 10px; margin: 0;">Tempo Médio</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grid de Conversas e Mensagens -->
+            <div style="display: grid; grid-template-columns: 400px 1fr; gap: 20px; height: calc(100vh - 320px);">
+                <!-- Lista de Conversas -->
+                <div class="section-card" style="overflow-y: auto; padding: 20px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h3 style="margin: 0;">📋 Lista de Conversas</h3>
+                        <button class="btn-secondary" onclick="loadConversasSection()" style="padding: 8px 16px; font-size: 14px;">🔄 Atualizar</button>
+                    </div>
+                    <div id="conversas-list-section">
+                        <div style="text-align: center; padding: 50px 20px; color: rgba(255,255,255,0.5);">
+                            Carregando conversas...
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mensagens da Conversa Selecionada -->
+                <div class="section-card" style="display: flex; flex-direction: column; padding: 20px;">
+                    <div style="border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 15px;">
+                        <h3 style="margin: 0 0 5px 0;" id="conversa-titulo-section">📱 Selecione uma conversa</h3>
+                        <p style="margin: 0; font-size: 13px; color: rgba(255,255,255,0.6);" id="conversa-info-section"></p>
+                    </div>
+                    <div id="mensagens-list-section" style="flex: 1; overflow-y: auto; padding-right: 10px;">
+                        <div style="text-align: center; padding: 100px 20px; color: rgba(255,255,255,0.5);">
+                            👈 Selecione uma conversa à esquerda para ver as mensagens
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Conexão WhatsApp Section -->
+        <div class="content-section" id="section-conexao">
+            <div class="content-header">
+                <h1>📱 Conexão WhatsApp</h1>
+                <p>Configure o número onde o bot será instalado</p>
+            </div>
+
+            <div class="section-card">
+                <h3>Dados de Conexão</h3>
+                <form id="form-conexao">
+                    <div class="form-group">
+                        <label>Número WhatsApp Business *</label>
+                        <input type="text" id="numero_whatsapp" placeholder="(65) 99934-2690" required>
+                        <small>Este número será usado para instalar o bot. Certifique-se que é uma conta Business.</small>
+                    </div>
+                    <button type="submit" class="btn btn-success">💾 Salvar Conexão</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Seção de Respostas Predefinidas -->
+        <div class="content-section" id="section-respostas">
+            <div class="content-header">
+                <h1>💬 Respostas Predefinidas</h1>
+                <p>Configure as respostas automáticas do seu bot</p>
+            </div>
+
+            <div class="preview-grid">
+                <!-- Coluna de Configuração -->
+                <div class="config-column">
+            <div class="section-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h3>Minhas Respostas</h3>
+                    <button class="btn btn-primary" onclick="showRespostaForm()">➕ Nova Resposta</button>
+                </div>
+
+                <!-- Formulário de Nova/Editar Resposta -->
+                <div id="resposta-form" style="display: none; margin-bottom: 30px; padding: 20px; background: rgba(255, 255, 255, 0.03); border-radius: 10px;">
+                    <h4 id="resposta-form-title">Nova Resposta</h4>
+                    <form id="form-resposta" onsubmit="saveResposta(event)">
+                        <input type="hidden" id="resposta-id">
+                        <div class="form-group">
+                            <label>Pergunta/Palavra-Chave *</label>
+                            <input type="text" id="resposta-pergunta" placeholder="Ex: Horário de atendimento" required>
+                            <small>A pergunta ou palavra-chave que acionará esta resposta</small>
+                        </div>
+                        <div class="form-group">
+                            <label>Resposta *</label>
+                            <textarea id="resposta-resposta" placeholder="Ex: Nosso atendimento funciona de segunda a sexta, das 8h às 18h" required></textarea>
+                            <small>A resposta que o bot enviará automaticamente</small>
+                        </div>
+                        <div class="form-group">
+                            <label>Palavras-Chave Adicionais (opcional)</label>
+                            <input type="text" id="resposta-palavras" placeholder="Ex: horário, hora, quando, aberto">
+                            <small>Palavras separadas por vírgula que também acionam esta resposta</small>
+                        </div>
+                        <div style="display: flex; gap: 10px;">
+                            <button type="submit" class="btn btn-success">💾 Salvar</button>
+                            <button type="button" class="btn btn-secondary" onclick="hideRespostaForm()">❌ Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Lista de Respostas -->
+                <div id="respostas-list">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">💬</div>
+                        <p>Nenhuma resposta cadastrada ainda</p>
+                        <p style="font-size: 0.9rem;">Clique em "Nova Resposta" para começar</p>
+                    </div>
+                </div>
+            </div>
+                </div>
+
+                <!-- Coluna de Preview -->
+                <div class="preview-column">
+                    <h3>📱 Preview em Tempo Real</h3>
+                    <div class="preview-phone">
+                        <div class="preview-screen">
+                            <div class="preview-whatsapp-header">
+                                <div class="preview-logo-circle"><img src="/logo.png" alt="Logo"></div>
+                                <span style="font-weight: 600;">Sua Empresa</span>
+                            </div>
+                            <div class="preview-chat" id="preview-chat-respostas">
+                                <div class="preview-msg preview-msg-bot">Olá! Bem-vindo ao nosso atendimento.</div>
+                            </div>
+                            <div class="preview-input-box">
+                                <input type="text" id="preview-input-respostas" placeholder="Digite para testar..." onkeypress="if(event.key==='Enter') testPreviewRespostas()">
+                                <button onclick="testPreviewRespostas()">▶</button>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="preview-helper-text">💡 Digite palavras-chave para testar</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Seção de Menu Interativo -->
+        <div class="content-section" id="section-menu">
+            <div class="content-header">
+                <h1>📋 Menu Interativo</h1>
+                <p>Configure o menu de opções que seus clientes verão no WhatsApp</p>
+            </div>
+
+            <div class="preview-grid">
+                <!-- Coluna de Configuração -->
+                <div class="config-column">
+            <div class="section-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h3>Opções do Menu</h3>
+                    <button class="btn btn-primary" onclick="showMenuForm()">➕ Nova Opção</button>
+                </div>
+
+                <!-- Formulário de Nova/Editar Opção -->
+                <div id="menu-form" style="display: none; margin-bottom: 30px; padding: 20px; background: rgba(255, 255, 255, 0.03); border-radius: 10px;">
+                    <h4 id="menu-form-title">Nova Opção de Menu</h4>
+                    <form id="form-menu" onsubmit="saveMenu(event)">
+                        <input type="hidden" id="menu-id">
+                        <div class="form-group">
+                            <label>Número da Opção *</label>
+                            <input type="text" id="menu-numero" placeholder="Ex: 1" required maxlength="1">
+                            <small>Número de 1 a 9 que o cliente digitará para escolher esta opção</small>
+                        </div>
+                        <div class="form-group">
+                            <label>Título da Opção *</label>
+                            <input type="text" id="menu-titulo" placeholder="Ex: Falar com Atendente" required>
+                            <small>O texto que aparecerá no menu</small>
+                        </div>
+                        <div class="form-group">
+                            <label>Descrição (opcional)</label>
+                            <textarea id="menu-descricao" placeholder="Ex: Será transferido para um atendente humano"></textarea>
+                            <small>Explicação adicional sobre esta opção</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Tipo de Ação *</label>
+                            <select id="menu-tipo-acao" onchange="toggleMenuActionFields()" required style="background: rgba(255,255,255,0.05); color: white;">
+                                <option value="" style="background: #1a1a1a; color: white;">Selecione...</option>
+                                <option value="resposta" style="background: #1a1a1a; color: white;">💬 Dar uma Resposta</option>
+                                <option value="submenu" style="background: #1a1a1a; color: white;">📋 Abrir Submenu</option>
+                                <option value="atendente" style="background: #1a1a1a; color: white;">👤 Transferir para Atendente</option>
+                            </select>
+                            <small>O que acontece quando o cliente escolhe esta opção</small>
+                        </div>
+
+                        <!-- Campo de Resposta (para tipo = resposta) -->
+                        <div class="form-group" id="campo-resposta" style="display: none;">
+                            <label>Resposta *</label>
+                            <textarea id="menu-resposta" placeholder="Digite a mensagem que será enviada..."></textarea>
+                            <small>Mensagem que o bot enviará quando esta opção for escolhida</small>
+                        </div>
+
+                        <!-- Campo de Submenu (para tipo = submenu) -->
+                        <div id="campo-submenu" style="display: none;">
+                            <div class="form-group">
+                                <label>Sub-opções do Menu</label>
+                                <div id="submenu-items" style="margin-bottom: 10px;"></div>
+                                <button type="button" class="btn btn-sm btn-secondary" onclick="addSubmenuItem()">➕ Adicionar Sub-opção</button>
+                                <small>Adicione as opções que aparecerão neste submenu</small>
+                            </div>
+                        </div>
+
+                        <!-- Mensagem para Atendente (para tipo = atendente) -->
+                        <div class="form-group" id="campo-atendente" style="display: none;">
+                            <p style="background: rgba(37, 211, 102, 0.1); padding: 15px; border-radius: 8px; border-left: 4px solid #25D366;">
+                                ✅ <strong>Transferência para Atendente</strong><br>
+                                <small>O cliente será informado que será transferido para um atendente humano.</small>
+                            </p>
+                        </div>
+
+                        <div style="display: flex; gap: 10px; margin-top: 20px;">
+                            <button type="submit" class="btn btn-success">💾 Salvar</button>
+                            <button type="button" class="btn btn-secondary" onclick="hideMenuForm()">❌ Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Lista de Opções -->
+                <div id="menu-list">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📋</div>
+                        <p>Nenhuma opção de menu cadastrada ainda</p>
+                        <p style="font-size: 0.9rem;">Clique em "Nova Opção" para começar</p>
+                    </div>
+                </div>
+            </div>
+                </div>
+
+                <!-- Coluna de Preview -->
+                <div class="preview-column">
+                    <h3>📱 Preview em Tempo Real</h3>
+                    <div class="preview-phone">
+                        <div class="preview-screen">
+                            <div class="preview-whatsapp-header">
+                                <div class="preview-logo-circle"><img src="/logo.png" alt="Logo"></div>
+                                <span style="font-weight: 600;">Sua Empresa</span>
+                            </div>
+                            <div class="preview-chat" id="preview-chat-menu">
+                                <div class="preview-msg preview-msg-bot">Olá! Bem-vindo ao nosso atendimento.</div>
+                                <div class="preview-msg preview-msg-bot" id="menu-preview-options">
+                                    <div style="font-weight: 600; margin-bottom: 10px;">Escolha uma opção:</div>
+                                </div>
+                            </div>
+                            <div class="preview-input-box">
+                                <input type="text" id="preview-input-menu" placeholder="Digite para testar..." onkeypress="if(event.key==='Enter') testPreviewMenu()">
+                                <button onclick="testPreviewMenu()">▶</button>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="preview-helper-text">💡 Clique nas opções do menu</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Seção de Fluxos de Conversa -->
+        <div class="content-section" id="section-fluxos">
+            <div class="content-header">
+                <h1>🔄 Fluxos de Conversa</h1>
+                <p>Configure fluxos de conversa para diferentes situações</p>
+            </div>
+
+            <div class="preview-grid">
+                <!-- Coluna de Configuração -->
+                <div class="config-column">
+            <div class="section-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h3>Meus Fluxos</h3>
+                    <button class="btn btn-primary" onclick="showFluxoForm()">➕ Novo Fluxo</button>
+                </div>
+
+                <!-- Formulário de Novo/Editar Fluxo -->
+                <div id="fluxo-form" style="display: none; margin-bottom: 30px; padding: 20px; background: rgba(255, 255, 255, 0.03); border-radius: 10px;">
+                    <h4 id="fluxo-form-title">Novo Fluxo de Conversa</h4>
+                    <form id="form-fluxo" onsubmit="saveFluxo(event)">
+                        <input type="hidden" id="fluxo-id">
+                        <div class="form-group">
+                            <label>Nome do Fluxo *</label>
+                            <input type="text" id="fluxo-nome" placeholder="Ex: Atendimento Vendas" required>
+                            <small>Um nome identificador para este fluxo</small>
+                        </div>
+                        <div class="form-group">
+                            <label>Descrição</label>
+                            <textarea id="fluxo-descricao" placeholder="Ex: Fluxo para atendimento de vendas e orçamentos"></textarea>
+                            <small>Descreva quando este fluxo deve ser usado</small>
+                        </div>
+                        <div class="form-group">
+                            <label>Etapas do Fluxo (JSON)</label>
+                            <textarea id="fluxo-etapas" placeholder='[{"ordem": 1, "mensagem": "Qual produto você deseja?", "tipo": "pergunta"}]' style="min-height: 150px; font-family: monospace;"></textarea>
+                            <small>Configure as etapas do fluxo em formato JSON</small>
+                        </div>
+                        <div style="display: flex; gap: 10px;">
+                            <button type="submit" class="btn btn-success">💾 Salvar</button>
+                            <button type="button" class="btn btn-secondary" onclick="hideFluxoForm()">❌ Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Lista de Fluxos -->
+                <div id="fluxos-list">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🔄</div>
+                        <p>Nenhum fluxo de conversa cadastrado ainda</p>
+                        <p style="font-size: 0.9rem;">Clique em "Novo Fluxo" para começar</p>
+                    </div>
+                </div>
+            </div>
+                </div>
+
+                <!-- Coluna de Preview -->
+                <div class="preview-column">
+                    <h3>📱 Preview em Tempo Real</h3>
+                    <div class="preview-phone">
+                        <div class="preview-screen">
+                            <div class="preview-whatsapp-header">
+                                <div class="preview-logo-circle"><img src="/logo.png" alt="Logo"></div>
+                                <span style="font-weight: 600;">Sua Empresa</span>
+                            </div>
+                            <div class="preview-chat" id="preview-chat-fluxos">
+                                <div class="preview-msg preview-msg-bot">Olá! Bem-vindo ao nosso atendimento.</div>
+                            </div>
+                            <div class="preview-input-box">
+                                <input type="text" id="preview-input-fluxos" placeholder="Digite para testar..." onkeypress="if(event.key==='Enter') testPreviewFluxos()">
+                                <button onclick="testPreviewFluxos()">▶</button>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="preview-helper-text">💡 Teste os fluxos de conversa</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Seção de Integrações -->
+
+        <!-- Seção de Base de Conhecimento (Agente IA) -->
+        <div class="content-section" id="section-base-conhecimento" style="display: none;">
+            <div class="content-header">
+                <h1>🤖 Base de Conhecimento - Agente IA</h1>
+                <p>Gerencie os documentos que o seu assistente inteligente utiliza para responder perguntas dos clientes</p>
+            </div>
+
+            <div class="preview-grid">
+                <!-- Coluna de Configuração -->
+                <div class="config-column">
+                    <!-- Como Funciona -->
+                    <div class="section-card" style="background: rgba(255, 90, 90, 0.05); border: 1px solid rgba(255, 90, 90, 0.2);">
+                        <h3 style="margin-bottom: 15px;">Como Funciona?</h3>
+                        <div style="line-height: 1.8;">
+                            <p><strong>1.</strong> Faça upload de documentos (PDF, DOCX, TXT) com informações sobre seus produtos/serviços</p>
+                            <p><strong>2.</strong> O sistema vetoriza automaticamente o conteúdo usando IA</p>
+                            <p><strong>3.</strong> Quando um cliente pergunta algo, o agente busca na base de conhecimento</p>
+                            <p><strong>4.</strong> O agente responde com base nas informações dos seus documentos</p>
+                            <p><strong>5.</strong> Respostas são enviadas em texto + áudio (TTS)</p>
+                        </div>
+                    </div>
+
+                    <!-- Upload de Documentos -->
+                    <div class="section-card">
+                        <h3>📤 Upload de Documentos</h3>
+                        <div style="margin-top: 20px; padding: 30px; background: rgba(255, 255, 255, 0.03); border: 2px dashed rgba(255, 255, 255, 0.2); border-radius: 10px; text-align: center;">
+                            <input type="file" id="knowledge-file-input" accept=".pdf,.docx,.txt" style="display: none;" onchange="uploadKnowledgeDocument()">
+                            <button onclick="document.getElementById('knowledge-file-input').click()" class="btn btn-primary" style="font-size: 16px; padding: 12px 30px;">
+                                📄 Selecionar Documento
+                            </button>
+                            <p style="margin-top: 15px; color: rgba(255,255,255,0.6);">
+                                Formatos aceitos: PDF, DOCX, TXT (máx. 10MB)
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Lista de Documentos -->
+                    <div class="section-card">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <h3>📚 Documentos Cadastrados</h3>
+                            <span id="knowledge-docs-count" style="color: var(--primary-red);">0 documentos</span>
+                        </div>
+                        <div id="knowledge-docs-list">
+                            <div style="text-align: center; padding: 40px; color: rgba(255,255,255,0.4);">
+                                Nenhum documento cadastrado ainda
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Coluna de Preview -->
+                <div class="preview-column">
+                    <h3>📱 Testar Base de Conhecimento</h3>
+                    <div class="preview-phone">
+                        <div class="preview-screen">
+                            <div class="preview-whatsapp-header">
+                                <div class="preview-logo-circle"><img src="/logo.png" alt="Logo"></div>
+                                <span style="font-weight: 600;">Agente IA</span>
+                            </div>
+                            <div class="preview-chat" id="preview-chat-knowledge">
+                                <div class="preview-msg preview-msg-bot">👋 Olá! Sou o assistente inteligente. Faça uma pergunta sobre os documentos cadastrados!</div>
+                            </div>
+                            <div class="preview-input-box">
+                                <input type="text" id="knowledge-test-question" placeholder="Digite sua pergunta..." onkeypress="if(event.key==='Enter') testKnowledgeBase(event)">
+                                <button onclick="testKnowledgeBase(event)">▶</button>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="preview-helper-text">💡 Digite uma pergunta e veja como o agente responde</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Seção de Atendentes -->
+        <div class="content-section" id="section-atendentes">
+            <div class="content-header">
+                <h1>👥 Atendentes</h1>
+                <p>Gerencie os números que recebem notificações quando clientes solicitam atendimento humano</p>
+            </div>
+
+            <!-- Como Funciona -->
+            <div class="section-card" style="background: rgba(0, 150, 255, 0.05); border: 1px solid rgba(0, 150, 255, 0.2);">
+                <h3 style="margin-bottom: 15px;">Como Funciona?</h3>
+                <div style="line-height: 1.8;">
+                    <p><strong>1.</strong> Quando um cliente escolhe a opção "Falar com Atendente" no menu</p>
+                    <p><strong>2.</strong> O status da conversa muda para "Aguardando Atendimento"</p>
+                    <p><strong>3.</strong> Todos os números cadastrados abaixo recebem uma notificação via WhatsApp</p>
+                    <p><strong>4.</strong> A notificação inclui: nome do cliente, número e link para conversa</p>
+                </div>
+            </div>
+
+            <!-- Gerenciar Atendentes -->
+            <div class="section-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h3>Números de Atendentes</h3>
+                </div>
+
+                <!-- Form para adicionar novo atendente -->
+                <div style="margin-bottom: 30px; padding: 20px; background: rgba(255, 255, 255, 0.03); border-radius: 10px;">
+                    <h4>Adicionar Atendente</h4>
+                    <form id="atendente-form" onsubmit="adicionarAtendente(event)" style="margin-top: 15px;">
+                        <div style="display: flex; gap: 10px;">
+                            <input
+                                type="text"
+                                id="atendente-numero"
+                                placeholder="(65) 99934-2609"
+                                class="form-control"
+                                style="flex: 1;"
+                                required
+                                maxlength="15"
+                                oninput="aplicarMascaraTelefone(this)"
+                            >
+                            <button type="submit" class="btn btn-primary">➕ Adicionar</button>
+                        </div>
+                        <small style="color: rgba(255,255,255,0.6); display: block; margin-top: 8px;">
+                            Digite o DDD + número. Exemplo: (65) 99934-2609
+                        </small>
+                    </form>
+                </div>
+
+                <!-- Lista de Atendentes -->
+                <div id="atendentes-lista">
+                    <div style="text-align: center; padding: 40px; color: rgba(255,255,255,0.5);">
+                        <p>Nenhum atendente cadastrado</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-section" id="section-integracoes">
+            <div class="content-header">
+                <h1>🔗 Integrações</h1>
+                <p>Configure integrações com CRM, gateways de pagamento e outras ferramentas</p>
+            </div>
+
+            <div class="section-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h3>Minhas Integrações</h3>
+                    <button class="btn btn-primary" onclick="showIntegracaoForm()">➕ Nova Integração</button>
+                </div>
+
+                <!-- Formulário de Nova/Editar Integração -->
+                <div id="integracao-form" style="display: none; margin-bottom: 30px; padding: 20px; background: rgba(255, 255, 255, 0.03); border-radius: 10px;">
+                    <h4 id="integracao-form-title">Nova Integração</h4>
+                    <form id="form-integracao" onsubmit="saveIntegracao(event)">
+                        <input type="hidden" id="integracao-id">
+                        <div class="form-group">
+                            <label>Tipo de Integração *</label>
+                            <select id="integracao-tipo" required>
+                                <option value="">Selecione...</option>
+                                <option value="crm">CRM</option>
+                                <option value="gateway_pagamento">Gateway de Pagamento</option>
+                                <option value="erp">ERP</option>
+                                <option value="outro">Outro</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Nome da Integração *</label>
+                            <input type="text" id="integracao-nome" placeholder="Ex: RD Station, HubSpot, etc." required>
+                            <small>Nome da ferramenta ou sistema que será integrado</small>
+                        </div>
+                        <div class="form-group">
+                            <label>Webhook URL</label>
+                            <input type="url" id="integracao-webhook" placeholder="https://api.exemplo.com/webhook">
+                            <small>URL do webhook para enviar dados</small>
+                        </div>
+                        <div class="form-group">
+                            <label>API Key</label>
+                            <input type="text" id="integracao-apikey" placeholder="sua-api-key-aqui">
+                            <small>Chave de API para autenticação</small>
+                        </div>
+                        <div class="form-group">
+                            <label>Documentação / Instruções</label>
+                            <textarea id="integracao-doc" placeholder="Cole aqui a documentação da API, instruções de integração, headers necessários, etc."></textarea>
+                            <small>Documentação técnica para implementação da integração</small>
+                        </div>
+                        <div class="form-group">
+                            <label style="display: flex; align-items: center; gap: 10px;">
+                                <input type="checkbox" id="integracao-ativo" checked>
+                                <span>Integração Ativa</span>
+                            </label>
+                        </div>
+                        <div style="display: flex; gap: 10px;">
+                            <button type="submit" class="btn btn-success">💾 Salvar</button>
+                            <button type="button" class="btn btn-secondary" onclick="hideIntegracaoForm()">❌ Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Lista de Integrações -->
+                <div id="integracoes-list">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🔗</div>
+                        <p>Nenhuma integração cadastrada ainda</p>
+                        <p style="font-size: 0.9rem;">Clique em "Nova Integração" para começar</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Meus Dados -->
+    <div class="modal-overlay" id="myDataModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>👤 Meus Dados</h2>
+                <button class="modal-close" onclick="closeMyDataModal()">&times;</button>
+            </div>
+
+            <div class="modal-success" id="modalSuccess">
+                Dados atualizados com sucesso!
+            </div>
+
+            <div class="modal-error" id="modalError"></div>
+
+            <form id="myDataForm">
+                <div class="modal-form-group">
+                    <label>Nome Completo <span class="modal-required">*</span></label>
+                    <input type="text" id="modal-name" name="nome" required>
+                </div>
+
+                <div class="modal-form-row">
+                    <div class="modal-form-group">
+                        <label>Email <span class="modal-required">*</span></label>
+                        <input type="email" id="modal-email" name="email" required>
+                    </div>
+
+                    <div class="modal-form-group">
+                        <label>WhatsApp do Agente <span class="modal-required">*</span></label>
+                        <input type="tel" id="modal-whatsapp" name="whatsapp" placeholder="(00) 00000-0000" required>
+                    </div>
+                </div>
+
+                <div class="modal-form-row">
+                    <div class="modal-form-group">
+                        <label>Telefone <span class="modal-required">*</span></label>
+                        <input type="tel" id="modal-phone" name="telefone" placeholder="(00) 00000-0000" required>
+                    </div>
+
+                    <div class="modal-form-group">
+                        <label>CPF/CNPJ</label>
+                        <input type="text" id="modal-cpf_cnpj" name="cpf_cnpj" placeholder="000.000.000-00">
+                    </div>
+                </div>
+
+                <div class="modal-form-group">
+                    <label>Nome da Empresa</label>
+                    <input type="text" id="modal-company_name" name="nome_empresa">
+                </div>
+
+                <div class="modal-form-group">
+                    <label>Endereço</label>
+                    <input type="text" id="modal-address" name="endereco">
+                </div>
+
+                <div class="modal-form-row">
+                    <div class="modal-form-group">
+                        <label>Cidade</label>
+                        <input type="text" id="modal-city" name="cidade">
+                    </div>
+
+                    <div class="modal-form-group">
+                        <label>Estado</label>
+                        <input type="text" id="modal-state" name="estado" maxlength="2" placeholder="EX: SP">
+                    </div>
+                </div>
+
+                <div class="modal-form-group">
+                    <label>CEP</label>
+                    <input type="text" id="modal-zipcode" name="cep" placeholder="00000-000">
+                </div>
+
+                <button type="submit" class="modal-btn-save" id="modalSaveBtn">
+                    Salvar Alterações
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Alterar Senha -->
+    <div class="modal-overlay" id="changePasswordModal">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h2>🔒 Alterar Senha</h2>
+                <button class="modal-close" onclick="closeChangePasswordModal()">&times;</button>
+            </div>
+
+            <div class="modal-success" id="passwordModalSuccess">
+                Senha alterada com sucesso!
+            </div>
+
+            <div class="modal-error" id="passwordModalError"></div>
+
+            <form id="changePasswordForm">
+                <div class="modal-form-group">
+                    <label>Senha Atual <span class="modal-required">*</span></label>
+                    <input type="password" id="current-password" name="current_password" required minlength="6">
+                </div>
+
+                <div class="modal-form-group">
+                    <label>Nova Senha <span class="modal-required">*</span></label>
+                    <input type="password" id="new-password" name="new_password" required minlength="6" placeholder="Mínimo 6 caracteres">
+                </div>
+
+                <div class="modal-form-group">
+                    <label>Confirmar Nova Senha <span class="modal-required">*</span></label>
+                    <input type="password" id="confirm-password" name="confirm_password" required minlength="6" placeholder="Digite a nova senha novamente">
+                </div>
+
+                <button type="submit" class="modal-btn-save" id="passwordSaveBtn">
+                    Alterar Senha
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <script>
+        // Verificar autenticação PRIMEIRO
+        const clientId = localStorage.getItem('client_id');
+        const orderId = localStorage.getItem('order_id');
+
+        if (!clientId || !orderId) {
+            // Não está autenticado, redirecionar imediatamente
+            window.location.href = '/login';
+            throw new Error('Não autenticado'); // Para o script
+        }
+
+        // Obter dados do localStorage
+        let agentType = localStorage.getItem('agent_type');
+        const planName = localStorage.getItem('plan_name');
+        const currentClientId = clientId;
+
+        // Configuração global
+        let currentConfig = {};
+        let currentPlanType = null; // Tipo do plano atual (AGENTE_NORMAL, AGENTE_IA, etc)
+
+        // Inicializar página
+        async function init() {
+            document.getElementById('productName').textContent = getProductName(agentType);
+            document.getElementById('planName').textContent = planName;
+
+            // Buscar dados do pedido para obter o tipo do plano
+            try {
+                console.log('Buscando pedido:', orderId);
+                const orderResponse = await fetch(`/api/orders/${orderId}`);
+                console.log('Response status:', orderResponse.status);
+
+                if (orderResponse.ok) {
+                    const orderData = await orderResponse.json();
+                    console.log('Dados do pedido:', orderData);
+
+                    // Extrair tipo do plano
+                    if (orderData.plano && orderData.plano.tipo) {
+                        currentPlanType = orderData.plano.tipo;
+                        console.log('Tipo do plano:', currentPlanType);
+
+                        // Atualizar agentType se necessário
+                        // A API retorna os valores em lowercase com underscore
+                        if (currentPlanType === 'agente_ia' || currentPlanType === 'AGENTE_IA') {
+                            agentType = 'agente_ia';
+                        } else if (currentPlanType === 'agente_normal' || currentPlanType === 'AGENTE_NORMAL') {
+                            agentType = 'agente_normal';
+                        } else if (currentPlanType === 'agente_financeiro' || currentPlanType === 'AGENTE_FINANCEIRO') {
+                            agentType = 'agente_financeiro';
+                        }
+
+                        // Configurar menu baseado no tipo de plano
+                        configurarMenuPorTipoPlano(currentPlanType);
+                    }
+                } else {
+                    console.error('Erro ao carregar pedido');
+                }
+            } catch (error) {
+                console.error('Erro ao buscar dados do pedido:', error);
+            }
+
+            // await loadOrderData(); // Removido - card de pedido não existe mais
+            await loadConfiguration();
+            // updateDashboard(); // Removido - cards de progresso não existem mais
+        }
+
+        // Configurar menu e seções baseado no tipo de plano
+        function configurarMenuPorTipoPlano(planType) {
+            console.log('Configurando menu para tipo de plano:', planType);
+
+            const menuRespostas = document.getElementById('menu-item-respostas');
+            const menuInterativo = document.getElementById('menu-item-menu');
+            const menuBaseConhecimento = document.getElementById('menu-item-base-conhecimento');
+
+            const sectionRespostas = document.getElementById('section-respostas');
+            const sectionMenu = document.getElementById('section-menu');
+            const sectionBaseConhecimento = document.getElementById('section-base-conhecimento');
+
+            // Normalizar planType para uppercase para comparação
+            const planTypeUpper = (planType || '').toUpperCase();
+
+            if (planTypeUpper === 'AGENTE_IA') {
+                // Esconder menus de Agente Normal
+                if (menuRespostas) menuRespostas.style.display = 'none';
+                if (menuInterativo) menuInterativo.style.display = 'none';
+                if (sectionRespostas) sectionRespostas.style.display = 'none';
+                if (sectionMenu) sectionMenu.style.display = 'none';
+
+                // Mostrar menu de Base de Conhecimento
+                if (menuBaseConhecimento) menuBaseConhecimento.style.display = 'flex';
+                if (sectionBaseConhecimento) sectionBaseConhecimento.style.display = 'block';
+
+                // Carregar documentos da base de conhecimento
+                loadKnowledgeDocuments();
+
+                console.log('✅ Menu configurado para Agente IA');
+            } else {
+                // Mostrar menus de Agente Normal
+                if (menuRespostas) menuRespostas.style.display = 'flex';
+                if (menuInterativo) menuInterativo.style.display = 'flex';
+                if (sectionRespostas) sectionRespostas.style.display = 'block';
+                if (sectionMenu) sectionMenu.style.display = 'block';
+
+                // Esconder menu de Base de Conhecimento
+                if (menuBaseConhecimento) menuBaseConhecimento.style.display = 'none';
+                if (sectionBaseConhecimento) sectionBaseConhecimento.style.display = 'none';
+
+                console.log('✅ Menu configurado para Agente Normal');
+            }
+        }
+
+        // Carregar dados do pedido
+        async function loadOrderData() {
+            try {
+                // Buscar dados do pedido
+                const orderResponse = await fetch(`/api/orders/${orderId}`);
+                if (!orderResponse.ok) throw new Error('Pedido não encontrado');
+                const order = await orderResponse.json();
+
+                // Buscar histórico do pedido
+                const historyResponse = await fetch(`/api/orders/${orderId}/history`);
+                const history = historyResponse.ok ? await historyResponse.json() : [];
+
+                // Atualizar informações do pedido
+                const statusMap = {
+                    'cadastro_feito': 'Cadastro Feito',
+                    'aguardando_pagamento': 'Aguardando Pagamento',
+                    'pagamento_aprovado': 'Pagamento Aprovado',
+                    'configurando_ambiente': 'Configurando Ambiente',
+                    'instalando_agente': 'Instalando Agente',
+                    'concluido': 'Concluído',
+                    'cancelado': 'Cancelado'
+                };
+
+                document.getElementById('order-title').textContent = `${getProductName(agentType)} - ${planName}`;
+                document.getElementById('order-id').textContent = `Pedido #${order.id}`;
+                document.getElementById('order-price').textContent = `R$ ${order.total.toFixed(2).replace('.', ',')}`;
+                document.getElementById('order-status').textContent = statusMap[order.status] || order.status;
+                document.getElementById('order-date').textContent = new Date(order.criado_em).toLocaleDateString('pt-BR');
+
+                // Mostrar data de pagamento se existir
+                if (order.data_pagamento) {
+                    document.getElementById('payment-date-container').style.display = 'block';
+                    document.getElementById('order-payment-date').textContent = new Date(order.data_pagamento).toLocaleDateString('pt-BR');
+                }
+
+                // Renderizar timeline
+                renderTimeline(history, order.status);
+
+            } catch (error) {
+                console.error('Erro ao carregar dados do pedido:', error);
+                document.getElementById('order-timeline').innerHTML = '<p style="color: #ff6b6b;">Erro ao carregar histórico do pedido.</p>';
+            }
+        }
+
+        function renderTimeline(history, currentStatus) {
+            const allStatuses = [
+                'cadastro_feito',
+                'aguardando_pagamento',
+                'pagamento_aprovado',
+                'configurando_ambiente',
+                'instalando_agente',
+                'concluido'
+            ];
+
+            const statusLabels = {
+                'cadastro_feito': 'Cadastro Realizado',
+                'aguardando_pagamento': 'Aguardando Pagamento',
+                'pagamento_aprovado': 'Pagamento Aprovado',
+                'configurando_ambiente': 'Configurando Ambiente',
+                'instalando_agente': 'Instalando Agente',
+                'concluido': 'Concluído'
+            };
+
+            const currentIndex = allStatuses.indexOf(currentStatus);
+            let timelineHTML = '';
+
+            allStatuses.forEach((status, index) => {
+                const historyItem = history.find(h => h.status === status);
+                const isCompleted = index < currentIndex;
+                const isActive = index === currentIndex;
+                const className = isCompleted ? 'completed' : (isActive ? 'active' : '');
+
+                timelineHTML += `
+                    <div class="timeline-item ${className}">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <div class="timeline-status">${statusLabels[status]}</div>
+                            ${historyItem ? `
+                                <div class="timeline-date">${new Date(historyItem.criado_em).toLocaleString('pt-BR')}</div>
+                                ${historyItem.observacoes ? `<div class="timeline-notes">${historyItem.observacoes}</div>` : ''}
+                            ` : `
+                                <div class="timeline-date">${isActive || isCompleted ? 'Em andamento' : 'Pendente'}</div>
+                            `}
+                        </div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('order-timeline').innerHTML = timelineHTML;
+        }
+
+        function getProductName(type) {
+            const names = {
+                'agente_normal': 'Agente Normal',
+                'agente_ia': 'Agente com IA',
+                'agente_financeiro': 'Agente Financeiro'
+            };
+            return names[type] || 'Agente';
+        }
+
+        function getClientId() {
+            // Pegar do sessionStorage ou localStorage
+            return localStorage.getItem('client_id');
+        }
+
+        async function loadConfiguration() {
+            try {
+                const response = await fetch(`/api/config/${orderId}`);
+                const data = await response.json();
+                currentConfig = data.configuracao || {};
+
+                // Preencher campos
+                if (currentConfig.numero_whatsapp) {
+                    document.getElementById('numero_whatsapp').value = currentConfig.numero_whatsapp;
+                }
+            } catch (error) {
+                console.error('Erro ao carregar configuração:', error);
+            }
+        }
+
+        function showSection(sectionName) {
+            // Esconder todas as seções
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Remover active de todos os menu items
+            document.querySelectorAll('.menu-item').forEach(item => {
+                item.classList.remove('active');
+            });
+
+            // Mostrar seção selecionada
+            document.getElementById(`section-${sectionName}`).classList.add('active');
+
+            // Ativar menu item
+            event.currentTarget.classList.add('active');
+        }
+
+        function updateDashboard() {
+            // Calcular progresso
+            let progress = 0;
+            let totalSteps = 5;
+            let completedSteps = 0;
+
+            if (currentConfig.numero_whatsapp) completedSteps++;
+            if (currentConfig.respostas && currentConfig.respostas.length > 0) completedSteps++;
+            if (currentConfig.menu_criado) completedSteps++;
+            if (currentConfig.fluxos && currentConfig.fluxos.length > 0) completedSteps++;
+            if (currentConfig.integracoes_configuradas) completedSteps++;
+
+            progress = Math.round((completedSteps / totalSteps) * 100);
+
+            document.getElementById('progress-percentage').textContent = progress + '%';
+            document.getElementById('progress-fill').style.width = progress + '%';
+        }
+
+        // Form handlers
+        document.getElementById('form-conexao').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            currentConfig.numero_whatsapp = document.getElementById('numero_whatsapp').value;
+
+            await saveConfiguration();
+            alert('✅ Conexão WhatsApp salva com sucesso!');
+            updateBadge('conexao', 'Configurado');
+            updateDashboard();
+        });
+
+        async function saveConfiguration() {
+            try {
+                const response = await fetch(`/api/config/${orderId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ configuracao: currentConfig })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Erro ao salvar');
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                throw error;
+            }
+        }
+
+        function updateBadge(section, text) {
+            const badge = document.getElementById(`badge-${section}`);
+            if (badge) {
+                badge.textContent = text;
+                badge.classList.remove('pending');
+            }
+        }
+
+        // ============= RESPOSTAS PREDEFINIDAS =============
+        let respostas = [];
+
+        async function loadRespostas() {
+            try {
+                const response = await fetch(`/api/config/${orderId}/respostas`);
+                const data = await response.json();
+                // A API retorna direto um array, não um objeto com propriedade respostas
+                respostas = Array.isArray(data) ? data : (data.respostas || []);
+                window.respostas = respostas; // Tornar acessível globalmente para preview
+                console.log('Respostas carregadas:', respostas.length);
+                renderRespostas();
+                updateBadge('respostas', respostas.length);
+                document.getElementById('total-respostas').textContent = respostas.length;
+            } catch (error) {
+                console.error('Erro ao carregar respostas:', error);
+            }
+        }
+
+        function renderRespostas() {
+            const container = document.getElementById('respostas-list');
+
+            if (respostas.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">💬</div>
+                        <p>Nenhuma resposta cadastrada ainda</p>
+                        <p style="font-size: 0.9rem;">Clique em "Nova Resposta" para começar</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '<table class="data-table"><thead><tr><th>Pergunta</th><th>Resposta</th><th>Palavras-Chave</th><th>Ações</th></tr></thead><tbody>';
+
+            respostas.forEach(resposta => {
+                const palavras = resposta.palavras_chave && resposta.palavras_chave.length > 0
+                    ? resposta.palavras_chave.join(', ')
+                    : '-';
+
+                html += `
+                    <tr>
+                        <td style="font-weight: 600;">${resposta.pergunta}</td>
+                        <td>${resposta.resposta.substring(0, 100)}${resposta.resposta.length > 100 ? '...' : ''}</td>
+                        <td style="color: rgba(255, 255, 255, 0.6);">${palavras}</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn btn-icon btn-secondary" onclick="editResposta(${resposta.id})">✏️</button>
+                                <button class="btn btn-icon btn-secondary" onclick="deleteResposta(${resposta.id})" style="background: rgba(255, 0, 0, 0.2);">🗑️</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        function showRespostaForm() {
+            document.getElementById('resposta-form').style.display = 'block';
+            document.getElementById('resposta-form-title').textContent = 'Nova Resposta';
+            document.getElementById('form-resposta').reset();
+            document.getElementById('resposta-id').value = '';
+        }
+
+        function hideRespostaForm() {
+            document.getElementById('resposta-form').style.display = 'none';
+            document.getElementById('form-resposta').reset();
+        }
+
+        function editResposta(id) {
+            const resposta = respostas.find(r => r.id === id);
+            if (!resposta) return;
+
+            document.getElementById('resposta-form').style.display = 'block';
+            document.getElementById('resposta-form-title').textContent = 'Editar Resposta';
+            document.getElementById('resposta-id').value = resposta.id;
+            document.getElementById('resposta-pergunta').value = resposta.pergunta;
+            document.getElementById('resposta-resposta').value = resposta.resposta;
+            document.getElementById('resposta-palavras').value = resposta.palavras_chave.join(', ');
+
+            // Scroll para o formulário
+            document.getElementById('resposta-form').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        async function saveResposta(event) {
+            event.preventDefault();
+
+            const id = document.getElementById('resposta-id').value;
+            const pergunta = document.getElementById('resposta-pergunta').value;
+            const respostaText = document.getElementById('resposta-resposta').value;
+            const palavrasText = document.getElementById('resposta-palavras').value;
+
+            const palavrasChave = palavrasText
+                ? palavrasText.split(',').map(p => p.trim()).filter(p => p)
+                : [];
+
+            const data = {
+                pergunta,
+                resposta: respostaText,
+                palavras_chave: palavrasChave
+            };
+
+            try {
+                let response;
+                if (id) {
+                    // Editar
+                    data.id = parseInt(id);
+                    response = await fetch(`/api/config/${orderId}/respostas/${id}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    });
+                } else {
+                    // Criar
+                    response = await fetch(`/api/config/${orderId}/respostas`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    });
+                }
+
+                if (!response.ok) throw new Error('Erro ao salvar resposta');
+
+                alert('✅ Resposta salva com sucesso!');
+                hideRespostaForm();
+                await loadRespostas();
+                updateDashboard();
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('❌ Erro ao salvar resposta. Tente novamente.');
+            }
+        }
+
+        async function deleteResposta(id) {
+            if (!confirm('Tem certeza que deseja deletar esta resposta?')) return;
+
+            try {
+                const response = await fetch(`/api/config/${orderId}/respostas/${id}`, {
+                    method: 'DELETE'
+                });
+
+                if (!response.ok) throw new Error('Erro ao deletar resposta');
+
+                alert('✅ Resposta deletada com sucesso!');
+                await loadRespostas();
+                updateDashboard();
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('❌ Erro ao deletar resposta. Tente novamente.');
+            }
+        }
+
+        // ============= MENU INTERATIVO =============
+        let menuOpcoes = [];
+
+        async function loadMenu() {
+            try {
+                const response = await fetch(`/api/config/${orderId}/menu`);
+                const data = await response.json();
+                // A API retorna direto um array, não um objeto com propriedade menu
+                menuOpcoes = Array.isArray(data) ? data : (data.menu || []);
+                window.menu = menuOpcoes; // Tornar acessível globalmente para preview
+                console.log('Menu carregado:', menuOpcoes.length, 'opções');
+                console.log('Dados completos do menu:', menuOpcoes);
+                renderMenu();
+                updateBadge('menu', menuOpcoes.length > 0 ? 'Configurado' : 'Pendente');
+                document.getElementById('total-menu').textContent = menuOpcoes.length;
+            } catch (error) {
+                console.error('Erro ao carregar menu:', error);
+            }
+        }
+
+        function renderMenu() {
+            const container = document.getElementById('menu-list');
+
+            if (menuOpcoes.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📋</div>
+                        <p>Nenhuma opção de menu cadastrada ainda</p>
+                        <p style="font-size: 0.9rem;">Clique em "Nova Opção" para começar</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Ordenar por número
+            menuOpcoes.sort((a, b) => a.numero.localeCompare(b.numero));
+
+            let html = '<table class="data-table"><thead><tr><th>Nº</th><th>Título</th><th>Tipo</th><th>Detalhes</th><th>Ações</th></tr></thead><tbody>';
+
+            menuOpcoes.forEach(opcao => {
+                // Ícone do tipo de ação (backend usa 'acao', não 'tipo_acao')
+                const tipoAcao = opcao.acao || opcao.tipo_acao || 'resposta';
+                let tipoIcon = '';
+                let tipoTexto = '';
+                let detalhes = opcao.descricao || '-';
+
+                if (tipoAcao === 'submenu') {
+                    tipoIcon = '📋';
+                    tipoTexto = 'Submenu';
+                    // Mostrar sub-opções
+                    if (opcao.submenu) {
+                        try {
+                            const submenuData = typeof opcao.submenu === 'string' ? JSON.parse(opcao.submenu) : opcao.submenu;
+                            const subTitulos = submenuData.map(s => `${s.numero}. ${s.titulo}`).join(', ');
+                            detalhes = `<span style="font-size: 0.85rem; color: rgba(255,255,255,0.7);">${subTitulos}</span>`;
+                        } catch (e) {
+                            detalhes = opcao.descricao || '-';
+                        }
+                    }
+                } else if (tipoAcao === 'atendente') {
+                    tipoIcon = '👤';
+                    tipoTexto = 'Atendente';
+                } else {
+                    tipoIcon = '💬';
+                    tipoTexto = 'Resposta';
+                }
+
+                html += `
+                    <tr>
+                        <td style="font-weight: 700; font-size: 1.2rem; color: var(--primary-red-light);">${opcao.numero}</td>
+                        <td style="font-weight: 600;">${opcao.titulo}</td>
+                        <td style="text-align: center;">${tipoIcon} <span style="font-size: 0.8rem;">${tipoTexto}</span></td>
+                        <td style="color: rgba(255, 255, 255, 0.6); max-width: 300px;">${detalhes}</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn btn-icon btn-secondary" onclick="editMenu(${opcao.id})">✏️</button>
+                                <button class="btn btn-icon btn-secondary" onclick="deleteMenu(${opcao.id})" style="background: rgba(255, 0, 0, 0.2);">🗑️</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+
+        function showMenuForm() {
+            document.getElementById('menu-form').style.display = 'block';
+            document.getElementById('menu-form-title').textContent = 'Nova Opção de Menu';
+            document.getElementById('form-menu').reset();
+            document.getElementById('menu-id').value = '';
+            // Limpar submenu items
+            document.getElementById('submenu-items').innerHTML = '';
+            submenuItemCounter = 0;
+            // Resetar campos de ação
+            document.getElementById('campo-resposta').style.display = 'none';
+            document.getElementById('campo-submenu').style.display = 'none';
+            document.getElementById('campo-atendente').style.display = 'none';
+        }
+
+        function hideMenuForm() {
+            document.getElementById('menu-form').style.display = 'none';
+            document.getElementById('form-menu').reset();
+            document.getElementById('campo-resposta').style.display = 'none';
+            document.getElementById('campo-submenu').style.display = 'none';
+            document.getElementById('campo-atendente').style.display = 'none';
+            // Limpar submenu items
+            document.getElementById('submenu-items').innerHTML = '';
+            submenuItemCounter = 0;
+        }
+
+        /**
+         * Mostrar/ocultar campos baseado no tipo de ação
+         */
+        function toggleMenuActionFields() {
+            const tipoAcao = document.getElementById('menu-tipo-acao').value;
+
+            // Ocultar todos os campos condicionais
+            document.getElementById('campo-resposta').style.display = 'none';
+            document.getElementById('campo-submenu').style.display = 'none';
+            document.getElementById('campo-atendente').style.display = 'none';
+
+            // Mostrar campo correspondente
+            if (tipoAcao === 'resposta') {
+                document.getElementById('campo-resposta').style.display = 'block';
+                document.getElementById('menu-resposta').required = true;
+            } else if (tipoAcao === 'submenu') {
+                document.getElementById('campo-submenu').style.display = 'block';
+                document.getElementById('menu-resposta').required = false;
+            } else if (tipoAcao === 'atendente') {
+                document.getElementById('campo-atendente').style.display = 'block';
+                document.getElementById('menu-resposta').required = false;
+            }
+        }
+
+        /**
+         * Adicionar campo de sub-opção
+         */
+        let submenuItemCounter = 0;
+        function addSubmenuItem() {
+            const container = document.getElementById('submenu-items');
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'submenu-item';
+            itemDiv.style.cssText = 'background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; margin-bottom: 10px;';
+            itemDiv.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <strong>Sub-opção ${submenuItemCounter + 1}</strong>
+                    <button type="button" class="btn btn-sm btn-danger" onclick="this.parentElement.parentElement.remove()">🗑️</button>
+                </div>
+                <div style="margin-bottom: 10px;">
+                    <label style="font-size: 12px;">Número</label>
+                    <input type="text" class="submenu-numero" placeholder="Ex: 1" maxlength="1" style="width: 50px;" required>
+                </div>
+                <div style="margin-bottom: 10px;">
+                    <label style="font-size: 12px;">Título</label>
+                    <input type="text" class="submenu-titulo" placeholder="Ex: Ver Produtos" required>
+                </div>
+                <div>
+                    <label style="font-size: 12px;">Resposta</label>
+                    <textarea class="submenu-resposta" placeholder="O que o bot responderá..." rows="2"></textarea>
+                </div>
+            `;
+            container.appendChild(itemDiv);
+            submenuItemCounter++;
+        }
+
+        function editMenu(id) {
+            const opcao = menuOpcoes.find(m => m.id === id);
+            if (!opcao) return;
+
+            // LIMPAR TUDO PRIMEIRO
+            document.getElementById('form-menu').reset();
+            document.getElementById('menu-resposta').value = '';
+            document.getElementById('submenu-items').innerHTML = '';
+            submenuItemCounter = 0;
+
+            // Ocultar todos os campos de ação
+            document.getElementById('campo-resposta').style.display = 'none';
+            document.getElementById('campo-submenu').style.display = 'none';
+            document.getElementById('campo-atendente').style.display = 'none';
+
+            // Mostrar formulário
+            document.getElementById('menu-form').style.display = 'block';
+            document.getElementById('menu-form-title').textContent = 'Editar Opção de Menu';
+
+            // Carregar dados básicos
+            document.getElementById('menu-id').value = opcao.id;
+            document.getElementById('menu-numero').value = opcao.numero;
+            document.getElementById('menu-titulo').value = opcao.titulo;
+            document.getElementById('menu-descricao').value = opcao.descricao || '';
+
+            // Carregar tipo de ação (backend usa 'acao', não 'tipo_acao')
+            const tipoAcao = opcao.acao || opcao.tipo_acao || 'resposta';
+            console.log('Editando opção:', opcao);
+            console.log('Tipo de ação:', tipoAcao);
+            console.log('Submenu data:', opcao.submenu);
+
+            document.getElementById('menu-tipo-acao').value = tipoAcao;
+            toggleMenuActionFields();
+
+            // Carregar dados específicos do tipo de ação
+            if (tipoAcao === 'resposta' && opcao.resposta) {
+                document.getElementById('menu-resposta').value = opcao.resposta;
+            } else if (tipoAcao === 'submenu' && opcao.submenu) {
+                // Carregar sub-opções
+                try {
+                    const submenuData = typeof opcao.submenu === 'string' ? JSON.parse(opcao.submenu) : opcao.submenu;
+                    console.log('Submenu parseado:', submenuData);
+                    submenuData.forEach((item, index) => {
+                        const container = document.getElementById('submenu-items');
+                        const itemDiv = document.createElement('div');
+                        itemDiv.className = 'submenu-item';
+                        itemDiv.style.cssText = 'background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; margin-bottom: 10px;';
+                        itemDiv.innerHTML = `
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                <strong>Sub-opção ${index + 1}</strong>
+                                <button type="button" class="btn btn-sm btn-danger" onclick="this.parentElement.parentElement.remove()">🗑️</button>
+                            </div>
+                            <div style="margin-bottom: 10px;">
+                                <label style="font-size: 12px;">Número</label>
+                                <input type="text" class="submenu-numero" placeholder="Ex: 1" maxlength="1" style="width: 50px;" value="${item.numero}" required>
+                            </div>
+                            <div style="margin-bottom: 10px;">
+                                <label style="font-size: 12px;">Título</label>
+                                <input type="text" class="submenu-titulo" placeholder="Ex: Ver Produtos" value="${item.titulo}" required>
+                            </div>
+                            <div>
+                                <label style="font-size: 12px;">Resposta</label>
+                                <textarea class="submenu-resposta" placeholder="O que o bot responderá..." rows="2">${item.resposta || ''}</textarea>
+                            </div>
+                        `;
+                        container.appendChild(itemDiv);
+                        submenuItemCounter++;
+                    });
+                } catch (e) {
+                    console.error('Erro ao carregar submenu:', e);
+                }
+            }
+
+            document.getElementById('menu-form').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        async function saveMenu(event) {
+            event.preventDefault();
+
+            const id = document.getElementById('menu-id').value;
+            const numero = document.getElementById('menu-numero').value;
+            const titulo = document.getElementById('menu-titulo').value;
+            const descricao = document.getElementById('menu-descricao').value;
+            const tipoAcao = document.getElementById('menu-tipo-acao').value;
+
+            // Validar número (1-9)
+            if (!/^[1-9]$/.test(numero)) {
+                alert('❌ O número deve ser entre 1 e 9');
+                return;
+            }
+
+            // Validar tipo de ação
+            if (!tipoAcao) {
+                alert('❌ Selecione um tipo de ação');
+                return;
+            }
+
+            // Verificar se o número já existe (exceto se for edição do mesmo item)
+            const numeroExiste = menuOpcoes.some(m => m.numero === numero && m.id != id);
+            if (numeroExiste) {
+                alert('❌ Já existe uma opção com este número. Escolha outro número.');
+                return;
+            }
+
+            const data = {
+                numero,
+                titulo,
+                descricao: descricao || null,
+                acao: tipoAcao  // Backend usa 'acao', não 'tipo_acao'
+            };
+
+            // Coletar dados específicos do tipo de ação
+            if (tipoAcao === 'resposta') {
+                const resposta = document.getElementById('menu-resposta').value;
+                if (!resposta) {
+                    alert('❌ Digite a resposta que será enviada');
+                    return;
+                }
+                data.resposta = resposta;
+            } else if (tipoAcao === 'submenu') {
+                // Coletar sub-opções
+                const submenuItems = document.querySelectorAll('#submenu-items .submenu-item');
+                const submenu = [];
+
+                submenuItems.forEach((item, index) => {
+                    const num = item.querySelector('.submenu-numero').value;
+                    const tit = item.querySelector('.submenu-titulo').value;
+                    const resp = item.querySelector('.submenu-resposta').value;
+
+                    if (num && tit) {
+                        submenu.push({
+                            numero: num,
+                            titulo: tit,
+                            resposta: resp || null
+                        });
+                    }
+                });
+
+                if (submenu.length === 0) {
+                    alert('❌ Adicione pelo menos uma sub-opção ao submenu');
+                    return;
+                }
+
+                data.submenu = JSON.stringify(submenu);
+            }
+
+            try {
+                let response;
+                if (id) {
+                    // Editar
+                    data.id = parseInt(id);
+                    response = await fetch(`/api/config/${orderId}/menu/${id}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    });
+                } else {
+                    // Criar
+                    response = await fetch(`/api/config/${orderId}/menu`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    });
+                }
+
+                if (!response.ok) throw new Error('Erro ao salvar opção');
+
+                alert('✅ Opção de menu salva com sucesso!');
+                hideMenuForm();
+                await loadMenu();
+                updateDashboard();
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('❌ Erro ao salvar opção. Tente novamente.');
+            }
+        }
+
+        async function deleteMenu(id) {
+            if (!confirm('Tem certeza que deseja deletar esta opção?')) return;
+
+            try {
+                const response = await fetch(`/api/config/${orderId}/menu/${id}`, {
+                    method: 'DELETE'
+                });
+
+                if (!response.ok) throw new Error('Erro ao deletar opção');
+
+                alert('✅ Opção deletada com sucesso!');
+                await loadMenu();
+                updateDashboard();
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('❌ Erro ao deletar opção. Tente novamente.');
+            }
+        }
+
+        // ============= ATENDENTES =============
+        let atendentes = [];
+
+        function aplicarMascaraTelefone(input) {
+            let valor = input.value.replace(/\D/g, ''); // Remove tudo que não é número
+
+            if (valor.length <= 10) {
+                // Formato: (XX) XXXX-XXXX
+                valor = valor.replace(/^(\d{2})(\d{4})(\d{0,4}).*/, '($1) $2-$3');
+            } else {
+                // Formato: (XX) XXXXX-XXXX
+                valor = valor.replace(/^(\d{2})(\d{5})(\d{0,4}).*/, '($1) $2-$3');
+            }
+
+            input.value = valor;
+        }
+
+        function formatarTelefone(numero) {
+            // Remove o 55 se existir
+            let numLimpo = numero.startsWith('55') ? numero.substring(2) : numero;
+            numLimpo = numLimpo.replace(/\D/g, '');
+
+            if (numLimpo.length <= 10) {
+                return numLimpo.replace(/^(\d{2})(\d{4})(\d{4})/, '($1) $2-$3');
+            } else {
+                return numLimpo.replace(/^(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+            }
+        }
+
+        async function loadAtendentes() {
+            try {
+                const response = await fetch(`/api/evolution/config/${orderId}`);
+                const data = await response.json();
+
+                if (data.numeros_atendentes) {
+                    atendentes = JSON.parse(data.numeros_atendentes);
+                } else {
+                    atendentes = [];
+                }
+
+                renderAtendentes();
+                updateAtendentesBadge();
+            } catch (error) {
+                console.error('Erro ao carregar atendentes:', error);
+            }
+        }
+
+        function renderAtendentes() {
+            const container = document.getElementById('atendentes-lista');
+
+            if (atendentes.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: rgba(255,255,255,0.5);">
+                        <p>Nenhum atendente cadastrado</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = atendentes.map((numero, index) => `
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 8px; margin-bottom: 10px;">
+                    <div>
+                        <div style="font-weight: 600; font-size: 16px;">${formatarTelefone(numero)}</div>
+                        <div style="font-size: 13px; color: rgba(255,255,255,0.6);">Atendente ${index + 1}</div>
+                    </div>
+                    <button onclick="removerAtendente('${numero}')" class="btn" style="background: rgba(255,90,90,0.2); color: #FF5A5A; padding: 8px 16px;">
+                        🗑️ Remover
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        async function adicionarAtendente(event) {
+            event.preventDefault();
+
+            const valorInput = document.getElementById('atendente-numero').value.trim();
+
+            // Extrair apenas números
+            const apenasNumeros = valorInput.replace(/\D/g, '');
+
+            // Validar número (deve ter 10 ou 11 dígitos sem o 55)
+            if (apenasNumeros.length < 10 || apenasNumeros.length > 11) {
+                alert('Número inválido! Digite o DDD + número (10 ou 11 dígitos).');
+                return;
+            }
+
+            // Adicionar o código do país (55)
+            const numeroCompleto = '55' + apenasNumeros;
+
+            // Verificar se já existe
+            if (atendentes.includes(numeroCompleto)) {
+                alert('Este número já está cadastrado!');
+                return;
+            }
+
+            // Adicionar à lista
+            atendentes.push(numeroCompleto);
+
+            // Salvar no backend
+            await salvarAtendentes();
+
+            // Limpar input
+            document.getElementById('atendente-numero').value = '';
+
+            // Atualizar interface
+            renderAtendentes();
+            updateAtendentesBadge();
+        }
+
+        async function removerAtendente(numero) {
+            if (!confirm(`Remover o atendente ${numero}?`)) {
+                return;
+            }
+
+            // Remover da lista
+            atendentes = atendentes.filter(n => n !== numero);
+
+            // Salvar no backend
+            await salvarAtendentes();
+
+            // Atualizar interface
+            renderAtendentes();
+            updateAtendentesBadge();
+        }
+
+        async function salvarAtendentes() {
+            try {
+                const response = await fetch(`/api/evolution/config/${orderId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        numeros_atendentes: JSON.stringify(atendentes)
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Erro ao salvar');
+                }
+
+                console.log('Atendentes salvos com sucesso');
+            } catch (error) {
+                console.error('Erro ao salvar atendentes:', error);
+                alert('Erro ao salvar atendentes!');
+            }
+        }
+
+        function updateAtendentesBadge() {
+            document.getElementById('badge-atendentes').textContent = atendentes.length;
+        }
+
+        // ============= BASE DE CONHECIMENTO (AGENTE IA) =============
+        let knowledgeDocuments = [];
+
+        async function loadKnowledgeDocuments() {
+            try {
+                const response = await fetch(`/api/knowledge/list/${orderId}`);
+                if (!response.ok) throw new Error('Erro ao carregar documentos');
+
+                const data = await response.json();
+                knowledgeDocuments = data.documents || [];
+
+                renderKnowledgeDocuments();
+                updateKnowledgeBadge();
+
+                console.log('Documentos carregados:', knowledgeDocuments.length);
+            } catch (error) {
+                console.error('Erro ao carregar documentos:', error);
+            }
+        }
+
+        function renderKnowledgeDocuments() {
+            const container = document.getElementById('knowledge-docs-list');
+
+            if (knowledgeDocuments.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: rgba(255,255,255,0.4);">
+                        Nenhum documento cadastrado ainda
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '<div style="display: flex; flex-direction: column; gap: 10px;">';
+            knowledgeDocuments.forEach(doc => {
+                const sizeInMB = (doc.size / 1024 / 1024).toFixed(2);
+                const uploadDate = new Date(doc.uploaded_at * 1000).toLocaleDateString('pt-BR');
+
+                html += `
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 8px;">
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <span style="font-size: 32px;">📄</span>
+                            <div>
+                                <div style="font-weight: 500; margin-bottom: 5px;">${doc.filename}</div>
+                                <div style="font-size: 12px; color: rgba(255,255,255,0.5);">
+                                    ${sizeInMB} MB • ${uploadDate}
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 10px;">
+                            <button onclick="viewKnowledgeDocument('${doc.filename}')"
+                                    class="btn btn-primary"
+                                    style="padding: 8px 15px;">
+                                👁️ Ver Conteúdo
+                            </button>
+                            <button onclick="deleteKnowledgeDocument('${doc.filename}')"
+                                    class="btn btn-danger"
+                                    style="padding: 8px 15px;">
+                                🗑️ Excluir
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+
+            container.innerHTML = html;
+        }
+
+        function updateKnowledgeBadge() {
+            const count = knowledgeDocuments.length;
+            document.getElementById('badge-base-conhecimento').textContent = count;
+            document.getElementById('knowledge-docs-count').textContent = `${count} documento${count !== 1 ? 's' : ''}`;
+        }
+
+        async function uploadKnowledgeDocument() {
+            const fileInput = document.getElementById('knowledge-file-input');
+            const file = fileInput.files[0];
+
+            if (!file) return;
+
+            // Validar tamanho (10MB)
+            if (file.size > 10 * 1024 * 1024) {
+                alert('Arquivo muito grande! Tamanho máximo: 10MB');
+                return;
+            }
+
+            try {
+                const formData = new FormData();
+                formData.append('file', file);
+
+                const loadingMsg = showLoading('Processando documento... Isso pode levar alguns minutos.');
+
+                const response = await fetch(`/api/knowledge/upload/${orderId}`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.detail || 'Erro ao fazer upload');
+                }
+
+                const result = await response.json();
+                console.log('Upload concluído:', result);
+
+                alert(`✅ Documento processado com sucesso!\n\n${result.chunks_count} fragmentos vetorizados.`);
+
+                // Recarregar lista
+                await loadKnowledgeDocuments();
+
+                // Limpar input
+                fileInput.value = '';
+
+                closeLoading(loadingMsg);
+            } catch (error) {
+                console.error('Erro no upload:', error);
+                alert(`❌ Erro ao fazer upload: ${error.message}`);
+            }
+        }
+
+        async function viewKnowledgeDocument(filename) {
+            try {
+                const loadingElement = showLoading('Carregando conteúdo...');
+
+                const response = await fetch(`/api/knowledge/view/${orderId}/${filename}`);
+
+                if (!response.ok) {
+                    throw new Error('Erro ao carregar conteúdo');
+                }
+
+                const data = await response.json();
+
+                // Remover loading
+                if (loadingElement && loadingElement.parentNode) {
+                    loadingElement.parentNode.removeChild(loadingElement);
+                }
+
+                // Criar modal para exibir o conteúdo
+                const modal = document.createElement('div');
+                modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 10000; padding: 20px;';
+
+                modal.innerHTML = `
+                    <div style="background: var(--card-bg); border-radius: 15px; max-width: 800px; width: 100%; max-height: 90vh; display: flex; flex-direction: column; box-shadow: 0 10px 40px rgba(0,0,0,0.5);">
+                        <div style="padding: 25px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center;">
+                            <h2 style="margin: 0;">📄 ${filename}</h2>
+                            <button onclick="this.closest('div').parentElement.parentElement.remove()" style="background: transparent; border: none; color: white; font-size: 24px; cursor: pointer; padding: 5px 10px;">✕</button>
+                        </div>
+                        <div style="padding: 25px; overflow-y: auto; flex: 1;">
+                            <div style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 8px; line-height: 1.8; white-space: pre-wrap; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+                                ${data.content}
+                            </div>
+                            ${data.chunks ? `
+                                <div style="margin-top: 20px; padding: 15px; background: rgba(0,150,255,0.1); border-radius: 8px; border-left: 4px solid var(--primary-blue);">
+                                    <strong>📊 Informações da Vetorização:</strong><br>
+                                    <span style="color: rgba(255,255,255,0.7);">Dividido em ${data.chunks} chunks para processamento pelo LLM</span>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+
+                document.body.appendChild(modal);
+
+                // Fechar ao clicar fora
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        modal.remove();
+                    }
+                });
+
+            } catch (error) {
+                // Remover loading
+                const existingLoading = document.querySelector('div[style*="z-index: 9999"]');
+                if (existingLoading) {
+                    existingLoading.remove();
+                }
+
+                console.error('Erro ao visualizar:', error);
+                alert(`❌ Erro ao visualizar documento: ${error.message}`);
+            }
+        }
+
+        async function deleteKnowledgeDocument(filename) {
+            if (!confirm(`Deseja realmente excluir o documento "${filename}"?`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/knowledge/delete/${orderId}/${filename}`, {
+                    method: 'DELETE'
+                });
+
+                if (!response.ok) {
+                    throw new Error('Erro ao deletar documento');
+                }
+
+                alert('✅ Documento excluído com sucesso!');
+
+                // Recarregar lista
+                await loadKnowledgeDocuments();
+            } catch (error) {
+                console.error('Erro ao deletar:', error);
+                alert(`❌ Erro ao deletar documento: ${error.message}`);
+            }
+        }
+
+        async function testKnowledgeBase(event) {
+            if (event) event.preventDefault();
+
+            const questionInput = document.getElementById('knowledge-test-question');
+            const question = questionInput.value.trim();
+
+            if (!question) return;
+
+            const previewChat = document.getElementById('preview-chat-knowledge');
+            let loadingMsg = null;
+
+            try {
+                // Adicionar mensagem do usuário ao chat
+                const userMsg = document.createElement('div');
+                userMsg.className = 'preview-msg preview-msg-user';
+                userMsg.textContent = question;
+                previewChat.appendChild(userMsg);
+
+                // Adicionar mensagem de loading do bot
+                loadingMsg = document.createElement('div');
+                loadingMsg.className = 'preview-msg preview-msg-bot';
+                loadingMsg.textContent = '⏳ Processando...';
+                previewChat.appendChild(loadingMsg);
+
+                // Scroll para o final
+                previewChat.scrollTop = previewChat.scrollHeight;
+
+                // Limpar input
+                questionInput.value = '';
+
+                console.log('Enviando pergunta:', question);
+
+                const response = await fetch(`/api/knowledge/test/${orderId}?question=${encodeURIComponent(question)}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                console.log('Resposta recebida:', response.status);
+
+                // Remover mensagem de loading
+                if (loadingMsg && loadingMsg.parentNode) {
+                    previewChat.removeChild(loadingMsg);
+                    loadingMsg = null;
+                }
+
+                if (!response.ok) {
+                    const errorData = await response.text();
+                    console.error('Erro na resposta:', errorData);
+                    throw new Error('Erro ao processar a pergunta');
+                }
+
+                const result = await response.json();
+                console.log('Resultado:', result);
+
+                // Adicionar resposta do bot
+                const botMsg = document.createElement('div');
+                botMsg.className = 'preview-msg preview-msg-bot';
+                botMsg.textContent = result.answer;
+                previewChat.appendChild(botMsg);
+
+                // Scroll para o final
+                previewChat.scrollTop = previewChat.scrollHeight;
+
+            } catch (error) {
+                console.error('Erro ao testar:', error);
+
+                // Remover mensagem de loading se ainda existir
+                if (loadingMsg && loadingMsg.parentNode) {
+                    previewChat.removeChild(loadingMsg);
+                }
+
+                // Adicionar mensagem de erro
+                const errorMsg = document.createElement('div');
+                errorMsg.className = 'preview-msg preview-msg-bot';
+                errorMsg.textContent = `❌ ${error.message}`;
+                errorMsg.style.background = 'rgba(255, 100, 100, 0.15)';
+                previewChat.appendChild(errorMsg);
+
+                // Scroll para o final
+                previewChat.scrollTop = previewChat.scrollHeight;
+            }
+        }
+
+        function showLoading(message) {
+            const loadingDiv = document.createElement('div');
+            loadingDiv.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 9999;';
+            loadingDiv.innerHTML = `
+                <div style="background: white; padding: 30px; border-radius: 10px; text-align: center; max-width: 400px;">
+                    <div style="font-size: 24px; margin-bottom: 15px;">⏳</div>
+                    <div style="color: black; font-size: 16px;">${message}</div>
+                </div>
+            `;
+            document.body.appendChild(loadingDiv);
+            return loadingDiv;
+        }
+
+        function closeLoading(loadingDiv) {
+            if (loadingDiv && loadingDiv.parentNode) {
+                loadingDiv.parentNode.removeChild(loadingDiv);
+            }
+        }
+
+        // ============= FLUXOS DE CONVERSA =============
+        let fluxos = [];
+
+        async function loadFluxos() {
+            try {
+                const response = await fetch(`/api/config/${orderId}/fluxos`);
+                const data = await response.json();
+                // A API retorna direto um array, não um objeto com propriedade fluxos
+                fluxos = Array.isArray(data) ? data : (data.fluxos || []);
+                window.fluxos = fluxos; // Tornar acessível globalmente para preview
+                console.log('Fluxos carregados:', fluxos.length);
+                renderFluxos();
+                updateBadge('fluxos', fluxos.length);
+                document.getElementById('total-fluxos').textContent = fluxos.length;
+            } catch (error) {
+                console.error('Erro ao carregar fluxos:', error);
+            }
+        }
+
+        function renderFluxos() {
+            const container = document.getElementById('fluxos-list');
+
+            if (fluxos.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🔄</div>
+                        <p>Nenhum fluxo de conversa cadastrado ainda</p>
+                        <p style="font-size: 0.9rem;">Clique em "Novo Fluxo" para começar</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '<table class="data-table"><thead><tr><th>Nome</th><th>Descrição</th><th>Etapas</th><th>Ações</th></tr></thead><tbody>';
+
+            fluxos.forEach(fluxo => {
+                const numEtapas = fluxo.etapas && Array.isArray(fluxo.etapas) ? fluxo.etapas.length : 0;
+
+                html += `
+                    <tr>
+                        <td style="font-weight: 600;">${fluxo.nome}</td>
+                        <td style="color: rgba(255, 255, 255, 0.6);">${fluxo.descricao || '-'}</td>
+                        <td><span style="background: var(--primary-gradient); padding: 4px 12px; border-radius: 15px; font-size: 0.9rem;">${numEtapas} etapas</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn btn-icon btn-secondary" onclick="editFluxo(${fluxo.id})">✏️</button>
+                                <button class="btn btn-icon btn-secondary" onclick="deleteFluxo(${fluxo.id})" style="background: rgba(255, 0, 0, 0.2);">🗑️</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        function showFluxoForm() {
+            document.getElementById('fluxo-form').style.display = 'block';
+            document.getElementById('fluxo-form-title').textContent = 'Novo Fluxo de Conversa';
+            document.getElementById('form-fluxo').reset();
+            document.getElementById('fluxo-id').value = '';
+            document.getElementById('fluxo-etapas').value = '[]';
+        }
+
+        function hideFluxoForm() {
+            document.getElementById('fluxo-form').style.display = 'none';
+            document.getElementById('form-fluxo').reset();
+        }
+
+        function editFluxo(id) {
+            const fluxo = fluxos.find(f => f.id === id);
+            if (!fluxo) return;
+
+            document.getElementById('fluxo-form').style.display = 'block';
+            document.getElementById('fluxo-form-title').textContent = 'Editar Fluxo de Conversa';
+            document.getElementById('fluxo-id').value = fluxo.id;
+            document.getElementById('fluxo-nome').value = fluxo.nome;
+            document.getElementById('fluxo-descricao').value = fluxo.descricao || '';
+            document.getElementById('fluxo-etapas').value = JSON.stringify(fluxo.etapas || [], null, 2);
+
+            document.getElementById('fluxo-form').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        async function saveFluxo(event) {
+            event.preventDefault();
+
+            const id = document.getElementById('fluxo-id').value;
+            const nome = document.getElementById('fluxo-nome').value;
+            const descricao = document.getElementById('fluxo-descricao').value;
+            const etapasText = document.getElementById('fluxo-etapas').value;
+
+            // Validar JSON das etapas
+            let etapas = [];
+            try {
+                etapas = JSON.parse(etapasText || '[]');
+                if (!Array.isArray(etapas)) {
+                    throw new Error('Etapas deve ser um array');
+                }
+            } catch (e) {
+                alert('❌ JSON inválido nas etapas. Verifique a sintaxe.');
+                return;
+            }
+
+            const data = {
+                nome,
+                descricao: descricao || null,
+                etapas
+            };
+
+            try {
+                let response;
+                if (id) {
+                    // Editar
+                    data.id = parseInt(id);
+                    response = await fetch(`/api/config/${orderId}/fluxos/${id}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    });
+                } else {
+                    // Criar
+                    response = await fetch(`/api/config/${orderId}/fluxos`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    });
+                }
+
+                if (!response.ok) throw new Error('Erro ao salvar fluxo');
+
+                alert('✅ Fluxo salvo com sucesso!');
+                hideFluxoForm();
+                await loadFluxos();
+                updateDashboard();
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('❌ Erro ao salvar fluxo. Tente novamente.');
+            }
+        }
+
+        async function deleteFluxo(id) {
+            if (!confirm('Tem certeza que deseja deletar este fluxo?')) return;
+
+            try {
+                const response = await fetch(`/api/config/${orderId}/fluxos/${id}`, {
+                    method: 'DELETE'
+                });
+
+                if (!response.ok) throw new Error('Erro ao deletar fluxo');
+
+                alert('✅ Fluxo deletado com sucesso!');
+                await loadFluxos();
+                updateDashboard();
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('❌ Erro ao deletar fluxo. Tente novamente.');
+            }
+        }
+
+        // ============= INTEGRAÇÕES =============
+        let integracoes = [];
+
+        async function loadIntegracoes() {
+            try {
+                const response = await fetch(`/api/config/${orderId}/integracoes`);
+                const data = await response.json();
+                // A API retorna direto um array, não um objeto com propriedade integracoes
+                integracoes = Array.isArray(data) ? data : (data.integracoes || []);
+                console.log('Integrações carregadas:', integracoes.length);
+                renderIntegracoes();
+                const ativas = integracoes.filter(i => i.ativo).length;
+                updateBadge('integracoes', ativas > 0 ? `${ativas} ativa(s)` : 'Pendente');
+            } catch (error) {
+                console.error('Erro ao carregar integrações:', error);
+            }
+        }
+
+        function renderIntegracoes() {
+            const container = document.getElementById('integracoes-list');
+
+            if (integracoes.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🔗</div>
+                        <p>Nenhuma integração cadastrada ainda</p>
+                        <p style="font-size: 0.9rem;">Clique em "Nova Integração" para começar</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '<table class="data-table"><thead><tr><th>Tipo</th><th>Nome</th><th>Webhook</th><th>Status</th><th>Ações</th></tr></thead><tbody>';
+
+            integracoes.forEach(integracao => {
+                const tipoLabel = {
+                    'crm': 'CRM',
+                    'gateway_pagamento': 'Gateway Pagamento',
+                    'erp': 'ERP',
+                    'outro': 'Outro'
+                };
+
+                const statusStyle = integracao.ativo
+                    ? 'background: rgba(0, 217, 95, 0.2); color: #00D95F;'
+                    : 'background: rgba(255, 255, 255, 0.1); color: rgba(255, 255, 255, 0.5);';
+
+                html += `
+                    <tr>
+                        <td><span style="background: var(--primary-gradient); padding: 4px 12px; border-radius: 15px; font-size: 0.85rem;">${tipoLabel[integracao.tipo] || integracao.tipo}</span></td>
+                        <td style="font-weight: 600;">${integracao.nome}</td>
+                        <td style="color: rgba(255, 255, 255, 0.6); font-size: 0.85rem;">${integracao.webhook_url ? '✓ Configurado' : '-'}</td>
+                        <td><span style="${statusStyle} padding: 4px 12px; border-radius: 15px; font-size: 0.85rem;">${integracao.ativo ? '✓ Ativa' : 'Inativa'}</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn btn-icon btn-secondary" onclick="editIntegracao(${integracao.id})">✏️</button>
+                                <button class="btn btn-icon btn-secondary" onclick="deleteIntegracao(${integracao.id})" style="background: rgba(255, 0, 0, 0.2);">🗑️</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        function showIntegracaoForm() {
+            document.getElementById('integracao-form').style.display = 'block';
+            document.getElementById('integracao-form-title').textContent = 'Nova Integração';
+            document.getElementById('form-integracao').reset();
+            document.getElementById('integracao-id').value = '';
+            document.getElementById('integracao-ativo').checked = true;
+        }
+
+        function hideIntegracaoForm() {
+            document.getElementById('integracao-form').style.display = 'none';
+            document.getElementById('form-integracao').reset();
+        }
+
+        function editIntegracao(id) {
+            const integracao = integracoes.find(i => i.id === id);
+            if (!integracao) return;
+
+            document.getElementById('integracao-form').style.display = 'block';
+            document.getElementById('integracao-form-title').textContent = 'Editar Integração';
+            document.getElementById('integracao-id').value = integracao.id;
+            document.getElementById('integracao-tipo').value = integracao.tipo;
+            document.getElementById('integracao-nome').value = integracao.nome;
+            document.getElementById('integracao-webhook').value = integracao.webhook_url || '';
+            document.getElementById('integracao-apikey').value = integracao.api_key || '';
+            document.getElementById('integracao-doc').value = integracao.documentacao || '';
+            document.getElementById('integracao-ativo').checked = integracao.ativo;
+
+            document.getElementById('integracao-form').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        async function saveIntegracao(event) {
+            event.preventDefault();
+
+            const id = document.getElementById('integracao-id').value;
+            const tipo = document.getElementById('integracao-tipo').value;
+            const nome = document.getElementById('integracao-nome').value;
+            const webhook_url = document.getElementById('integracao-webhook').value || null;
+            const api_key = document.getElementById('integracao-apikey').value || null;
+            const documentacao = document.getElementById('integracao-doc').value || null;
+            const ativo = document.getElementById('integracao-ativo').checked;
+
+            const data = {
+                tipo,
+                nome,
+                webhook_url,
+                api_key,
+                documentacao,
+                ativo
+            };
+
+            try {
+                let response;
+                if (id) {
+                    // Editar
+                    data.id = parseInt(id);
+                    response = await fetch(`/api/config/${orderId}/integracoes/${id}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    });
+                } else {
+                    // Criar
+                    response = await fetch(`/api/config/${orderId}/integracoes`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    });
+                }
+
+                if (!response.ok) throw new Error('Erro ao salvar integração');
+
+                alert('✅ Integração salva com sucesso!');
+                hideIntegracaoForm();
+                await loadIntegracoes();
+                updateDashboard();
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('❌ Erro ao salvar integração. Tente novamente.');
+            }
+        }
+
+        async function deleteIntegracao(id) {
+            if (!confirm('Tem certeza que deseja deletar esta integração?')) return;
+
+            try {
+                const response = await fetch(`/api/config/${orderId}/integracoes/${id}`, {
+                    method: 'DELETE'
+                });
+
+                if (!response.ok) throw new Error('Erro ao deletar integração');
+
+                alert('✅ Integração deletada com sucesso!');
+                await loadIntegracoes();
+                updateDashboard();
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('❌ Erro ao deletar integração. Tente novamente.');
+            }
+        }
+
+        // Funções do Modal Meus Dados
+        let currentClientData = null;
+
+        async function openMyDataModal() {
+            const modal = document.getElementById('myDataModal');
+            modal.classList.add('active');
+
+            // Buscar dados do cliente
+            try {
+                const response = await fetch(`/api/clients/${currentClientId}`);
+                if (!response.ok) throw new Error('Erro ao buscar dados do cliente');
+
+                currentClientData = await response.json();
+
+                // Preencher formulário com dados atuais
+                document.getElementById('modal-name').value = currentClientData.nome || '';
+                document.getElementById('modal-email').value = currentClientData.email || '';
+                document.getElementById('modal-whatsapp').value = currentClientData.whatsapp || '';
+                document.getElementById('modal-phone').value = currentClientData.telefone || '';
+                document.getElementById('modal-cpf_cnpj').value = currentClientData.cpf_cnpj || '';
+                document.getElementById('modal-company_name').value = currentClientData.nome_empresa || '';
+                document.getElementById('modal-address').value = currentClientData.endereco || '';
+                document.getElementById('modal-city').value = currentClientData.cidade || '';
+                document.getElementById('modal-state').value = currentClientData.estado || '';
+                document.getElementById('modal-zipcode').value = currentClientData.cep || '';
+
+            } catch (error) {
+                console.error('Erro ao carregar dados:', error);
+                showModalError('Erro ao carregar seus dados. Tente novamente.');
+            }
+        }
+
+        function closeMyDataModal() {
+            const modal = document.getElementById('myDataModal');
+            modal.classList.remove('active');
+            hideModalMessages();
+        }
+
+        function showModalSuccess() {
+            const success = document.getElementById('modalSuccess');
+            success.classList.add('active');
+            setTimeout(() => {
+                success.classList.remove('active');
+            }, 3000);
+        }
+
+        function showModalError(message) {
+            const error = document.getElementById('modalError');
+            error.textContent = message;
+            error.classList.add('active');
+            setTimeout(() => {
+                error.classList.remove('active');
+            }, 5000);
+        }
+
+        function hideModalMessages() {
+            document.getElementById('modalSuccess').classList.remove('active');
+            document.getElementById('modalError').classList.remove('active');
+        }
+
+        // Submeter formulário de Meus Dados
+        document.getElementById('myDataForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const saveBtn = document.getElementById('modalSaveBtn');
+            saveBtn.disabled = true;
+            saveBtn.textContent = 'Salvando...';
+
+            hideModalMessages();
+
+            try {
+                const formData = {
+                    nome: document.getElementById('modal-name').value,
+                    email: document.getElementById('modal-email').value,
+                    whatsapp: document.getElementById('modal-whatsapp').value,
+                    telefone: document.getElementById('modal-phone').value,
+                    cpf_cnpj: document.getElementById('modal-cpf_cnpj').value || null,
+                    nome_empresa: document.getElementById('modal-company_name').value || null,
+                    endereco: document.getElementById('modal-address').value || null,
+                    cidade: document.getElementById('modal-city').value || null,
+                    estado: document.getElementById('modal-state').value || null,
+                    cep: document.getElementById('modal-zipcode').value || null
+                };
+
+                const response = await fetch(`/api/clients/${currentClientId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.detail || 'Erro ao salvar dados');
+                }
+
+                showModalSuccess();
+
+                // Fechar modal após 1.5 segundos
+                setTimeout(() => {
+                    closeMyDataModal();
+                }, 1500);
+
+            } catch (error) {
+                console.error('Erro ao salvar:', error);
+                showModalError(error.message || 'Erro ao salvar dados. Tente novamente.');
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.textContent = 'Salvar Alterações';
+            }
+        });
+
+        // Fechar modal ao clicar fora
+        document.getElementById('myDataModal').addEventListener('click', (e) => {
+            if (e.target.id === 'myDataModal') {
+                closeMyDataModal();
+            }
+        });
+
+        // Funções do Modal Alterar Senha
+        function openChangePasswordModal() {
+            const modal = document.getElementById('changePasswordModal');
+            modal.classList.add('active');
+            hidePasswordModalMessages();
+            document.getElementById('changePasswordForm').reset();
+        }
+
+        function closeChangePasswordModal() {
+            const modal = document.getElementById('changePasswordModal');
+            modal.classList.remove('active');
+            hidePasswordModalMessages();
+            document.getElementById('changePasswordForm').reset();
+        }
+
+        function showPasswordModalSuccess() {
+            const success = document.getElementById('passwordModalSuccess');
+            success.classList.add('active');
+            setTimeout(() => {
+                success.classList.remove('active');
+            }, 3000);
+        }
+
+        function showPasswordModalError(message) {
+            const error = document.getElementById('passwordModalError');
+            error.textContent = message;
+            error.classList.add('active');
+            setTimeout(() => {
+                error.classList.remove('active');
+            }, 5000);
+        }
+
+        function hidePasswordModalMessages() {
+            document.getElementById('passwordModalSuccess').classList.remove('active');
+            document.getElementById('passwordModalError').classList.remove('active');
+        }
+
+        // Submeter formulário de Alterar Senha
+        document.getElementById('changePasswordForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const currentPassword = document.getElementById('current-password').value;
+            const newPassword = document.getElementById('new-password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+
+            // Validar se as senhas conferem
+            if (newPassword !== confirmPassword) {
+                showPasswordModalError('As senhas não conferem!');
+                return;
+            }
+
+            // Validar tamanho mínimo
+            if (newPassword.length < 6) {
+                showPasswordModalError('A nova senha deve ter no mínimo 6 caracteres!');
+                return;
+            }
+
+            const saveBtn = document.getElementById('passwordSaveBtn');
+            saveBtn.disabled = true;
+            saveBtn.textContent = 'Alterando...';
+
+            hidePasswordModalMessages();
+
+            console.log('Tentando alterar senha para cliente:', currentClientId);
+
+            try {
+                const response = await fetch(`/api/clients/${currentClientId}/change-password`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        current_password: currentPassword,
+                        new_password: newPassword
+                    })
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.detail || 'Erro ao alterar senha');
+                }
+
+                showPasswordModalSuccess();
+                document.getElementById('changePasswordForm').reset();
+
+                // Fechar modal após 1.5 segundos
+                setTimeout(() => {
+                    closeChangePasswordModal();
+                }, 1500);
+
+            } catch (error) {
+                console.error('Erro ao alterar senha:', error);
+                showPasswordModalError(error.message || 'Erro ao alterar senha. Tente novamente.');
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.textContent = 'Alterar Senha';
+            }
+        });
+
+        // Fechar modal de senha ao clicar fora
+        document.getElementById('changePasswordModal').addEventListener('click', (e) => {
+            if (e.target.id === 'changePasswordModal') {
+                closeChangePasswordModal();
+            }
+        });
+
+        // Funções do Menu Mobile
+        function toggleMobileMenu() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('mobileOverlay');
+            const btn = document.getElementById('mobileMenuBtn');
+
+            sidebar.classList.toggle('mobile-open');
+            overlay.classList.toggle('active');
+            btn.classList.toggle('active');
+
+            // Prevenir scroll do body quando menu está aberto
+            if (sidebar.classList.contains('mobile-open')) {
+                document.body.style.overflow = 'hidden';
+            } else {
+                document.body.style.overflow = '';
+            }
+        }
+
+        function closeMobileMenu() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('mobileOverlay');
+            const btn = document.getElementById('mobileMenuBtn');
+
+            sidebar.classList.remove('mobile-open');
+            overlay.classList.remove('active');
+            btn.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Fechar menu mobile ao clicar em um item do menu
+        function showSection(section) {
+            // Esconder todas as seções
+            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+
+            // Mostrar a seção selecionada
+            const targetSection = document.getElementById('section-' + section);
+            if (targetSection) {
+                targetSection.classList.add('active');
+            }
+
+            // Atualizar menu items
+            document.querySelectorAll('.menu-item').forEach(item => item.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+
+            // Carregar conversas quando abrir a seção
+            if (section === 'conversas') {
+                loadConversasSection();
+            }
+
+            // Fechar menu mobile se estiver aberto
+            if (window.innerWidth <= 768) {
+                closeMobileMenu();
+            }
+        }
+
+        // Função removida - não redireciona mais
+        function goToConfigPanel() {
+            // Não faz nada
+        }
+
+        // Função de logout
+        function logout() {
+            if (confirm('Tem certeza que deseja sair do painel?')) {
+                localStorage.removeItem('client_id');
+                window.location.href = '/login';
+            }
+        }
+
+        // Função para carregar e renderizar o gráfico de métricas
+        async function loadMetricsChart() {
+            try {
+                console.log('🔄 Carregando métricas...');
+                // Buscar dados da API (usando cliente ID 1 como exemplo)
+                const response = await fetch(`/api/clients/1/metrics?days=7`);
+                const data = await response.json();
+                console.log('📊 Dados recebidos:', data);
+
+                // Atualizar cards de estatísticas com os totais
+                const totalMensagens = data.mensagens.reduce((acc, val) => acc + val, 0);
+                const totalContatos = data.contatos.reduce((acc, val) => acc + val, 0);
+
+                document.getElementById('stat-msgs').textContent = totalMensagens;
+                document.getElementById('stat-contacts').textContent = totalContatos;
+
+                console.log(`✅ Cards atualizados - Mensagens: ${totalMensagens}, Contatos: ${totalContatos}`);
+
+                // Configurar o gráfico
+                const ctx = document.getElementById('metricsChart').getContext('2d');
+
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: data.labels,
+                        datasets: [{
+                            label: 'Mensagens',
+                            data: data.mensagens,
+                            borderColor: '#FF5A5A',
+                            backgroundColor: 'rgba(255, 90, 90, 0.1)',
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.4
+                        }, {
+                            label: 'Contatos',
+                            data: data.contatos,
+                            borderColor: '#25D366',
+                            backgroundColor: 'rgba(37, 211, 102, 0.1)',
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'top',
+                                labels: {
+                                    color: 'rgba(255, 255, 255, 0.8)',
+                                    font: {
+                                        size: 12
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    color: 'rgba(255, 255, 255, 0.6)'
+                                },
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.1)'
+                                }
+                            },
+                            x: {
+                                ticks: {
+                                    color: 'rgba(255, 255, 255, 0.6)'
+                                },
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.1)'
+                                }
+                            }
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Erro ao carregar métricas:', error);
+            }
+        }
+
+        // Inicializar quando a página carregar
+        window.addEventListener('DOMContentLoaded', async () => {
+            await init();
+            await loadRespostas();
+            await loadMenu();
+            await loadAtendentes();
+            await loadFluxos();
+            await loadIntegracoes();
+            await loadMetricsChart();
+            await loadConversasBadge(); // Carregar badge de conversas
+        });
+
+        function toggleSubmenu(event) {
+            event.preventDefault();
+            const parentLi = event.target.closest('li.has-submenu');
+            parentLi.classList.toggle('open');
+        }
+
+        // ============================================================================
+        // FUNÇÕES DE TESTE DOS PREVIEWS
+        // ============================================================================
+
+        /**
+         * Testa mensagens contra respostas predefinidas no preview
+         */
+        function testPreviewRespostas() {
+            const input = document.getElementById('preview-input-respostas');
+            const chat = document.getElementById('preview-chat-respostas');
+            const userMessage = input.value.trim();
+
+            if (!userMessage) return;
+
+            // Adicionar mensagem do usuário
+            const userMsg = document.createElement('div');
+            userMsg.className = 'preview-msg preview-msg-user';
+            userMsg.textContent = userMessage;
+            chat.appendChild(userMsg);
+
+            // Normalizar entrada do usuário (remover acentos e converter para minúsculas)
+            const normalizeText = (text) => {
+                return text.normalize('NFD')
+                    .replace(/[\u0300-\u036f]/g, '')
+                    .toLowerCase()
+                    .trim();
+            };
+
+            const normalizedInput = normalizeText(userMessage);
+
+            // Buscar resposta correspondente
+            let foundResponse = null;
+            if (window.respostas && window.respostas.length > 0) {
+                for (const resposta of window.respostas) {
+                    if (resposta.palavras_chave && resposta.palavras_chave.length > 0) {
+                        for (const keyword of resposta.palavras_chave) {
+                            if (normalizedInput.includes(normalizeText(keyword))) {
+                                foundResponse = resposta.resposta;
+                                break;
+                            }
+                        }
+                        if (foundResponse) break;
+                    }
+                }
+            }
+
+            // Adicionar resposta do bot
+            setTimeout(() => {
+                const botMsg = document.createElement('div');
+                botMsg.className = 'preview-msg preview-msg-bot';
+                botMsg.textContent = foundResponse || 'Desculpe, não entendi. Tente outra palavra-chave.';
+                chat.appendChild(botMsg);
+                chat.scrollTop = chat.scrollHeight;
+            }, 500);
+
+            // Limpar input
+            input.value = '';
+            chat.scrollTop = chat.scrollHeight;
+        }
+
+        /**
+         * Testa opções de menu no preview
+         */
+        function testPreviewMenu() {
+            const input = document.getElementById('preview-input-menu');
+            const chat = document.getElementById('preview-chat-menu');
+            const optionsDiv = document.getElementById('menu-preview-options');
+            const userMessage = input.value.trim();
+
+            if (!userMessage) {
+                // Se não digitou nada, mostrar opções do menu
+                return;
+            }
+
+            // Adicionar mensagem do usuário
+            const userMsg = document.createElement('div');
+            userMsg.className = 'preview-msg preview-msg-user';
+            userMsg.textContent = userMessage;
+            chat.appendChild(userMsg);
+
+            // Buscar opção correspondente
+            let foundOption = null;
+            if (window.menu && window.menu.length > 0) {
+                for (const item of window.menu) {
+                    if (item.numero && userMessage === item.numero.toString()) {
+                        foundOption = item;
+                        break;
+                    }
+                }
+            }
+
+            // Adicionar resposta do bot
+            setTimeout(() => {
+                const botMsg = document.createElement('div');
+                botMsg.className = 'preview-msg preview-msg-bot';
+                if (foundOption) {
+                    botMsg.textContent = foundOption.resposta || `Você escolheu: ${foundOption.titulo}`;
+                } else {
+                    botMsg.textContent = 'Opção inválida. Escolha um número do menu.';
+                }
+                chat.appendChild(botMsg);
+                chat.scrollTop = chat.scrollHeight;
+            }, 500);
+
+            // Limpar input
+            input.value = '';
+            chat.scrollTop = chat.scrollHeight;
+        }
+
+        /**
+         * Atualiza preview do menu com opções atuais
+         */
+        function updateMenuPreview() {
+            const optionsDiv = document.getElementById('menu-preview-options');
+            if (!optionsDiv) return;
+
+            optionsDiv.innerHTML = '<div style="font-weight: 600; margin-bottom: 10px;">Escolha uma opção:</div>';
+
+            if (window.menu && window.menu.length > 0) {
+                window.menu.forEach(item => {
+                    const option = document.createElement('div');
+                    option.className = 'preview-menu-option';
+                    option.textContent = `${item.numero}. ${item.titulo}`;
+                    option.style.cursor = 'pointer';
+                    option.onclick = () => {
+                        // Simular clique na opção
+                        const input = document.getElementById('preview-input-menu');
+                        input.value = item.numero.toString();
+                        testPreviewMenu();
+                    };
+                    optionsDiv.appendChild(option);
+                });
+            } else {
+                optionsDiv.innerHTML += '<div style="color: rgba(255,255,255,0.5); font-size: 0.9em;">Nenhuma opção de menu cadastrada</div>';
+            }
+        }
+
+        /**
+         * Testa fluxos de conversa no preview
+         */
+        function testPreviewFluxos() {
+            const input = document.getElementById('preview-input-fluxos');
+            const chat = document.getElementById('preview-chat-fluxos');
+            const userMessage = input.value.trim();
+
+            if (!userMessage) return;
+
+            // Adicionar mensagem do usuário
+            const userMsg = document.createElement('div');
+            userMsg.className = 'preview-msg preview-msg-user';
+            userMsg.textContent = userMessage;
+            chat.appendChild(userMsg);
+
+            // Buscar fluxo correspondente (simplificado)
+            let foundFlow = null;
+            if (window.fluxos && window.fluxos.length > 0) {
+                for (const fluxo of window.fluxos) {
+                    if (fluxo.nome && userMessage.toLowerCase().includes(fluxo.nome.toLowerCase())) {
+                        foundFlow = fluxo;
+                        break;
+                    }
+                }
+            }
+
+            // Adicionar resposta do bot
+            setTimeout(() => {
+                const botMsg = document.createElement('div');
+                botMsg.className = 'preview-msg preview-msg-bot';
+                if (foundFlow) {
+                    botMsg.textContent = `Iniciando fluxo: ${foundFlow.nome}`;
+                    // Aqui você poderia adicionar lógica para processar as etapas do fluxo
+                } else {
+                    botMsg.textContent = 'Fluxo não encontrado. Tente mencionar o nome de um fluxo cadastrado.';
+                }
+                chat.appendChild(botMsg);
+                chat.scrollTop = chat.scrollHeight;
+            }, 500);
+
+            // Limpar input
+            input.value = '';
+            chat.scrollTop = chat.scrollHeight;
+        }
+
+        // ========== CONVERSAS ==========
+
+        // Função para carregar apenas o badge de conversas (chamada na inicialização)
+        async function loadConversasBadge() {
+            try {
+                const response = await fetch(`/api/conversas/pedido/${orderId}`);
+                const conversas = await response.json();
+
+                // Atualizar apenas o badge
+                document.getElementById('badge-conversas').textContent = conversas.length;
+            } catch (error) {
+                console.error('Erro ao carregar badge de conversas:', error);
+                document.getElementById('badge-conversas').textContent = '0';
+            }
+        }
+
+        async function loadConversasSection() {
+            try {
+                const response = await fetch(`/api/conversas/pedido/${orderId}`);
+                const conversas = await response.json();
+
+                // Atualizar stats
+                document.getElementById('total-conversas-stat').textContent = conversas.length;
+                document.getElementById('badge-conversas').textContent = conversas.length;
+
+                const ativas = conversas.filter(c => c.status === 'ativa').length;
+                document.getElementById('conversas-ativas-stat').textContent = ativas;
+
+                let totalMsgs = 0;
+                let totalTempoResposta = 0;
+                let countTempoResposta = 0;
+
+                conversas.forEach(c => {
+                    totalMsgs += c.total_mensagens;
+                    if (c.tempo_primeira_resposta) {
+                        totalTempoResposta += c.tempo_primeira_resposta;
+                        countTempoResposta++;
+                    }
+                });
+
+                document.getElementById('total-mensagens-stat').textContent = totalMsgs;
+
+                const tempoMedio = countTempoResposta > 0 ? totalTempoResposta / countTempoResposta : 0;
+                document.getElementById('tempo-medio-resposta').textContent = `${tempoMedio.toFixed(1)}s`;
+
+                // Renderizar lista
+                const container = document.getElementById('conversas-list-section');
+
+                if (conversas.length === 0) {
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 50px 20px; color: rgba(255,255,255,0.5);">
+                            Nenhuma conversa ainda
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = conversas.map(conv => {
+                    // Formatar data de iniciada_em
+                    const dataInicio = conv.iniciada_em ? new Date(conv.iniciada_em).toLocaleDateString('pt-BR', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric'
+                    }) : '';
+
+                    return `
+                    <div onclick="loadMensagensSection(${conv.id}, '${conv.contato_nome}', '${conv.contato_numero}')"
+                         style="background: rgba(255,255,255,0.05); padding: 10px; border-radius: 8px; margin-bottom: 8px; cursor: pointer; border: 2px solid transparent; transition: all 0.3s;"
+                         onmouseover="this.style.borderColor='var(--primary-red-light)'; this.style.background='rgba(255,90,90,0.1)'"
+                         onmouseout="this.style.borderColor='transparent'; this.style.background='rgba(255,255,255,0.05)'">
+                        <div style="font-weight: 600; margin-bottom: 4px; font-size: 14px;">${conv.contato_nome}</div>
+                        <div style="font-size: 12px; color: rgba(255,255,255,0.6); margin-bottom: 4px;">📅 ${dataInicio} - 📱 ${conv.contato_numero}</div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 600; ${conv.status === 'ativa' ? 'background: rgba(0, 217, 95, 0.2); color: var(--success-green);' : 'background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.6);'}">
+                                ${conv.status}
+                            </span>
+                            <span style="font-size: 11px; color: rgba(255,255,255,0.5);">
+                                ${conv.total_mensagens} msgs
+                            </span>
+                        </div>
+                    </div>
+                    `;
+                }).join('');
+
+            } catch (error) {
+                console.error('Erro ao carregar conversas:', error);
+                document.getElementById('conversas-list-section').innerHTML = `
+                    <div style="text-align: center; padding: 50px 20px; color: var(--primary-red-light);">
+                        ❌ Erro ao carregar conversas
+                    </div>
+                `;
+            }
+        }
+
+        async function loadMensagensSection(conversaId, nome, numero) {
+            try {
+                document.getElementById('conversa-titulo-section').innerHTML = `💬 ${nome}`;
+                document.getElementById('conversa-info-section').textContent = `📱 ${numero}`;
+
+                const response = await fetch(`/api/conversas/${conversaId}/mensagens`);
+                const mensagens = await response.json();
+
+                const container = document.getElementById('mensagens-list-section');
+
+                if (mensagens.length === 0) {
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 100px 20px; color: rgba(255,255,255,0.5);">
+                            Nenhuma mensagem nesta conversa
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = mensagens.map(msg => {
+                    const isRecebida = msg.direcao === 'recebida';
+                    return `
+                        <div style="margin-bottom: 12px; padding: 10px 15px; border-radius: 10px; max-width: 70%; ${isRecebida ? 'background: rgba(255,255,255,0.05); border-left: 4px solid #667eea; margin-right: auto;' : 'background: rgba(255,90,90,0.15); border-right: 4px solid var(--primary-red-light); margin-left: auto;'}">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 11px; color: rgba(255,255,255,0.6);">
+                                <span><strong>${isRecebida ? '📱 Cliente' : '🤖 Agente'}</strong></span>
+                                <span>${new Date(msg.timestamp).toLocaleString('pt-BR')}</span>
+                            </div>
+                            <div style="color: rgba(255,255,255,0.9); white-space: pre-wrap; line-height: 1.5; font-size: 14px;">
+                                ${msg.conteudo}
+                            </div>
+                            ${msg.tempo_resposta ? `
+                                <div style="margin-top: 6px; font-size: 10px; color: rgba(255,255,255,0.5);">
+                                    ⚡ ${msg.tempo_resposta.toFixed(2)}s
+                                </div>
+                            ` : ''}
+                        </div>
+                    `;
+                }).join('');
+
+                container.scrollTop = container.scrollHeight;
+
+            } catch (error) {
+                console.error('Erro ao carregar mensagens:', error);
+                document.getElementById('mensagens-list-section').innerHTML = `
+                    <div style="text-align: center; padding: 100px 20px; color: var(--primary-red-light);">
+                        ❌ Erro ao carregar mensagens
+                    </div>
+                `;
+            }
+        }
+
+        // Funções de filtro de conversas por data
+        async function filtrarConversasPorData() {
+            const dataInicio = document.getElementById('data-inicio-conversas').value;
+            const dataFim = document.getElementById('data-fim-conversas').value;
+
+            if (!dataInicio || !dataFim) {
+                alert('Selecione as duas datas para filtrar');
+                return;
+            }
+
+            try {
+                const url = `/api/conversas/pedido/${orderId}?data_inicio=${dataInicio}&data_fim=${dataFim}`;
+                const response = await fetch(url);
+                const conversas = await response.json();
+                atualizarInterfaceConversas(conversas);
+            } catch (error) {
+                console.error('Erro ao filtrar conversas:', error);
+                alert('Erro ao filtrar conversas');
+            }
+        }
+
+        function limparFiltroConversas() {
+            document.getElementById('data-inicio-conversas').value = '';
+            document.getElementById('data-fim-conversas').value = '';
+            loadConversasSection();
+        }
+
+        function atualizarInterfaceConversas(conversas) {
+            document.getElementById('total-conversas-stat').textContent = conversas.length;
+            document.getElementById('badge-conversas').textContent = conversas.length;
+            const ativas = conversas.filter(c => c.status === 'ativa').length;
+            document.getElementById('conversas-ativas-stat').textContent = ativas;
+            let totalMsgs = 0, totalTempo = 0, countTempo = 0;
+            conversas.forEach(c => {
+                totalMsgs += c.total_mensagens;
+                if (c.tempo_primeira_resposta) { totalTempo += c.tempo_primeira_resposta; countTempo++; }
+            });
+            document.getElementById('total-mensagens-stat').textContent = totalMsgs;
+            document.getElementById('tempo-medio-resposta').textContent = `${(countTempo > 0 ? totalTempo/countTempo : 0).toFixed(1)}s`;
+            const container = document.getElementById('conversas-list-section');
+            if (conversas.length === 0) {
+                container.innerHTML = '<div style="text-align: center; padding: 50px 20px; color: rgba(255,255,255,0.5);">Nenhuma conversa no período</div>';
+                return;
+            }
+            container.innerHTML = conversas.map(conv => {
+                // Formatar data de iniciada_em
+                const dataInicio = conv.iniciada_em ? new Date(conv.iniciada_em).toLocaleDateString('pt-BR', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric'
+                }) : '';
+
+                return `
+                <div onclick="loadMensagensSection(${conv.id}, '${conv.contato_nome}', '${conv.contato_numero}')"
+                     style="background: rgba(255,255,255,0.05); padding: 10px; border-radius: 8px; margin-bottom: 8px; cursor: pointer; border: 2px solid transparent; transition: all 0.3s;"
+                     onmouseover="this.style.borderColor='var(--primary-red-light)'; this.style.background='rgba(255,90,90,0.1)'"
+                     onmouseout="this.style.borderColor='transparent'; this.style.background='rgba(255,255,255,0.05)'">
+                    <div style="font-weight: 600; margin-bottom: 4px; font-size: 14px;">${conv.contato_nome}</div>
+                    <div style="font-size: 12px; color: rgba(255,255,255,0.6); margin-bottom: 4px;">📅 ${dataInicio} - 📱 ${conv.contato_numero}</div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 600; ${conv.status === 'ativa' ? 'background: rgba(0, 217, 95, 0.2); color: var(--success-green);' : 'background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.6);'}">
+                            ${conv.status}
+                        </span>
+                        <span style="font-size: 11px; color: rgba(255,255,255,0.5);">${conv.total_mensagens} msgs</span>
+                    </div>
+                </div>
+                `;
+            }).join('');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}Respostas Predefinidas - Kairix{% endblock %}
+
+{% block content %}
+<div class="content-header">
+    <h1>💬 Respostas Predefinidas</h1>
+    <p>Configure as respostas automáticas do seu bot</p>
+</div>
+
+<div class="preview-grid">
+    <!-- Coluna de Configuração -->
+    <div class="config-column">
+        <div class="section-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3>Minhas Respostas</h3>
+                <button class="btn btn-primary" onclick="showRespostaForm()">➕ Nova Resposta</button>
+            </div>
+
+            <!-- Formulário de Nova/Editar Resposta -->
+            <div id="resposta-form" style="display: none; margin-bottom: 30px; padding: 20px; background: rgba(255, 255, 255, 0.03); border-radius: 10px;">
+                <h4 id="resposta-form-title">Nova Resposta</h4>
+                <form id="form-resposta" onsubmit="saveResposta(event)">
+                    <input type="hidden" id="resposta-id">
+                    <div class="form-group">
+                        <label>Pergunta/Palavra-Chave *</label>
+                        <input type="text" id="resposta-pergunta" placeholder="Ex: Horário de atendimento" required>
+                        <small>A pergunta ou palavra-chave que acionará esta resposta</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Resposta *</label>
+                        <textarea id="resposta-resposta" placeholder="Ex: Nosso atendimento funciona de segunda a sexta, das 8h às 18h" required></textarea>
+                        <small>A resposta que o bot enviará automaticamente</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Palavras-Chave Adicionais (opcional)</label>
+                        <input type="text" id="resposta-palavras" placeholder="Ex: horário, hora, quando, aberto">
+                        <small>Palavras separadas por vírgula que também acionam esta resposta</small>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <button type="submit" class="btn btn-success">💾 Salvar</button>
+                        <button type="button" class="btn btn-secondary" onclick="hideRespostaForm()">❌ Cancelar</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Lista de Respostas -->
+            <div id="respostas-list">
+                <div class="empty-state">
+                    <div class="empty-state-icon">💬</div>
+                    <p>Nenhuma resposta cadastrada ainda</p>
+                    <p style="font-size: 0.9rem;">Clique em "Nova Resposta" para começar</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Coluna de Preview -->
+    <div class="preview-column">
+        <h3>📱 Preview em Tempo Real</h3>
+        <div class="preview-phone">
+            <div class="preview-screen">
+                <div class="preview-whatsapp-header">
+                    <div class="preview-logo-circle"><img src="/logo.png" alt="Logo"></div>
+                    <span style="font-weight: 600;">Sua Empresa</span>
+                </div>
+                <div class="preview-chat" id="preview-chat-respostas">
+                    <div class="preview-msg preview-msg-bot">Olá! Bem-vindo ao nosso atendimento.</div>
+                </div>
+                <div class="preview-input-box">
+                    <input type="text" id="preview-input-respostas" placeholder="Digite para testar..." onkeypress="if(event.key==='Enter') testPreviewRespostas()">
+                    <button onclick="testPreviewRespostas()">▶</button>
+                </div>
+            </div>
+        </div>
+        <p class="preview-helper-text">💡 Digite palavras-chave para testar</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    loadRespostas();
+});
+</script>
+{% endblock %}

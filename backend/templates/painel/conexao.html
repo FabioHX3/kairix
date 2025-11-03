@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Conexão WhatsApp - Kairix{% endblock %}
+
+{% block content %}
+<div class="content-header">
+    <h1>📱 Conexão WhatsApp</h1>
+    <p>Configure o número onde o bot será instalado</p>
+</div>
+
+<div class="section-card">
+    <h3>Dados de Conexão</h3>
+    <form id="form-conexao">
+        <div class="form-group">
+            <label>Número WhatsApp Business *</label>
+            <input type="text" id="numero_whatsapp" placeholder="(65) 99934-2690" value="{{ config.numero_whatsapp | default('') }}" required>
+            <small>Este número será usado para instalar o bot. Certifique-se que é uma conta Business.</small>
+        </div>
+        <button type="submit" class="btn btn-success">💾 Salvar Conexão</button>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Carregar dados de conexão ao iniciar
+document.addEventListener('DOMContentLoaded', function() {
+    loadConfig();
+});
+
+// Submeter formulário de conexão
+document.getElementById('form-conexao').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const numeroWhatsapp = document.getElementById('numero_whatsapp').value;
+
+    try {
+        const response = await fetchAuth(`/api/orders/${orderId}/config`, {
+            method: 'PUT',
+            body: JSON.stringify({
+                numero_whatsapp: numeroWhatsapp
+            })
+        });
+
+        if (response.ok) {
+            showNotification('success', 'Conexão salva com sucesso!');
+        } else {
+            showNotification('error', 'Erro ao salvar conexão');
+        }
+    } catch (error) {
+        console.error('Erro:', error);
+        showNotification('error', 'Erro ao salvar conexão');
+    }
+});
+</script>
+{% endblock %}

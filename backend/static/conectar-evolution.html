@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conectar Evolution API | Kairix</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --primary-red: #FF5A5A;
+            --primary-dark: #9A0000;
+            --dark-bg: #121212;
+            --gradient: linear-gradient(135deg, #FF5A5A, #9A0000);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--dark-bg);
+            color: white;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header img {
+            width: 120px;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: rgba(255,255,255,0.7);
+            font-size: 16px;
+        }
+
+        .card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,90,90,0.2);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+        }
+
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 20px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+
+        .status-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .status-icon.connected {
+            background: #00D26A;
+        }
+
+        .status-icon.disconnected {
+            background: #FF5A5A;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,90,90,0.2);
+            border-radius: 10px;
+            color: white;
+            font-size: 15px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-red);
+            box-shadow: 0 0 0 3px rgba(255,90,90,0.1);
+        }
+
+        .help-text {
+            font-size: 13px;
+            color: rgba(255,255,255,0.6);
+            margin-top: 8px;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border-radius: 10px;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: var(--gradient);
+            color: white;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255,90,90,0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            margin-right: 10px;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.15);
+        }
+
+        .webhook-info {
+            background: rgba(255,200,0,0.1);
+            border: 1px solid rgba(255,200,0,0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+
+        .webhook-info h3 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #FFD700;
+        }
+
+        .webhook-url {
+            background: rgba(0,0,0,0.3);
+            padding: 12px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            word-break: break-all;
+            margin: 15px 0;
+        }
+
+        .steps {
+            list-style: none;
+            counter-reset: step-counter;
+        }
+
+        .steps li {
+            counter-increment: step-counter;
+            margin-bottom: 15px;
+            padding-left: 40px;
+            position: relative;
+        }
+
+        .steps li:before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 28px;
+            height: 28px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .alert.success {
+            background: rgba(0,210,106,0.2);
+            border: 1px solid #00D26A;
+            color: #00D26A;
+        }
+
+        .alert.error {
+            background: rgba(255,90,90,0.2);
+            border: 1px solid #FF5A5A;
+            color: #FF5A5A;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="/logo.png" alt="Kairix">
+            <h1>🔌 Conectar Evolution API</h1>
+            <p>Configure a conexão com seu WhatsApp</p>
+        </div>
+
+        <div id="alert" class="alert"></div>
+
+        <div class="card">
+            <div class="status">
+                <div class="status-icon disconnected" id="status-icon">❌</div>
+                <div>
+                    <div style="font-weight: 600; font-size: 16px;" id="status-text">Não Conectado</div>
+                    <div style="font-size: 14px; color: rgba(255,255,255,0.6);">Configure abaixo para conectar</div>
+                </div>
+            </div>
+
+            <form id="evolution-form">
+                <div class="form-group">
+                    <label>🌐 URL do Evolution API</label>
+                    <input type="url" id="evolution_url" placeholder="http://localhost:8055" required>
+                    <div class="help-text">URL base do seu servidor Evolution API (sem barra no final)</div>
+                </div>
+
+                <div class="form-group">
+                    <label>🔑 API Key</label>
+                    <input type="text" id="evolution_key" placeholder="sua_api_key_aqui" required>
+                    <div class="help-text">Chave de API do Evolution (encontre nas configurações)</div>
+                </div>
+
+                <div class="form-group">
+                    <label>📱 Nome da Instância</label>
+                    <input type="text" id="evolution_instance" placeholder="kairix" required>
+                    <div class="help-text">Nome da sua instância WhatsApp no Evolution</div>
+                </div>
+
+                <div style="display: flex; gap: 10px; margin-top: 30px;">
+                    <button type="button" class="btn btn-secondary" onclick="testConnection()">🧪 Testar Conexão</button>
+                    <button type="submit" class="btn btn-primary">💾 Salvar Configuração</button>
+                </div>
+            </form>
+
+            <div class="webhook-info" id="webhook-info" style="display: none;">
+                <h3>⚡ Configure o Webhook no Evolution</h3>
+                <p style="margin-bottom: 15px;">Copie a URL abaixo e configure no seu painel Evolution:</p>
+                <div class="webhook-url" id="webhook-url">-</div>
+                <ul class="steps">
+                    <li>Acesse o painel do Evolution API</li>
+                    <li>Vá em Configurações → Webhooks</li>
+                    <li>Cole a URL acima</li>
+                    <li>Ative o evento: <code>messages.upsert</code></li>
+                    <li>Salve as alterações</li>
+                </ul>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="/painel/1" style="color: var(--primary-red); text-decoration: none; font-weight: 600;">
+                ← Voltar ao Painel
+            </a>
+        </div>
+    </div>
+
+    <script>
+        const pedidoId = new URLSearchParams(window.location.search).get('pedido') || 1;
+
+        // Carregar configuração existente
+        async function loadConfig() {
+            try {
+                const res = await fetch(`/api/evolution/config/${pedidoId}`);
+                const data = await res.json();
+
+                if (data.configured) {
+                    document.getElementById('evolution_url').value = data.evolution_url || '';
+                    document.getElementById('evolution_instance').value = data.evolution_instance || '';
+                    document.getElementById('status-icon').textContent = '✅';
+                    document.getElementById('status-icon').classList.remove('disconnected');
+                    document.getElementById('status-icon').classList.add('connected');
+                    document.getElementById('status-text').textContent = 'Conectado';
+
+                    // Mostrar webhook
+                    const webhookUrl = `${window.location.origin}${data.webhook_url}`;
+                    document.getElementById('webhook-url').textContent = webhookUrl;
+                    document.getElementById('webhook-info').style.display = 'block';
+                }
+            } catch (e) {
+                console.error('Erro ao carregar config:', e);
+            }
+        }
+
+        // Testar conexão
+        async function testConnection() {
+            const btn = event.target;
+            btn.textContent = '🔄 Testando...';
+            btn.disabled = true;
+
+            try {
+                const res = await fetch(`/api/evolution/test/${pedidoId}`);
+                const data = await res.json();
+
+                if (data.status === 'success') {
+                    showAlert('✅ Conexão estabelecida com sucesso!', 'success');
+                } else {
+                    showAlert('❌ Erro na conexão: ' + data.message, 'error');
+                }
+            } catch (e) {
+                showAlert('❌ Erro ao testar: ' + e.message, 'error');
+            } finally {
+                btn.textContent = '🧪 Testar Conexão';
+                btn.disabled = false;
+            }
+        }
+
+        // Salvar configuração
+        document.getElementById('evolution-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const data = {
+                evolution_url: document.getElementById('evolution_url').value,
+                evolution_key: document.getElementById('evolution_key').value,
+                evolution_instance: document.getElementById('evolution_instance').value,
+                kairix_url: window.location.origin
+            };
+
+            try {
+                const res = await fetch(`/api/evolution/config/${pedidoId}`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(data)
+                });
+
+                const result = await res.json();
+
+                if (res.ok) {
+                    showAlert('✅ Configuração salva com sucesso!', 'success');
+
+                    // Atualizar status
+                    document.getElementById('status-icon').textContent = '✅';
+                    document.getElementById('status-icon').classList.remove('disconnected');
+                    document.getElementById('status-icon').classList.add('connected');
+                    document.getElementById('status-text').textContent = 'Conectado';
+
+                    // Mostrar webhook
+                    document.getElementById('webhook-url').textContent = result.webhook_url;
+                    document.getElementById('webhook-info').style.display = 'block';
+                } else {
+                    showAlert('❌ Erro ao salvar: ' + result.detail, 'error');
+                }
+            } catch (e) {
+                showAlert('❌ Erro: ' + e.message, 'error');
+            }
+        });
+
+        function showAlert(message, type) {
+            const alert = document.getElementById('alert');
+            alert.textContent = message;
+            alert.className = `alert ${type}`;
+            alert.style.display = 'block';
+            setTimeout(() => alert.style.display = 'none', 5000);
+        }
+
+        // Carregar ao iniciar
+        loadConfig();
+    </script>
+</body>
+</html>

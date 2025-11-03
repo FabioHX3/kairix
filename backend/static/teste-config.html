@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de Configuração</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .section {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background: #007bff;
+            color: white;
+        }
+        .debug {
+            background: #fffacd;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ffeb3b;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Teste de Configuração - Order ID: <span id="order-id"></span></h1>
+
+    <div class="debug">
+        <h3>📊 Debug Info:</h3>
+        <div id="debug-info">Carregando...</div>
+    </div>
+
+    <!-- Respostas -->
+    <div class="section">
+        <h2>📝 Respostas Predefinidas</h2>
+        <div id="respostas-debug" style="color: blue; margin-bottom: 10px;"></div>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Pergunta</th>
+                    <th>Resposta</th>
+                    <th>Palavras-chave</th>
+                </tr>
+            </thead>
+            <tbody id="respostas-list">
+                <tr><td colspan="4">Carregando...</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Menu -->
+    <div class="section">
+        <h2>📋 Menu Interativo</h2>
+        <div id="menu-debug" style="color: blue; margin-bottom: 10px;"></div>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Número</th>
+                    <th>Título</th>
+                    <th>Descrição</th>
+                </tr>
+            </thead>
+            <tbody id="menu-list">
+                <tr><td colspan="4">Carregando...</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Fluxos -->
+    <div class="section">
+        <h2>🔄 Fluxos de Conversa</h2>
+        <div id="fluxos-debug" style="color: blue; margin-bottom: 10px;"></div>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Descrição</th>
+                    <th>Etapas</th>
+                </tr>
+            </thead>
+            <tbody id="fluxos-list">
+                <tr><td colspan="4">Carregando...</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // Pegar order_id da URL ou localStorage
+        const urlParams = new URLSearchParams(window.location.search);
+        let orderId = urlParams.get('order') || localStorage.getItem('order_id') || '1';
+        document.getElementById('order-id').textContent = orderId;
+
+        const debugInfo = document.getElementById('debug-info');
+
+        function log(message) {
+            console.log(message);
+            debugInfo.innerHTML += `<div>${message}</div>`;
+        }
+
+        // Carregar respostas
+        async function loadRespostas() {
+            try {
+                log(`🔍 Buscando: /api/config/${orderId}/respostas`);
+                const response = await fetch(`/api/config/${orderId}/respostas`);
+                log(`📥 Status da resposta: ${response.status}`);
+
+                const data = await response.json();
+                log(`✅ Dados recebidos: ${JSON.stringify(data).substring(0, 100)}...`);
+                log(`📊 Total de respostas: ${data.length}`);
+
+                document.getElementById('respostas-debug').textContent = `Total: ${data.length} respostas`;
+
+                const tbody = document.getElementById('respostas-list');
+                if (data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4">Nenhuma resposta encontrada</td></tr>';
+                } else {
+                    tbody.innerHTML = data.map(r => `
+                        <tr>
+                            <td>${r.id}</td>
+                            <td>${r.pergunta}</td>
+                            <td>${r.resposta}</td>
+                            <td>${r.palavras_chave.join(', ')}</td>
+                        </tr>
+                    `).join('');
+                }
+            } catch (error) {
+                log(`❌ Erro ao carregar respostas: ${error.message}`);
+                console.error('Erro completo:', error);
+            }
+        }
+
+        // Carregar menu
+        async function loadMenu() {
+            try {
+                log(`🔍 Buscando: /api/config/${orderId}/menu`);
+                const response = await fetch(`/api/config/${orderId}/menu`);
+                log(`📥 Status da resposta menu: ${response.status}`);
+
+                const data = await response.json();
+                log(`✅ Dados menu recebidos: ${JSON.stringify(data).substring(0, 100)}...`);
+                log(`📊 Total de opções: ${data.length}`);
+
+                document.getElementById('menu-debug').textContent = `Total: ${data.length} opções`;
+
+                const tbody = document.getElementById('menu-list');
+                if (data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4">Nenhuma opção encontrada</td></tr>';
+                } else {
+                    tbody.innerHTML = data.map(m => `
+                        <tr>
+                            <td>${m.id}</td>
+                            <td>${m.numero}</td>
+                            <td>${m.titulo}</td>
+                            <td>${m.descricao}</td>
+                        </tr>
+                    `).join('');
+                }
+            } catch (error) {
+                log(`❌ Erro ao carregar menu: ${error.message}`);
+                console.error('Erro completo:', error);
+            }
+        }
+
+        // Carregar fluxos
+        async function loadFluxos() {
+            try {
+                log(`🔍 Buscando: /api/config/${orderId}/fluxos`);
+                const response = await fetch(`/api/config/${orderId}/fluxos`);
+                log(`📥 Status da resposta fluxos: ${response.status}`);
+
+                const data = await response.json();
+                log(`✅ Dados fluxos recebidos: ${JSON.stringify(data).substring(0, 100)}...`);
+                log(`📊 Total de fluxos: ${data.length}`);
+
+                document.getElementById('fluxos-debug').textContent = `Total: ${data.length} fluxos`;
+
+                const tbody = document.getElementById('fluxos-list');
+                if (data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4">Nenhum fluxo encontrado</td></tr>';
+                } else {
+                    tbody.innerHTML = data.map(f => `
+                        <tr>
+                            <td>${f.id}</td>
+                            <td>${f.nome}</td>
+                            <td>${f.descricao}</td>
+                            <td>${f.etapas.length} etapas</td>
+                        </tr>
+                    `).join('');
+                }
+            } catch (error) {
+                log(`❌ Erro ao carregar fluxos: ${error.message}`);
+                console.error('Erro completo:', error);
+            }
+        }
+
+        // Inicializar
+        log('🚀 Iniciando carregamento...');
+        window.addEventListener('DOMContentLoaded', async () => {
+            await loadRespostas();
+            await loadMenu();
+            await loadFluxos();
+            log('✅ Carregamento concluído!');
+        });
+    </script>
+</body>
+</html>
