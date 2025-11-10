@@ -490,7 +490,7 @@ def toggle_client(client_id: int, data: dict, db: Session = Depends(get_db)):
                 db.flush()
 
             # Criar instância no Evolution API automaticamente
-            import evolution_helper
+            from services import evolution_helper
             import asyncio
 
             evolution_result = None
