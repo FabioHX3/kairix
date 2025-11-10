@@ -1,5 +1,5 @@
 """
-Helper para integração com o Sistema Financeiro (MDZ Drive)
+Helper para integração com o Kairix Financeiro
 """
 import requests
 from sqlalchemy.orm import Session
